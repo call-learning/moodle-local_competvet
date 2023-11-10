@@ -13,29 +13,33 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-namespace local_cveteval\local\external;
+namespace local_competvet\external;
+defined('MOODLE_INTERNAL') || die();
+global $CFG;
+require_once($CFG->libdir . '/externallib.php');
 
 use external_api;
 use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
 use external_value;
+use local_cveteval\local\external\external_utils;
 use moodle_url;
 
 /**
- * Auth management
+ * IDP List management
  *
  * @package   local_competvet
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class auth extends external_api {
+class idplist extends external_api {
     /**
      * Returns description of method parameters
      *
      * @return external_function_parameters
      */
-    public static function idp_list_parameters() {
+    public static function execute_parameters() {
         return new external_function_parameters([]);
     }
     /**
@@ -43,7 +47,7 @@ class auth extends external_api {
      *
      * @return external_multiple_structure
      */
-    public static function idp_list_returns() {
+    public static function execute_returns() {
         return new external_multiple_structure(
             new external_single_structure(
                 [
@@ -57,8 +61,9 @@ class auth extends external_api {
 
     /**
      * Return the current information for the user
+     * @return array
      */
-    public static function idp_list() {
+    public static function execute(): array {
         $authsenabled = get_enabled_auth_plugins();
         $idplist = [];
         foreach ($authsenabled as $auth) {

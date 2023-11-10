@@ -22,7 +22,7 @@ use local_competvet\utils;
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-function xmldb_local_competet_install() {
+function xmldb_local_competvet_install() {
     utils::setup_mobile_service(true);
     return true;
 }

@@ -26,10 +26,10 @@ use local_competvet\utils;
 
 defined('MOODLE_INTERNAL') || die();
 $functions = [
-    'local_competvet_get_user_type' => [
-        'classname' => 'local_competvet\\external\\user_type',
+    'local_competvet_get_application_mode' => [
+        'classname' => 'local_competvet\\external\\get_application_mode',
         'methodname' => 'execute',
-        'description' => 'Get user type (student, appraiser, assessor). See local_competvet\local\role\entity',
+        'description' => 'Get the application mode for this user.',
         'type' => 'read',
         'capabilities' => 'local/competvet:mobileaccess',
         'services' => [utils::COMPETVET_MOBILE_SERVICE],
@@ -43,13 +43,23 @@ $functions = [
         'services' => [utils::COMPETVET_MOBILE_SERVICE],
     ],
     'local_competvet_get_idplist' => [
-        'classname' => 'local_competvet\\external\\auth',
-        'methodname' => 'idp_list',
+        'classname' => 'local_competvet\\external\\idplist',
+        'methodname' => 'execute',
         'description' => 'Get IDP list for connexion',
         'ajax' => true,
         'type' => 'read',
         'loginrequired' => false,
     ],
+
+    'local_competvet_get_my_situations' => [
+        'classname' => 'local_competvet\\external\\get_my_situations',
+        'methodname' => 'execute',
+        'description' => 'Get Situations and planning for the current user',
+        'ajax' => true,
+        'type' => 'read',
+        'loginrequired' => false,
+    ],
+
 ];
 
 $services = utils::get_mobile_services_definition($functions);

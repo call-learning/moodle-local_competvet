@@ -22,4 +22,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 $string['pluginname'] = 'CompetVet Local Plugin';
-$string['pluginname'] = 'CompetVet Local Plugin';
+$string['appservicename'] = 'CompetVet Mobile Service';
+$string['competvet:mobileaccess'] = 'Access CompetVet Mobile Service';
+$string['competvet:mobileaccess_help'] = 'Access CompetVet Mobile Service';

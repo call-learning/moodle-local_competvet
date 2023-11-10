@@ -19,23 +19,24 @@ global $CFG;
 require_once($CFG->libdir . '/externallib.php');
 
 use context_system;
-use context_user;
 use core_user;
 use external_api;
 use external_function_parameters;
 use external_single_structure;
 use external_value;
-use stdClass;
-use user_picture;
+use mod_competvet\local\api\user_role;
 
 /**
- * Get user profile
+ * Get application mode (student or observer)
+ *
+ * This returns a simple type or potentially an exception when there is a mismatched type
+ * across all situations (an observer cannot be a student for example).
  *
  * @package   local_competvet
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class user_profile extends external_api {
+class get_application_mode extends external_api {
     /**
      * Returns description of method parameters
      *
@@ -44,24 +45,25 @@ class user_profile extends external_api {
     public static function execute_returns() {
         return new external_single_structure(
             [
-                'userid' => new external_value(PARAM_INT, 'ID type of user'),
-                'fullname' => new external_value(PARAM_TEXT, 'User fullname'),
-                'firstname' => new external_value(PARAM_TEXT, 'User firstname (can be ignored)'),
-                'lastname' => new external_value(PARAM_TEXT, 'User lastname (can be ignored)'),
-                'username' => new external_value(PARAM_RAW_TRIMMED, 'User internal username'),
-                'userpictureurl' => new external_value(PARAM_URL, 'User picture (avatar) URL', VALUE_OPTIONAL),
+                'type' => new external_value(
+                    PARAM_ALPHA,
+                    'The way the mobile application mode (taken the highest role in this situation)
+                    (student, observer, unknown). Unknown is returned either when no role is assigned OR
+                    the user has student role and also observer role (which is not allowed currently). In
+                    this case it is up to the Mobile application to decide what to do (display error message or run as
+                    a student)'
+                ),
             ]
         );
     }
 
     /**
-     * Return the current information for the user
+     * Return the current role for the user across all situations
      *
      * @param int $userid
-     * @return stdClass
+     * @return \stdClass
      */
-    public static function execute(int $userid): stdClass {
-        global $USER, $PAGE;
+    public static function execute(int $userid): \stdClass {
         self::validate_parameters(self::execute_parameters(), ['userid' => $userid]);
         self::validate_context(context_system::instance());
         $user = null;
@@ -71,23 +73,27 @@ class user_profile extends external_api {
         if (!$user) {
             throw new \moodle_exception('invaliduserid', 'core_user', '', $userid);
         }
-        $context = context_user::instance($user->id);
-        $canseeadvanced = true;
-        if ($user->id != $USER->id && !has_capability('moodle/user:viewdetails', $context)) {
-            $canseeadvanced = false;
+
+        $mode = '';
+        try {
+            $role = user_role::get_top_for_all_situations($userid);
+            switch($role) {
+                case 'student':
+                    $mode = 'student';
+                    break;
+                case 'unknown':
+                    $mode = 'unknown';
+                    break;
+                default:
+                    $mode = 'observer';
+                    break;
+            }
+        } catch (\moodle_exception $e) {
+            // We do not throw an exception here because we want to return the mode anyway.
+            // This is because the user can be a student and an observer at the same time.
+            $mode = 'unknown';
         }
-        $userpicture = new user_picture($user);
-        $userpicture->includetoken = true;
-        $userpicture->size = 1; // Size f1.
-        return (object) [
-            'userid' => intval($user->id),
-            'fullname' => fullname($user),
-            'firstname' => $canseeadvanced ? $user->firstname : '',
-            'lastname' => $canseeadvanced ? $user->lastname : '',
-            'username' => $canseeadvanced ? $user->username : 'anonymous',
-            'userpictureurl' => $userpicture->get_url($PAGE)->out(false), // TODO check if we should not return the default
-            // picture in case the calling user is either not in the same context or not allowed to see the user.
-        ];
+        return (object) ['type' => $mode];
     }
 
     /**
@@ -98,9 +104,8 @@ class user_profile extends external_api {
     public static function execute_parameters() {
         return new external_function_parameters(
             [
-                'userid' => new external_value(PARAM_INT, 'ID of the user', VALUE_DEFAULT, 0),
+                'userid' => new external_value(PARAM_INT, 'id of the user', VALUE_REQUIRED),
             ]
         );
     }
 }
-

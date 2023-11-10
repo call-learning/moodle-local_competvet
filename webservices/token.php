@@ -21,7 +21,7 @@
  *
  * Inspired from the login/token.php file and modified
  * according to our needs:
- *  - the cveteval application can create tokens
+ *  - the competveteval application can create tokens
  * @copyright  2011 Dongsheng Cai <dongsheng@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -31,7 +31,7 @@ define('REQUIRE_CORRECT_ACCESS', true);
 define('NO_MOODLE_COOKIES', true);
 
 use core\session\manager;
-use local_cveteval\utils;
+use local_competvet\utils;
 
 require_once(__DIR__ . '../../../../config.php');
 global $CFG, $OUTPUT, $USER, $DB;
