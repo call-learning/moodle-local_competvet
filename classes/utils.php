@@ -21,6 +21,7 @@ use core\event\webservice_token_created;
 use core\session\manager;
 use core_user;
 use moodle_exception;
+use moodle_url;
 use stdClass;
 use webservice;
 
@@ -310,5 +311,17 @@ class utils {
         }
 
         return $token;
+    }
+
+    /**
+     * Launch URL
+     *
+     * @param array $params
+     * @return string
+     * @throws moodle_exception
+     */
+    public static function get_application_launch_url($params) {
+        $url = new moodle_url('/', $params);
+        return "fr.calllearning.competvet://" . $url->get_query_string();
     }
 }

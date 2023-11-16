@@ -26,7 +26,7 @@
 
 // phpcs:disable moodle.Files.RequireLogin.Missing
 use core\session\manager;
-use local_cveteval\utils;
+use local_competvet\utils;
 
 require_once(__DIR__ . '/../../../config.php');
 global $CFG, $SESSION, $USER;
@@ -97,7 +97,7 @@ if ($frm && isset($frm->username)) {                             // Login WITH c
         // Get an existing token or create a new one.
         $timenow = time();
         // Check if the service exists and is enabled.
-        $service = $DB->get_record('external_services', ['shortname' => utils::CVETEVAL_MOBILE_SERVICE, 'enabled' => 1]);
+        $service = $DB->get_record('external_services', ['shortname' => utils::COMPETVET_MOBILE_SERVICE, 'enabled' => 1]);
         if (empty($service)) {
             // Will throw exception if no token found.
             throw new moodle_exception('servicenotavailable', 'webservice');
@@ -129,4 +129,4 @@ if ($frm && isset($frm->username)) {                             // Login WITH c
     }
 }
 
-header('Location: ' . local_competveteval\local\external\external_utils::get_application_launch_url($mobilelaunchparams));
+header('Location: ' . utils::get_application_launch_url($mobilelaunchparams));
