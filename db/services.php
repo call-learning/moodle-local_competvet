@@ -50,7 +50,6 @@ $functions = [
         'type' => 'read',
         'loginrequired' => false,
     ],
-
     'local_competvet_get_my_situations' => [
         'classname' => 'local_competvet\\external\\get_my_situations',
         'methodname' => 'execute',
@@ -58,6 +57,7 @@ $functions = [
         'ajax' => true,
         'type' => 'read',
         'loginrequired' => false,
+        'services' => [utils::COMPETVET_MOBILE_SERVICE],
     ],
 
 ];
