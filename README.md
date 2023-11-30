@@ -72,10 +72,41 @@ The usual return value for this is something like:
 ```json
 {
   "token":"abcefghijklmnopqrstuvwxyz",
-  "privatetoken":"abcdefghijklmnopqrstuvwxyz"
+  "privatetoken":"abcdefghijklmnopqrstuvwxyz",
+  "userid":"3"
 }
 ```
 In the following section we will use TOKEN as the token value.
+
+Best is probably to define the several bash variables:
+
+```bash
+export TOKEN=<Your token>
+export SITEDOMAIN=<Your SITE DOMAIN>
+export USERID=<Your user ID> (optional)
+```
+### Get the application mode: local_competvet_get_application mode
+
+This API callback is used to get the application mode (either in student or observer mode). It is used by the mobile application to see which mode it should be in once the
+user logs in.
+If mode is "unknown", then the user is not allowed to use the application (an error message should be displayed to the user).
+
+```bash
+ curl https://$SITEDOMAIN/webservice/rest/server.php \
+  -d "wstoken=$TOKEN" \
+  -d 'wsfunction=local_competvet_get_application_mode' \
+  -d "userid=$USERID" \
+  -d 'moodlewsrestformat=json' -k
+```
+
+You can omit the userid if you are just looking for the current logged in user:
+
+```bash
+ curl https://$SITEDOMAIN/webservice/rest/server.php \
+  -d "wstoken=$TOKEN" \
+  -d 'wsfunction=local_competvet_get_application_mode' \
+  -d 'moodlewsrestformat=json' -k
+```
 
 ### Get the user profiles: local_competvet_get_user_profile
 
@@ -86,11 +117,11 @@ Note that we add the moodlerestformat=json so the anwer is in json format.
 
 The way it is called:
 ```bash
- curl https://<Your URL>/webservice/rest/server.php \
-  -d 'wstoken=TOKEN' \
+ curl https://$SITEDOMAIN/webservice/rest/server.php \
+  -d "wstoken=$TOKEN" \
   -d 'wsfunction=local_competvet_get_user_profile' \
-  -d 'userid=<User ID>' \
-  -d 'moodlewsrestformat=json'
+  -d "userid=$USERID" \
+  -d 'moodlewsrestformat=json' -k
 ```
 
 The typical answer is:

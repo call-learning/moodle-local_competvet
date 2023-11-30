@@ -53,6 +53,7 @@ class get_application_mode extends external_api {
                     this case it is up to the Mobile application to decide what to do (display error message or run as
                     a student)'
                 ),
+                'warnings' => new \external_warnings(),
             ]
         );
     }
@@ -60,29 +61,45 @@ class get_application_mode extends external_api {
     /**
      * Return the current role for the user across all situations
      *
-     * @param int $userid
+     * @param int|null $userid
      * @return \stdClass
+     * @throws \moodle_exception
      */
-    public static function execute(int $userid): \stdClass {
+    public static function execute(int $userid = 0): \stdClass {
+        global $USER;
         self::validate_parameters(self::execute_parameters(), ['userid' => $userid]);
         self::validate_context(context_system::instance());
         $user = null;
+        if (!$userid) {
+            $userid = $USER->id;
+        }
         if ($userid) {
             $user = core_user::get_user($userid);
         }
+        $warnings = [];
         if (!$user) {
-            throw new \moodle_exception('invaliduserid', 'core_user', '', $userid);
+            $warnings[] = [
+                'item' => 'userid',
+                'itemid' => $userid,
+                'warningcode' => 'invaliduserid',
+                'message' => get_string('invaliduserid', 'error', $userid)
+            ];
+            return (object) ['type' => 'unknown', 'warnings' => $warnings];
         }
-
-        $mode = '';
         try {
             $role = user_role::get_top_for_all_situations($userid);
-            switch($role) {
+            switch ($role) {
                 case 'student':
                     $mode = 'student';
                     break;
                 case 'unknown':
                     $mode = 'unknown';
+                    $warnings[] = [
+                        'item' => 'roleforuser',
+                        'itemid' => $userid,
+                        'warningcode' => 'invalidroleforuser',
+                        'message' => get_string('invalidroleforuser', 'local_competvet', ['userid' => $userid]),
+                    ];
                     break;
                 default:
                     $mode = 'observer';
@@ -93,7 +110,7 @@ class get_application_mode extends external_api {
             // This is because the user can be a student and an observer at the same time.
             $mode = 'unknown';
         }
-        return (object) ['type' => $mode];
+        return (object) ['type' => $mode, 'warnings' => $warnings];
     }
 
     /**
@@ -104,7 +121,7 @@ class get_application_mode extends external_api {
     public static function execute_parameters() {
         return new external_function_parameters(
             [
-                'userid' => new external_value(PARAM_INT, 'id of the user', VALUE_REQUIRED),
+                'userid' => new external_value(PARAM_INT, 'id of the user (optional parameter)', VALUE_DEFAULT, 0),
             ]
         );
     }

@@ -20,6 +20,8 @@ global $CFG;
 require_once($CFG->dirroot . '/webservice/tests/helpers.php');
 
 use context_module;
+use core_user;
+use core_user\fields;
 use external_api;
 use externallib_advanced_testcase;
 use mod_competvet\competvet;
@@ -37,7 +39,12 @@ class get_application_mode_test extends externallib_advanced_testcase {
      */
     protected $users = [];
 
-    public static function enrolment_data_provider() {
+    /**
+     * Data provider for roles tests.
+     *
+     * @return array[]
+     */
+    public static function enrolment_data_provider(): array {
         return [
             'student in course' => [
                 'definition' => [
@@ -141,8 +148,8 @@ class get_application_mode_test extends externallib_advanced_testcase {
      */
     public function test_user_type_not_exist_test() {
         $this->setAdminUser();
-        $this->expectExceptionMessageMatches('/core_user\/invaliduserid/');
-        $this->get_application_mode(9999);
+        $result = $this->get_application_mode(9999);
+        $this->assertEquals('invaliduserid', $result['warnings'][0]['warningcode']);
     }
 
     /**
@@ -159,14 +166,33 @@ class get_application_mode_test extends externallib_advanced_testcase {
     /**
      * Test with different roles in courses
      *
+     * @param array $definition
+     * @param string $expected
      * @covers       \local_competvet\external\user_type::execute
      * @dataProvider enrolment_data_provider
      */
-    public function test_type_with_enrolments($definition, $expected) {
+    public function test_type_with_enrolments_as_admin(array $definition, string $expected) {
         $this->setAdminUser();
         $userid = $this->setup_course_and_user_from_data($definition);
         $this->assertEquals($expected, $this->get_application_mode($userid)['type']);
     }
+
+
+    /**
+     * Test with different roles in courses
+     *
+     * @param array $definition
+     * @param string $expected
+     * @covers       \local_competvet\external\user_type::execute
+     * @dataProvider enrolment_data_provider
+     */
+    public function test_type_with_current_user(array $definition, string $expected) {
+        $userid = $this->setup_course_and_user_from_data($definition, $expected);
+        $user = core_user::get_user($userid);
+        $this->setUser($user);
+        $this->assertEquals($expected, $this->get_application_mode()['type']);
+    }
+
 
     /**
      * Setup courses and enrolment according to defintion.

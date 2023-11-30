@@ -140,4 +140,5 @@ if (!empty($user)) {
             $returnedvalue->errorcode = 'unknownerror';
     }
 }
+$returnedvalue->userid = $USER->id;
 echo json_encode($returnedvalue);

@@ -31,14 +31,6 @@ require_once($CFG->libdir . '/externallib.php');
  */
 class idplist_test extends advanced_testcase {
     /**
-     * As we have a test that does write into the DB, we need to setup and tear down each time
-     */
-    public function setUp(): void {
-        parent::setUp();
-        $this->resetAfterTest();
-    }
-
-    /**
      * Test an API function
      *
      * @covers \local_competvet\external\idplist
