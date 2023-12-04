@@ -126,7 +126,7 @@ The way it is called:
 
 The typical answer is:
 
-```json
+```json lines
 {
   "userid":3,
   "fullname":"LNAME FNAME",
@@ -136,6 +136,94 @@ The typical answer is:
   "userpictureurl":"http:\/\/SITEURL\/theme\/image.php\/boost\/core\/1699374164\/u\/f1"
 }
 ```
+### Get the situation for current user: local_competvet_get_my_situations
+
+This api callback is used to get the list of situations for the current user. It is used by the mobile application to get the list of situations
+for the current user.
+
+```bash
+ curl https://$SITEDOMAIN/webservice/rest/server.php \
+  -d "wstoken=$TOKEN" \
+  -d 'wsfunction=local_competvet_get_my_situations' \
+  -d 'moodlewsrestformat=json' -k
+```
+
+#### Sample:
+
+```json lines
+[
+    {
+        "id": 5,
+        "shortname": "ANE-2",
+        "name": "UC0514 Anesth\u00e9sie 2",
+        "intro": "<div class=\"text_to_html\">Test competvet 3</div>",
+        "evalnum": 1,
+        "autoevalnum": 1,
+        "roles": "[\"student\"]",
+        "tags": "[\"y:3\"]",
+        "plannings": [
+            {
+                "id": 56,
+                "startdate": 1704693600,
+                "enddate": 1705298400,
+                "groupname": "Group 4",
+                "groupid": 22,
+                "session": "2023"
+            },
+            {
+                "id": 57,
+                "startdate": 1705298400,
+                "enddate": 1705903200,
+                "groupname": "Group 4",
+                "groupid": 22,
+                "session": "2023"
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "shortname": "MSP-1",
+        "name": "UC0512 Cardio/Ophtalmo 1",
+        "intro": "<div class=\"text_to_html\">Test competvet 2</div>",
+        "evalnum": 1,
+        "autoevalnum": 1,
+        "roles": "[\"student\"]",
+        "tags": "[\"y:2\"]",
+        "plannings": [
+            {
+                "id": 44,
+                "startdate": 1711951200,
+                "enddate": 1712556000,
+                "groupname": "Group 4",
+                "groupid": 22,
+                "session": "2023"
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "shortname": "REP-0",
+        "name": "UC0513 Repro 0",
+        "intro": "<div class=\"text_to_html\">Test competvet 1</div>",
+        "evalnum": 1,
+        "autoevalnum": 1,
+        "roles": "[\"student\"]",
+        "tags": "[\"y:1\"]",
+        "plannings": [
+            {
+                "id": 6,
+                "startdate": 1703484000,
+                "enddate": 1704088800,
+                "groupname": "Group 4",
+                "groupid": 22,
+                "session": "2023"
+            },
+        ]
+    }
+]
+
+```
+
 
 ## License ##
 
