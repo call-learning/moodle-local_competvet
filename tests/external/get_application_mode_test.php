@@ -21,10 +21,10 @@ require_once($CFG->dirroot . '/webservice/tests/helpers.php');
 
 use context_module;
 use core_user;
-use core_user\fields;
 use external_api;
 use externallib_advanced_testcase;
 use mod_competvet\competvet;
+use mod_competvet\local\persistent\planning;
 
 /**
  * Application mode test
@@ -177,23 +177,6 @@ class get_application_mode_test extends externallib_advanced_testcase {
         $this->assertEquals($expected, $this->get_application_mode($userid)['type']);
     }
 
-
-    /**
-     * Test with different roles in courses
-     *
-     * @param array $definition
-     * @param string $expected
-     * @covers       \local_competvet\external\user_type::execute
-     * @dataProvider enrolment_data_provider
-     */
-    public function test_type_with_current_user(array $definition, string $expected) {
-        $userid = $this->setup_course_and_user_from_data($definition, $expected);
-        $user = core_user::get_user($userid);
-        $this->setUser($user);
-        $this->assertEquals($expected, $this->get_application_mode()['type']);
-    }
-
-
     /**
      * Setup courses and enrolment according to defintion.
      *
@@ -209,6 +192,9 @@ class get_application_mode_test extends externallib_advanced_testcase {
             foreach ($data['roles'] as $rolename) {
                 $generator->enrol_user($user->id, $course->id, $rolename);
             }
+            $group = $generator->create_group(['courseid' => $course->id]);
+            $generator->create_group_member(['groupid' => $group->id, 'userid' => $user->id]);
+
             foreach ($data['activities'] as $situationname => $roleoverride) {
                 $module = $generator->create_module('competvet', ['course' => $course->id, 'shortname' => $situationname]);
                 if (!empty($roleoverride)) {
@@ -216,8 +202,33 @@ class get_application_mode_test extends externallib_advanced_testcase {
                     [$course, $cm] = get_course_and_cm_from_instance($module->id, competvet::MODULE_NAME);
                     role_assign($roleid, $user->id, context_module::instance($cm->id));
                 }
+                $situation = competvet::get_from_instance_id($module->id)->get_situation();
+                // Create at least one planning for students if not test will fail as student will have no role.
+                $planning = new planning(0, (object) [
+                    'startdate' => time(),
+                    'enddate' => time() * 24 * 3600,
+                    'groupid' => $group->id,
+                    'session' => 'session',
+                    'situationid' => $situation->get('id'),
+                ]);
+                $planning->create();
             }
         }
         return $user->id;
+    }
+
+    /**
+     * Test with different roles in courses
+     *
+     * @param array $definition
+     * @param string $expected
+     * @covers       \local_competvet\external\user_type::execute
+     * @dataProvider enrolment_data_provider
+     */
+    public function test_type_with_current_user(array $definition, string $expected) {
+        $userid = $this->setup_course_and_user_from_data($definition, $expected);
+        $user = core_user::get_user($userid);
+        $this->setUser($user);
+        $this->assertEquals($expected, $this->get_application_mode()['type']);
     }
 }

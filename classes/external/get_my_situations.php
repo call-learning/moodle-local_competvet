@@ -44,21 +44,23 @@ class get_my_situations extends external_api {
                     'id' => new external_value(PARAM_INT, 'Situation ID (key used to retrieve further information)'),
                     'shortname' => new external_value(PARAM_TEXT, 'Situation short name or ID
                         (unique key for this situation when taken with session name)'),
-                    'session' => new external_value(PARAM_ALPHANUMEXT, 'Session name (unused now but might be later)'),
                     'name' => new external_value(PARAM_TEXT, 'Situation descriptive name'),
-                    'description' => new external_value(PARAM_RAW, 'Situation full description'),
+                    'intro' => new external_value(PARAM_RAW, 'Situation full description'),
                     'evalnum' => new external_value(PARAM_INT, 'Required evaluation count'),
                     'autoevalnum' => new external_value(PARAM_INT, 'Required auto-evaluation count'),
                     'roles' => new external_value(PARAM_RAW, 'User roles in this situation
-                            (student, observer, assessor) in a JSON array'),
+                            (student, observer, assessor) in a JSON array, with the highest role first'),
+                    'tags' => new external_value(PARAM_RAW, 'User roles in this situation
+                            (student, observer, assessor) in a JSON array, with the highest role first'),
                     'plannings' => new external_multiple_structure(
                         new external_single_structure([
-                                'id' => new external_value(PARAM_INT, 'Plan ID'),
-                                'startdate' => new external_value(PARAM_INT, 'Plan start date'),
-                                'enddate' => new external_value(PARAM_INT, 'Plan end date'),
-                                'groupname' => new external_value(PARAM_TEXT, 'Group name'),
-                                'groupid' => new external_value(PARAM_INT, 'Group id (Internal ID)'),
-                            ])
+                            'id' => new external_value(PARAM_INT, 'Plan ID'),
+                            'startdate' => new external_value(PARAM_INT, 'Plan start date'),
+                            'enddate' => new external_value(PARAM_INT, 'Plan end date'),
+                            'groupname' => new external_value(PARAM_TEXT, 'Group name'),
+                            'groupid' => new external_value(PARAM_INT, 'Group id (Internal ID)'),
+                            'session' => new external_value(PARAM_ALPHANUMEXT, 'Session name (unused now but might be later)'),
+                        ])
                     ),
                 ]
             )

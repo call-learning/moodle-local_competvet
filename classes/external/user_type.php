@@ -47,9 +47,9 @@ class user_type extends external_api {
      */
     public static function execute_returns() {
         return new external_single_structure(
-                array(
+                [
                         'type' => new external_value(PARAM_TEXT, 'the type of user'),
-                )
+                ]
         );
     }
 
@@ -58,11 +58,11 @@ class user_type extends external_api {
      * @param int $userid
      */
     public static function execute($userid) {
-        self::validate_parameters(self::execute_parameters(), array('userid' => $userid));
+        self::validate_parameters(self::execute_parameters(), ['userid' => $userid]);
         self::validate_context(context_system::instance());
         $roleid = roles::get_user_role_id($userid);
         return (object) ['type' =>
-                role_entity::get_type_shortname($roleid)
+                role_entity::get_type_shortname($roleid),
         ];
     }
 
@@ -73,9 +73,9 @@ class user_type extends external_api {
      */
     public static function execute_parameters() {
         return new external_function_parameters(
-                array(
-                        'userid' => new external_value(PARAM_INT, 'id of the user', null, NULL_NOT_ALLOWED)
-                )
+                [
+                        'userid' => new external_value(PARAM_INT, 'id of the user', null, NULL_NOT_ALLOWED),
+                ]
         );
     }
 }

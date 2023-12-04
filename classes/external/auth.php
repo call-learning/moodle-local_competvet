@@ -47,12 +47,12 @@ class auth extends external_api {
     public static function idp_list_returns() {
         return new external_multiple_structure(
                 new external_single_structure(
-                        array(
+                        [
                                 'url' => new external_value(PARAM_RAW, 'URL to launch IDP connexion',
                                         VALUE_OPTIONAL),
                                 'name' => new external_value(PARAM_TEXT, 'IDP fullname'),
                                 'iconurl' => new external_value(PARAM_RAW, 'IDP icon url', VALUE_OPTIONAL),
-                        )
+                        ]
                 )
         );
     }
@@ -68,7 +68,7 @@ class auth extends external_api {
             $currentidplist = $authplugin->loginpage_idp_list(external_utils::get_application_launch_url([]));
             foreach ($currentidplist as $index => $idp) {
                 if ($auth == 'cas') {
-                    $idp['url'] = (new moodle_url('/local/cveteval/login/cas-login.php', array('authCAS' => 'CAS')))->out();
+                    $idp['url'] = (new moodle_url('/local/cveteval/login/cas-login.php', ['authCAS' => 'CAS']))->out();
                 } else {
                     $idp['url'] = $idp['url'] ? $idp['url']->out() : '';
                 }

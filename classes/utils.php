@@ -211,7 +211,7 @@ class utils {
         if ($service->restrictedusers) {
             $authoriseduser = $DB->get_record(
                 'external_services_users',
-                array('externalserviceid' => $service->id, 'userid' => $USER->id)
+                ['externalserviceid' => $service->id, 'userid' => $USER->id]
             );
 
             if (empty($authoriseduser)) {
@@ -228,11 +228,11 @@ class utils {
         }
 
         // Check if a token has already been created for this user and this service.
-        $conditions = array(
+        $conditions = [
             'userid' => $USER->id,
             'externalserviceid' => $service->id,
             'tokentype' => EXTERNAL_TOKEN_PERMANENT,
-        );
+        ];
         $tokens = $DB->get_records('external_tokens', $conditions, 'timecreated ASC');
 
         // A bit of sanity checks.
@@ -244,14 +244,14 @@ class utils {
             if (!empty($token->sid)) {
                 if (!manager::session_exists($token->sid)) {
                     // This token will never be valid anymore, delete it.
-                    $DB->delete_records('external_tokens', array('sid' => $token->sid));
+                    $DB->delete_records('external_tokens', ['sid' => $token->sid]);
                     $unsettoken = true;
                 }
             }
 
             // Remove token is not valid anymore.
             if (!empty($token->validuntil) && $token->validuntil < time()) {
-                $DB->delete_records('external_tokens', array('token' => $token->token, 'tokentype' => EXTERNAL_TOKEN_PERMANENT));
+                $DB->delete_records('external_tokens', ['token' => $token->token, 'tokentype' => EXTERNAL_TOKEN_PERMANENT]);
                 $unsettoken = true;
             }
 
@@ -295,13 +295,13 @@ class utils {
 
                 $eventtoken = clone $token;
                 $eventtoken->privatetoken = null;
-                $params = array(
+                $params = [
                     'objectid' => $eventtoken->id,
                     'relateduserid' => $USER->id,
-                    'other' => array(
+                    'other' => [
                         'auto' => true,
-                    ),
-                );
+                    ],
+                ];
                 $event = webservice_token_created::create($params);
                 $event->add_record_snapshot('external_tokens', $eventtoken);
                 $event->trigger();

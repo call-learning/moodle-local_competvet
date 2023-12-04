@@ -82,7 +82,7 @@ class get_application_mode extends external_api {
                 'item' => 'userid',
                 'itemid' => $userid,
                 'warningcode' => 'invaliduserid',
-                'message' => get_string('invaliduserid', 'error', $userid)
+                'message' => get_string('invaliduserid', 'error', $userid),
             ];
             return (object) ['type' => 'unknown', 'warnings' => $warnings];
         }
