@@ -70,7 +70,6 @@ $returnedvalue = new stdClass();
 
 $user = authenticate_user_login($username, $password, false, $reason);
 if (!empty($user)) {
-    require_once($CFG->dirroot . '/local/cveteval/lib.php');
     // Cannot authenticate unless maintenance access is granted.
     $hasmaintenanceaccess = has_capability('moodle/site:maintenanceaccess', $systemcontext, $user);
     if (!empty($CFG->maintenance_enabled) && !$hasmaintenanceaccess) {

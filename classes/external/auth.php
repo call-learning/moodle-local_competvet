@@ -68,7 +68,7 @@ class auth extends external_api {
             $currentidplist = $authplugin->loginpage_idp_list(external_utils::get_application_launch_url([]));
             foreach ($currentidplist as $index => $idp) {
                 if ($auth == 'cas') {
-                    $idp['url'] = (new moodle_url('/local/cveteval/login/cas-login.php', ['authCAS' => 'CAS']))->out();
+                    $idp['url'] = (new moodle_url('/local/competveteval/webservices/cas-login.php', ['authCAS' => 'CAS']))->out();
                 } else {
                     $idp['url'] = $idp['url'] ? $idp['url']->out() : '';
                 }
