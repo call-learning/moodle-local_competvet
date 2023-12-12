@@ -24,7 +24,6 @@ use external_multiple_structure;
 use external_single_structure;
 use external_value;
 use local_competvet\utils;
-use local_cveteval\local\external\external_utils;
 use moodle_url;
 
 /**

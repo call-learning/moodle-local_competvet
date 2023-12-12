@@ -63,11 +63,10 @@ class get_application_mode extends external_api {
      *
      * @param int|null $userid
      * @return \stdClass
-     * @throws \moodle_exception
      */
-    public static function execute(int $userid = 0): \stdClass {
+    public static function execute(?int $userid = null): \stdClass {
         global $USER;
-        self::validate_parameters(self::execute_parameters(), ['userid' => $userid]);
+        ['userid' => $userid] = self::validate_parameters(self::execute_parameters(), ['userid' => $userid]);
         self::validate_context(context_system::instance());
         $user = null;
         if (!$userid) {

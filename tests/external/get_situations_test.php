@@ -30,7 +30,7 @@ use test_data_definition;
  * @copyright   2023 CALL Learning <contact@call-learning.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class get_my_situations_test extends externallib_advanced_testcase {
+class get_situations_test extends externallib_advanced_testcase {
     use test_data_definition;
     /**
      * @var $users array
@@ -56,7 +56,7 @@ class get_my_situations_test extends externallib_advanced_testcase {
      */
     public function test_user_not_logged_in() {
         $this->expectExceptionMessageMatches('/You are not logged in/');
-        $this->get_my_situations();
+        $this->get_situations();
     }
 
     /**
@@ -65,9 +65,9 @@ class get_my_situations_test extends externallib_advanced_testcase {
      * @param mixed ...$params
      * @return mixed
      */
-    protected function get_my_situations(...$params) {
-        $returnvalue = get_my_situations::execute(...$params);
-        return external_api::clean_returnvalue(get_my_situations::execute_returns(), $returnvalue);
+    protected function get_situations(...$params) {
+        $returnvalue = get_situations::execute(...$params);
+        return external_api::clean_returnvalue(get_situations::execute_returns(), $returnvalue);
     }
 
     /**
@@ -79,9 +79,9 @@ class get_my_situations_test extends externallib_advanced_testcase {
      * @covers \local_competvet\external\user_profile
      * @dataProvider all_for_user_provider_with_planning
      */
-    public function test_get_my_situations(string $username, array $expected) {
+    public function test_get_situations(string $username, array $expected) {
         $this->setUser(\core_user::get_user_by_username($username));
-        $situations = $this->get_my_situations();
+        $situations = $this->get_situations();
         test_helpers::remove_elements_for_assertions($situations, ['id', 'intro']);
         $this->assertEquals($expected, $situations);
     }
@@ -95,7 +95,7 @@ class get_my_situations_test extends externallib_advanced_testcase {
     public static function all_for_user_provider_with_planning(): array {
         global $CFG;
         $results = [];
-        include_once($CFG->dirroot . '/local/competvet/tests/fixtures/get_my_situations_test_results.php');
+        include_once($CFG->dirroot . '/local/competvet/tests/fixtures/get_situations_test_results.php');
         return [
             'student1 situations' => [
                 'student1',

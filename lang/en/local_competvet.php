@@ -27,3 +27,12 @@ $string['competvet:mobileaccess'] = 'Access CompetVet Mobile Service';
 $string['competvet:mobileaccess_help'] = 'Access CompetVet Mobile Service';
 $string['invalidroleforuser'] = 'Invalid role for user {$a->userid}, check with you administrator to see if the roles
  assigned in different situation are consistent (for example it is not possible to be both observer and student)';
+$string['mobileview:situations']  = 'Situations';
+$string['mobileview:planningdates']  = '{$a->startdate} to {$a->enddate}';
+$string['mobileview:observer:groupinfo']  = '{$a->groupname} ({$a->nbstudents} students) '; // We changed here and only
+// display students number in this group.
+$string['mobileview:usertype:observers']  = 'Observers';
+$string['mobileview:usertype:students']  = 'Students ({$a})';
+$string['mobileview:eval']  = 'Eval';
+$string['mobileview:certif']  = 'Certif';
+$string['mobileview:list']  = 'List';

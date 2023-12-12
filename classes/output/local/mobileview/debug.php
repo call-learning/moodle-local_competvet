@@ -13,23 +13,39 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+namespace local_competvet\output\local\mobileview;
+
+use renderer_base;
 
 /**
- * Version details.
+ * Renderer class.
  *
  * @package   local_competvet
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+class debug implements \renderable, \templatable {
+    public function __construct(
+        protected string $apifunction,
+        protected ?array $params,
+        protected mixed $results,
+        protected ?float $duration
+    ) {
+    }
 
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->version = 2023120403;      // The current module version (Date: YYYYMMDDXX).
-$plugin->requires = 2020061501;      // Requires this Moodle version (3.9.1).
-$plugin->maturity = MATURITY_RC;
-$plugin->release = '0.2.0'; // New API.
-$plugin->component = 'local_competvet';// Full name of the plugin (used for diagnostics).
-$plugin->cron = 0;
-$plugin->dependencies = [
-    // 'mod_competvet' => ANY_VERSION,
-];
+    /**
+     * Exports the data for a template.
+     *
+     * @param renderer_base $output The renderer instance.
+     *
+     * @return string[] An array containing the exported data for the template.
+     */
+    public function export_for_template(renderer_base $output) {
+        return [
+            'apifunction' => $this->apifunction,
+            'params' => json_encode($this->params),
+            'results' => json_encode($this->results, JSON_PRETTY_PRINT),
+            'duration' => $this->duration,
+        ];
+    }
+}

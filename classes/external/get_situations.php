@@ -18,11 +18,14 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->libdir . '/externallib.php');
 
+use context_system;
+use context_user;
 use external_api;
 use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
 use external_value;
+use mod_competvet\local\api\situations;
 
 /**
  * Get current user's situation list.
@@ -31,7 +34,7 @@ use external_value;
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class get_my_situations extends external_api {
+class get_situations extends external_api {
     /**
      * Returns description of method parameters
      *
@@ -70,14 +73,20 @@ class get_my_situations extends external_api {
     /**
      * Return the list of situations the user is registered in
      *
+     * @param int|null $userid
+     * @param bool|null $nofutureplanning
      * @return array
      */
-    public static function execute(): array {
+    public static function execute(?int $userid = null, ?bool $nofutureplanning = false): array {
         global $USER;
-        self::validate_parameters(self::execute_parameters(), []);
-        self::validate_context(\context_system::instance());
-        $situationswithplanning = \mod_competvet\local\api\situations::get_all_situations_with_planning_for($USER->id);
-        return $situationswithplanning;
+        ['userid' => $userid, 'nofutureplanning' => $nofutureplanning] =
+            self::validate_parameters(self::execute_parameters(), ['userid' => $userid, 'nofutureplanning' => $nofutureplanning]);
+        self::validate_context(context_system::instance());
+        if (!$userid) {
+            $userid = $USER->id;
+        }
+        self::validate_context(context_user::instance($userid));
+        return situations::get_all_situations_with_planning_for($userid, $nofutureplanning);
     }
 
     /**
@@ -86,6 +95,12 @@ class get_my_situations extends external_api {
      * @return external_function_parameters
      */
     public static function execute_parameters() {
-        return new external_function_parameters([]);
+        return new external_function_parameters(
+            [
+                'userid' => new external_value(PARAM_INT, 'id of the user (optional parameter)', VALUE_DEFAULT, 0),
+                'nofutureplanning' => new external_value(PARAM_BOOL,
+                    'If true, do not show the future planning for this user/situations', VALUE_DEFAULT, false),
+            ]
+        );
     }
 }

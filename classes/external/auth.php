@@ -17,24 +17,25 @@
 /**
  * External services : user profile
  *
- * @package   local_cveteval
+ * @package   local_competvet
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_cveteval\local\external;
+namespace local_competvet\external;
 
 use external_api;
 use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
 use external_value;
+use local_competvet\utils;
 use moodle_url;
 
 /**
  * Auth management
  *
- * @package   local_cveteval
+ * @package   local_competvet
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -65,7 +66,7 @@ class auth extends external_api {
         $idplist = [];
         foreach ($authsenabled as $auth) {
             $authplugin = get_auth_plugin($auth);
-            $currentidplist = $authplugin->loginpage_idp_list(external_utils::get_application_launch_url([]));
+            $currentidplist = $authplugin->loginpage_idp_list(utils::get_application_launch_url([]));
             foreach ($currentidplist as $index => $idp) {
                 if ($auth == 'cas') {
                     $idp['url'] = (new moodle_url('/local/competveteval/webservices/cas-login.php', ['authCAS' => 'CAS']))->out();

@@ -19,7 +19,6 @@ global $CFG;
 require_once($CFG->libdir . '/externallib.php');
 
 use context_system;
-use context_user;
 use core_user;
 use external_api;
 use external_function_parameters;
@@ -29,13 +28,13 @@ use stdClass;
 use user_picture;
 
 /**
- * Get user profile
+ * Get user information
  *
  * @package   local_competvet
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class user_profile extends external_api {
+class user_info extends external_api {
     /**
      * Returns description of method parameters
      *
@@ -46,9 +45,6 @@ class user_profile extends external_api {
             [
                 'userid' => new external_value(PARAM_INT, 'ID type of user'),
                 'fullname' => new external_value(PARAM_TEXT, 'User fullname'),
-                'firstname' => new external_value(PARAM_TEXT, 'User firstname (can be ignored)'),
-                'lastname' => new external_value(PARAM_TEXT, 'User lastname (can be ignored)'),
-                'username' => new external_value(PARAM_RAW_TRIMMED, 'User internal username'),
                 'userpictureurl' => new external_value(PARAM_URL, 'User picture (avatar) URL', VALUE_OPTIONAL),
             ]
         );
@@ -61,7 +57,7 @@ class user_profile extends external_api {
      * @return stdClass
      */
     public static function execute(int $userid): stdClass {
-        global $USER, $PAGE;
+        global $PAGE;
         self::validate_parameters(self::execute_parameters(), ['userid' => $userid]);
         self::validate_context(context_system::instance());
         $user = null;
@@ -71,22 +67,13 @@ class user_profile extends external_api {
         if (!$user) {
             throw new \moodle_exception('invaliduserid', 'core_user', '', $userid);
         }
-        $context = context_user::instance($user->id);
-        $canseeadvanced = true;
-        if ($user->id != $USER->id && !has_capability('moodle/user:viewdetails', $context)) {
-            $canseeadvanced = false;
-        }
         $userpicture = new user_picture($user);
         $userpicture->includetoken = true;
         $userpicture->size = 1; // Size f1.
         return (object) [
             'userid' => intval($user->id),
             'fullname' => fullname($user),
-            'firstname' => $canseeadvanced ? $user->firstname : '',
-            'lastname' => $canseeadvanced ? $user->lastname : '',
-            'username' => $canseeadvanced ? $user->username : 'anonymous',
-            'userpictureurl' => $userpicture->get_url($PAGE)->out(false), // TODO check if we should not return the default
-            // picture in case the calling user is either not in the same context or not allowed to see the user.
+            'userpictureurl' => $userpicture->get_url($PAGE)->out(false),
         ];
     }
 

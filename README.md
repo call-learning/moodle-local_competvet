@@ -1,6 +1,6 @@
 Moodle Local CompetVet
 ==
-[![CI Tests (Testing)](https://github.com/call-learning/moodle-local_competvet/actions/workflows/ci.yml/badge.svg)](https://github.com/call-learning/moodle-local_cveteval/actions/workflows/ci.yml)
+[![CI Tests (Testing)](https://github.com/call-learning/moodle-local_competvet/actions/workflows/ci.yml/badge.svg)](https://github.com/call-learning/moodle-local_competvet/actions/workflows/ci.yml)
 
 
 Next iteration for CompetVetEval.
@@ -39,7 +39,7 @@ If set, this is what the result looks like:
       "error":false,
       "data":[
          {
-            "url":"http:\/\/SITEURL\/local\/cveteval\/login\/cas-login.php?authCAS=CAS",
+            "url":"http:\/\/SITEURL\/local\/competvet\/login\/cas-login.php?authCAS=CAS",
             "name":"CAS",
             "iconurl":""
          }
@@ -82,7 +82,7 @@ Best is probably to define the several bash variables:
 
 ```bash
 export TOKEN=<Your token>
-export SITEDOMAIN=<Your SITE DOMAIN>
+export SITEURL=<Your SITE BASE URL>
 export USERID=<Your user ID> (optional)
 ```
 ### Get the application mode: local_competvet_get_application mode
@@ -92,7 +92,7 @@ user logs in.
 If mode is "unknown", then the user is not allowed to use the application (an error message should be displayed to the user).
 
 ```bash
- curl https://$SITEDOMAIN/webservice/rest/server.php \
+ curl $SITEURL/webservice/rest/server.php \
   -d "wstoken=$TOKEN" \
   -d 'wsfunction=local_competvet_get_application_mode' \
   -d "userid=$USERID" \
@@ -102,7 +102,7 @@ If mode is "unknown", then the user is not allowed to use the application (an er
 You can omit the userid if you are just looking for the current logged in user:
 
 ```bash
- curl https://$SITEDOMAIN/webservice/rest/server.php \
+ curl $SITEURL/webservice/rest/server.php \
   -d "wstoken=$TOKEN" \
   -d 'wsfunction=local_competvet_get_application_mode' \
   -d 'moodlewsrestformat=json' -k
@@ -117,7 +117,7 @@ Note that we add the moodlerestformat=json so the anwer is in json format.
 
 The way it is called:
 ```bash
- curl https://$SITEDOMAIN/webservice/rest/server.php \
+ curl $SITEURL/webservice/rest/server.php \
   -d "wstoken=$TOKEN" \
   -d 'wsfunction=local_competvet_get_user_profile' \
   -d "userid=$USERID" \
@@ -136,15 +136,15 @@ The typical answer is:
   "userpictureurl":"http:\/\/SITEURL\/theme\/image.php\/boost\/core\/1699374164\/u\/f1"
 }
 ```
-### Get the situation for current user: local_competvet_get_my_situations
+### Get the situation for current user: local_competvet_get_situations
 
 This api callback is used to get the list of situations for the current user. It is used by the mobile application to get the list of situations
 for the current user.
 
 ```bash
- curl https://$SITEDOMAIN/webservice/rest/server.php \
+ curl $SITEURL/webservice/rest/server.php \
   -d "wstoken=$TOKEN" \
-  -d 'wsfunction=local_competvet_get_my_situations' \
+  -d 'wsfunction=local_competvet_get_situations' \
   -d 'moodlewsrestformat=json' -k
 ```
 
@@ -223,7 +223,52 @@ for the current user.
 ]
 
 ```
+### Get the plannings information local_competvet_get_plannings_info
 
+This api callback relies on values retrieved by local_competvet_get_situations (especially the ID of the planning). 
+The values returned by this API are the statistics regarding the plannings and will help to sort the planning by categories (like current, late...).
+This will allow to display the plannings in the mobile application by categories.
+
+Normally you provide all the planning id from a given situation (retrieved by local_competvet_get_situations) and you get the statistics for them. This
+can be used to retrieve information for one planning at a time.
+
+
+```bash
+ curl $SITEURL/webservice/rest/server.php \
+  -d "wstoken=$TOKEN" \
+  -d 'wsfunction=local_competvet_get_plannings_info' \
+  -d "plannings=[5143,5158]" \
+  -d 'moodlewsrestformat=json' -k
+```
+The result (here for two plannings)
+```json
+[
+  {
+    "id": 5143,
+    "category": 10,
+    "categorytext": "Late",
+    "groupstats": {
+      "groupid": 500,
+      "nbstudents": 20
+    }
+  },
+  {
+    "id": 5158,
+    "category": 10,
+    "categorytext": "Late",
+    "groupstats": {
+      "groupid": 500,
+      "nbstudents": 20
+    }
+  }
+]
+```
+
+### Get the plannings information local_competvet_get_plannings_info
+
+This api callback relies on values retrieved by local_competvet_get_situations (especially the ID of the planning).
+The values returned by this API are the statistics regarding the plannings and will help to sort the planning by categories (like current, late...).
+This will allow to display the plannings in the mobile application by categories.
 
 ## License ##
 
