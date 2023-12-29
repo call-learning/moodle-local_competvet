@@ -50,8 +50,8 @@ $userid = $observation->get('studentid');
 $PAGE->set_button(
     $OUTPUT->single_button(
         new moodle_url(
-            '/local/competvet/mobileview/observer/userevaluations.php',
-            ['userid' => $userid, 'planningid' => $planning->get('id'), 'foruserid' => $observation->get('studentid')]
+            '/local/competvet/mobileview/observer/evaluations.php',
+            ['studentid' => $userid, 'planningid' => $planning->get('id'), 'foruserid' => $observation->get('studentid')]
         ),
         get_string('back'),
         'get'

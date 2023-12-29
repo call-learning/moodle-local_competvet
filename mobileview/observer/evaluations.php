@@ -31,14 +31,14 @@ global $PAGE, $DB, $OUTPUT, $USER;
 
 require_login();
 $planningid = required_param('planningid', PARAM_INT);
-$userid = required_param('userid', PARAM_INT);
+$studentid = required_param('studentid', PARAM_INT);
 $asuserid = optional_param('asuserid', $USER->id, PARAM_INT);
 $currenttab = optional_param('currenttab', 'eval', PARAM_ALPHA);
 
 $context = context_system::instance();
 $PAGE->set_context($context);
 $currenturl = new moodle_url('/local/competvet/mobileview/observer/evaluations.php',
-    ['asuserid' => $asuserid, 'planningid' => $planningid, 'userid' => $userid]);
+    ['asuserid' => $asuserid, 'planningid' => $planningid, 'studentid' => $studentid]);
 $PAGE->set_url($currenturl);
 
 $planning = planning::get_record(['id' => $planningid]);
@@ -56,11 +56,11 @@ $PAGE->set_button(
 $debugs = [];
 ['results' => $evaluations, 'debug' => $debugs[]] =
     mobileview_helper::call_api(\local_competvet\external\get_user_evaluations::class,
-        ['planningid' => $planningid, 'userid' => $userid]);
+        ['planningid' => $planningid, 'userid' => $studentid]);
 
 ['results' => $studentinfo, 'debug' => $debugs[]] =
     mobileview_helper::call_api(\local_competvet\external\get_planning_infos_students::class,
-        ['planningid' => $planningid, 'userid' => $userid]);
+        ['planningid' => $planningid, 'userid' => $studentid]);
 
 $userplanninginfo = $studentinfo[0]['info'];
 if (!empty($userplanninginfo)) {
@@ -80,7 +80,7 @@ $dates = get_string('mobileview:planningdates', 'local_competvet', [
     'enddate' => planning::get_planning_date_string($planning->get('enddate')),
 ]);
 
-$user = core_user::get_user($userid);
+$user = core_user::get_user($studentid);
 echo $OUTPUT->heading(format_text($competvetname, FORMAT_HTML));
 echo $OUTPUT->user_picture($user, ['size' => 100, 'class' => 'd-inline-block']);
 echo $OUTPUT->heading(format_text($dates, FORMAT_HTML), 3, 'text-right');
