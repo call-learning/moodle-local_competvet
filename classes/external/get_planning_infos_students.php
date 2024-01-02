@@ -24,7 +24,6 @@ use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
 use external_value;
-use mod_competvet\local\api\observations;
 use mod_competvet\local\api\plannings;
 
 /**
@@ -71,9 +70,9 @@ class get_planning_infos_students extends external_api {
             self::validate_parameters(self::execute_parameters(), ['planningid' => $planningid, 'userid' => $userid]);
         self::validate_context(context_system::instance());
         if (!empty($userid)) {
-            $planninginfos = observations::get_planning_info_for_student($planningid, $userid);
+            $planninginfos = plannings::get_planning_info_for_student($planningid, $userid);
         } else {
-            $planninginfos = observations::get_planning_info_for_students($planningid);
+            $planninginfos = plannings::get_planning_info_for_students($planningid);
         }
         return array_values($planninginfos);
     }

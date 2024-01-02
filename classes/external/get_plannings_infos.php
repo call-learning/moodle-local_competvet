@@ -47,6 +47,7 @@ class get_plannings_infos extends external_api {
                     'id' => new external_value(PARAM_INT, 'Planning ID'),
                     'category' => new external_value(PARAM_INT, 'Planning category (current, future, past)'),
                     'categorytext' => new external_value(PARAM_TEXT, 'Planning category (current, future, past)'),
+                    'info' => get_planning_info::execute_returns(),
                     'groupstats' => new external_single_structure([
                         'groupid' => new external_value(PARAM_INT, 'Group ID'),
                         'nbstudents' => new external_value(PARAM_INT, 'Nb of students in this group'),

@@ -24,16 +24,16 @@ use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
 use external_value;
-use mod_competvet\local\api\situations;
+use mod_competvet\local\api\observations;
 
 /**
- * Get observation info for the eval component and a student id.
+ * Get observations for the eval component and for a given student/user
  *
  * @package   local_competvet
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class get_situation_criteria extends external_api {
+class get_user_eval_observations extends external_api {
     /**
      * Returns description of method parameters
      *
@@ -41,31 +41,33 @@ class get_situation_criteria extends external_api {
      */
     public static function execute_returns() {
         return new external_multiple_structure(
-                        new external_single_structure(
-                            [
-                                'id' => new external_value(PARAM_INT, 'Criterion ID'),
-                                'label' => new external_value(PARAM_TEXT, 'Criterion label'),
-                                'idnumber' => new external_value(PARAM_TEXT, 'Criterion idnumber'),
-                                'sort' => new external_value(PARAM_INT, 'Criterion sort'),
-                                'parentid' => new external_value(PARAM_INT, 'Criterion parentid'),
-                            ]
-                        )
+            new external_single_structure(
+                [
+                    'id' => new external_value(PARAM_INT, 'Observation ID'),
+                    'studentid' => new external_value(PARAM_INT, 'Student ID'),
+                    'observerid' => new external_value(PARAM_INT, 'Observer ID'),
+                    'status' => new external_value(PARAM_INT, 'Status ID'),
+                    'time' => new external_value(PARAM_INT, 'Time of the evaluation'),
+                    'category' => new external_value(PARAM_INT, 'Category of the evaluation (autoeval = 1, eval = 2)'),
+                    'categorytext' => new external_value(PARAM_TEXT, 'Category textual information'),
+                ]
+            )
         );
     }
 
     /**
-     * Return the list of criteria for this situation.
+     * Return the list of situations the user is registered in
      *
-     * @param int $situationid
+     * @param int $planningid
+     * @param int $userid
      * @return array
      */
-    public static function execute(int $situationid): array {
-        global $USER;
-        ['situationid' => $situationid] =
-            self::validate_parameters(self::execute_parameters(), ['situationid' => $situationid]);
+    public static function execute(int $planningid, int $userid): array {
+        ['planningid' => $planningid, 'userid' => $userid] =
+            self::validate_parameters(self::execute_parameters(), ['planningid' => $planningid, 'userid' => $userid]);
         self::validate_context(context_system::instance());
-        // Validate access to the situation.
-        return situations::get_all_criteria($situationid);
+        return observations::get_user_observations($planningid, $userid);
+
     }
 
     /**
@@ -76,8 +78,10 @@ class get_situation_criteria extends external_api {
     public static function execute_parameters() {
         return new external_function_parameters(
             [
-                'situationid' => new external_value(PARAM_INT, 'id of the situation'),
+                'planningid' => new external_value(PARAM_INT, 'id of the planning'),
+                'userid' => new external_value(PARAM_INT, 'user id for the planning to check'),
             ]
         );
     }
+
 }

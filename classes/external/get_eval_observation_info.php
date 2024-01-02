@@ -37,46 +37,45 @@ class get_eval_observation_info extends external_api {
     /**
      * Returns description of method parameters
      *
-     * @return external_multiple_structure
+     * @return external_single_structure
      */
-    public static function execute_returns() {
-        return new external_multiple_structure(
-            new external_single_structure(
-                [
-                    'id' => new external_value(PARAM_INT, 'Observation ID'),
-                    'category' => new external_value(PARAM_INT, 'Observation category (AUTOEVAL or EVAL'),
-                    'comments' => new external_multiple_structure(
-                        new external_single_structure(
-                            [
-                                'id' => new external_value(PARAM_INT, 'Comment ID'),
-                                'type' => new external_value(PARAM_INT, 'Comment type (autoeval, eval, certif...)'),
-                                'usercreated' => new external_value(PARAM_INT, 'User ID'),
-                                'comment' => new external_value(PARAM_TEXT, 'Comment text'),
-                                'timecreated' => new external_value(PARAM_INT, 'Comment creation time'),
-                                'timemodified' => new external_value(PARAM_INT, 'Comment last modification time'),
-                            ]
-                        )
-                    ),
-                    'criterialevels' => new external_multiple_structure(
-                        new external_single_structure(
-                            [
-                                'criterionid' => new external_value(PARAM_INT, 'Criterion ID'),
-                                'level' => new external_value(PARAM_INT, 'Criterion level'),
-                            ]
-                        )
-                    ),
-                    'criteriacomments' => new external_multiple_structure(
-                        new external_single_structure(
-                            [
-                                'criterionid' => new external_value(PARAM_INT, 'Criterion ID'),
-                                'comment' => new external_value(PARAM_TEXT, 'Criterion comment'),
-                            ]
-                        )
+    public static function execute_returns(): external_single_structure {
+        return new external_single_structure(
+            [
+                'id' => new external_value(PARAM_INT, 'Observation ID'),
+                'category' => new external_value(PARAM_INT, 'Observation category (AUTOEVAL or EVAL'),
+                'comments' => new external_multiple_structure(
+                    new external_single_structure(
+                        [
+                            'id' => new external_value(PARAM_INT, 'Comment ID'),
+                            'type' => new external_value(PARAM_INT, 'Comment type (autoeval, eval, certif...)'),
+                            'usercreated' => new external_value(PARAM_INT, 'User ID'),
+                            'comment' => new external_value(PARAM_RAW, 'Comment text'),
+                            'timecreated' => new external_value(PARAM_INT, 'Comment creation time'),
+                            'timemodified' => new external_value(PARAM_INT, 'Comment last modification time'),
+                        ]
                     )
-                ]
-            )
+                ),
+                'criterialevels' => new external_multiple_structure(
+                    new external_single_structure(
+                        [
+                            'criterionid' => new external_value(PARAM_INT, 'Criterion ID'),
+                            'level' => new external_value(PARAM_INT, 'Criterion level'),
+                        ]
+                    )
+                ),
+                'criteriacomments' => new external_multiple_structure(
+                    new external_single_structure(
+                        [
+                            'criterionid' => new external_value(PARAM_INT, 'Criterion ID'),
+                            'comment' => new external_value(PARAM_RAW, 'Criterion comment'),
+                        ]
+                    )
+                )
+            ]
         );
     }
+
     /**
      * Return the list of criteria for this situation.
      *

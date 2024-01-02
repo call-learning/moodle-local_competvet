@@ -37,10 +37,10 @@ class get_users_for_planning extends external_api {
     /**
      * Returns description of method parameters
      *
-     * @return external_multiple_structure
+     * @return external_single_structure
      */
-    public static function execute_returns() {
-        return new external_multiple_structure(
+    public static function execute_returns(): external_single_structure {
+        return
             new external_single_structure(
                 [
                     'students' => new external_multiple_structure(
@@ -61,8 +61,7 @@ class get_users_for_planning extends external_api {
                         ])
                     ),
                 ]
-            )
-        );
+            );
     }
 
     /**

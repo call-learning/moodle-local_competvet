@@ -19,53 +19,53 @@ global $CFG;
 require_once($CFG->libdir . '/externallib.php');
 
 use context_system;
+use context_user;
 use external_api;
 use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
 use external_value;
+use mod_competvet\local\api\plannings;
 use mod_competvet\local\api\situations;
 
 /**
- * Get observation info for the eval component and a student id.
+ * Get information for the given planning
  *
  * @package   local_competvet
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class get_situation_criteria extends external_api {
+class get_planning_info extends external_api {
     /**
      * Returns description of method parameters
      *
-     * @return external_multiple_structure
+     * @return external_single_structure
      */
     public static function execute_returns() {
-        return new external_multiple_structure(
-                        new external_single_structure(
-                            [
-                                'id' => new external_value(PARAM_INT, 'Criterion ID'),
-                                'label' => new external_value(PARAM_TEXT, 'Criterion label'),
-                                'idnumber' => new external_value(PARAM_TEXT, 'Criterion idnumber'),
-                                'sort' => new external_value(PARAM_INT, 'Criterion sort'),
-                                'parentid' => new external_value(PARAM_INT, 'Criterion parentid'),
-                            ]
-                        )
+        return new external_single_structure(
+            [
+                'id' => new external_value(PARAM_INT, 'Plan ID'),
+                'startdate' => new external_value(PARAM_INT, 'Plan start date'),
+                'enddate' => new external_value(PARAM_INT, 'Plan end date'),
+                'groupname' => new external_value(PARAM_TEXT, 'Group name'),
+                'groupid' => new external_value(PARAM_INT, 'Group id (Internal ID)'),
+                'session' => new external_value(PARAM_ALPHANUMEXT, 'Session name (unused now but might be later)'),
+                'situationid' => new external_value(PARAM_INT, 'Situation ID'),
+            ]
         );
     }
 
     /**
-     * Return the list of criteria for this situation.
+     * Return the list of situations the user is registered in
      *
-     * @param int $situationid
+     * @param int $planningid
      * @return array
      */
-    public static function execute(int $situationid): array {
-        global $USER;
-        ['situationid' => $situationid] =
-            self::validate_parameters(self::execute_parameters(), ['situationid' => $situationid]);
+    public static function execute(int $planningid): array {
+        ['planningid' => $planningid] =
+            self::validate_parameters(self::execute_parameters(), ['planningid' => $planningid]);
         self::validate_context(context_system::instance());
-        // Validate access to the situation.
-        return situations::get_all_criteria($situationid);
+        return plannings::get_planning_info($planningid);
     }
 
     /**
@@ -76,7 +76,7 @@ class get_situation_criteria extends external_api {
     public static function execute_parameters() {
         return new external_function_parameters(
             [
-                'situationid' => new external_value(PARAM_INT, 'id of the situation'),
+                'planningid' => new external_value(PARAM_INT, 'id of the planning'),
             ]
         );
     }

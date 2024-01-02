@@ -54,7 +54,7 @@ $PAGE->set_button(
 );
 $debugs = [];
 ['results' => $evaluations, 'debug' => $debugs[]] =
-    mobileview_helper::call_api(\local_competvet\external\get_user_evaluations::class,
+    mobileview_helper::call_api(\local_competvet\external\get_user_eval_observations::class,
         ['planningid' => $planningid, 'userid' => $userid]);
 
 ['results' => $studentinfo, 'debug' => $debugs[]] =

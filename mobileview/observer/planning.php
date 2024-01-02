@@ -40,19 +40,22 @@ $currenturl =
     new moodle_url('/local/competvet/mobileview/observer/planning.php', ['userid' => $asuserid, 'planningid' => $planningid]);
 $PAGE->set_url($currenturl);
 
-$planning = planning::get_record(['id' => $planningid]);
-$groupname = groups_get_group_name($planning->get('groupid'));
+$debugs = [];
+['results' => $planninginfo, 'debug' => $debugs[]] =
+    mobileview_helper::call_api(\local_competvet\external\get_planning_info::class, ['planningid' => $planningid]);
+
 $PAGE->set_button(
     $OUTPUT->single_button(
         new moodle_url(
             '/local/competvet/mobileview/observer/plannings.php',
-            ['asuserid' => $asuserid, 'situationid' => $planning->get('situationid')]
+            ['asuserid' => $asuserid, 'situationid' => $planninginfo['situationid']]
         ),
         get_string('back'),
         'get'
     )
 );
-$debugs = [];
+
+
 ['results' => $users, 'debug' => $debugs[]] =
     mobileview_helper::call_api(\local_competvet\external\get_users_for_planning::class, ['planningid' => $planningid]);
 
@@ -61,19 +64,19 @@ $debugs = [];
 
 /** @var core_renderer $OUTPUT */
 echo $OUTPUT->header();
-$competvet = competvet::get_from_situation_id($planning->get('situationid'));
+$competvet = competvet::get_from_situation_id($planninginfo['situationid']);
 $competvetinstance = $competvet->get_instance();
 $competvetname = format_text($competvetinstance->name, FORMAT_HTML);
 $dates = get_string('mobileview:planningdates', 'local_competvet', [
-    'startdate' => planning::get_planning_date_string($planning->get('startdate')),
-    'enddate' => planning::get_planning_date_string($planning->get('enddate')),
+    'startdate' => planning::get_planning_date_string($planninginfo['startdate']),
+    'enddate' => planning::get_planning_date_string($planninginfo['enddate']),
 ]);
 
 echo $OUTPUT->heading(format_text($competvetname, FORMAT_HTML));
 echo $OUTPUT->heading(format_text($dates, FORMAT_HTML), 3, 'text-right');
 $studentinfo = array_combine(array_column($studentinfo, 'id'), $studentinfo);
 $widget = base::factory($asuserid, 'planning');
-$widget->set_data($users, $studentinfo, $groupname,
+$widget->set_data($users, $studentinfo, $planninginfo['groupname'],
     new moodle_url('/local/competvet/mobileview/observer/evaluations.php', ['planningid' => $planningid]));
 $renderer = $PAGE->get_renderer('mod_competvet');
 echo $renderer->render($widget);

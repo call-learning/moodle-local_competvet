@@ -168,7 +168,8 @@ for the current user.
                 "enddate": 1705298400,
                 "groupname": "Group 4",
                 "groupid": 22,
-                "session": "2023"
+                "session": "2023",
+                "situationid": 5
             },
             {
                 "id": 57,
@@ -176,7 +177,8 @@ for the current user.
                 "enddate": 1705903200,
                 "groupname": "Group 4",
                 "groupid": 22,
-                "session": "2023"
+                "session": "2023",
+                "situationid": 5
             }
         ]
     },
@@ -196,7 +198,8 @@ for the current user.
                 "enddate": 1712556000,
                 "groupname": "Group 4",
                 "groupid": 22,
-                "session": "2023"
+                "session": "2023",
+                "situationid": 4
             }
         ]
     },
@@ -216,7 +219,8 @@ for the current user.
                 "enddate": 1704088800,
                 "groupname": "Group 4",
                 "groupid": 22,
-                "session": "2023"
+                "session": "2023",
+                "situationid": 3
             },
         ]
     }
@@ -250,6 +254,15 @@ The result (here for two plannings)
     "groupstats": {
       "groupid": 500,
       "nbstudents": 20
+    },
+    "info": {
+      "planningid": 5143,
+      "startdate": 1703484000,
+      "enddate": 1704088800,
+      "groupname": "Group 4",
+      "groupid": 22,
+      "session": "2023",
+      "situationid": 3
     }
   },
   {
@@ -259,6 +272,15 @@ The result (here for two plannings)
     "groupstats": {
       "groupid": 500,
       "nbstudents": 20
+    },
+    "info": {
+        "planningid": 5158,
+        "startdate": 1703484000,
+        "enddate": 1704088800,
+        "groupname": "Group 4",
+        "groupid": 22,
+        "session": "2023",
+        "situationid": 3
     }
   }
 ]
@@ -270,6 +292,232 @@ This api callback relies on values retrieved by local_competvet_get_situations (
 The values returned by this API are the statistics regarding the plannings and will help to sort the planning by categories (like current, late...).
 This will allow to display the plannings in the mobile application by categories.
 
+```bash
+ curl $SITEURL/webservice/rest/server.php \
+  -d "wstoken=$TOKEN" \
+  -d 'wsfunction=local_competvet_get_planning_info' \
+  -d "planningid=5158" \
+  -d 'moodlewsrestformat=json' -k
+```
+
+Results:
+```json
+{
+  "id": 8008,
+  "startdate": 1709506800,
+  "enddate": 1710111600,
+  "groupname": "Group 0",
+  "groupid": 560,
+  "session": "2023",
+  "situationid": 71
+}
+```
+
+### Get the user information for plannings: local_competvet_get_users_for_planning
+
+This API callback is used to get the list of users for a given planning. It is used by the mobile application to get the list of users 
+categorised by role (student, observer...).
+
+```bash
+ curl $SITEURL/webservice/rest/server.php \
+  -d "wstoken=$TOKEN" \
+  -d 'wsfunction=local_competvet_get_users_for_planning' \
+  -d "planningid=8008" \
+  -d 'moodlewsrestformat=json' -k
+```
+
+Get a list of user for a given planning. The result is a list of users with their role (student, observer...). The role is a string that can be used to determine
+the exact role (not used currently in the app, except maybe for display).
+
+```json
+{
+  "students": [
+    {
+      "id": 932,
+      "fullname": "Jakub Černý",
+      "userpictureurl": "http://competveteval.local/theme/image.php/boost/core/1704225909/u/f1"
+    },
+    {
+      "id": 887,
+      "fullname": "Timm Fischer",
+      "userpictureurl": "http://competveteval.local/theme/image.php/boost/core/1704225909/u/f1"
+    },
+  ],
+  "observers": [
+    {
+      "id": 854,
+      "rolename": "admincompetvet",
+      "fullname": "Michael Smith",
+      "userpictureurl": "http://competveteval.local/theme/image.php/boost/core/1704225909/u/f1"
+    },
+    {
+      "id": 962,
+      "rolename": "admincompetvet",
+      "fullname": "Michael Johnson",
+      "userpictureurl": "http://competveteval.local/theme/image.php/boost/core/1704225909/u/f1"
+    },
+    {
+      "id": 963,
+      "rolename": "admincompetvet",
+      "fullname": "Tomáš Novák",
+      "userpictureurl": "http://competveteval.local/theme/image.php/boost/core/1704225909/u/f1"
+    }
+  ]
+}
+
+```
+
+
+### Get observation information (Eval component)
+
+This API allows to retrieve information about the observations for a given user. It is used by the mobile application to display the list of observations
+for a given user.
+
+```bash
+ curl $SITEURL/webservice/rest/server.php \
+  -d "wstoken=$TOKEN" \
+  -d 'wsfunction=local_competvet_get_user_eval_observations' \
+  -d "userid=$USERID" \
+  -d "planningid=8008" \
+  -d 'moodlewsrestformat=json' -k
+```
+
+The result is a set of evaluation and evaluaiton time. The evaluation time is the time at which the evaluation was done. The evaluation is the status of the evaluation (1: not done, 2: done, 3: done and validated).
+Category is the category of the evaluation (1: autoevaluation, 2: observation).
+
+```json
+[
+  {
+    "id": 79782,
+    "studentid": 932,
+    "observerid": 971,
+    "status": 1,
+    "time": 1703775582,
+    "category": 2,
+    "categorytext": "Observations"
+  },
+  {
+    "id": 79786,
+    "studentid": 932,
+    "observerid": 932,
+    "status": 1,
+    "time": 1703775582,
+    "category": 1,
+    "categorytext": "Autoevaluations"
+  },
+  {
+    "id": 79787,
+    "studentid": 932,
+    "observerid": 932,
+    "status": 2,
+    "time": 1703775582,
+    "category": 1,
+    "categorytext": "Autoevaluations"
+  }
+]
+```
+### Get observation information (Eval component)
+
+This API allows to retrieve information about a given observation. It is used by the mobile application to display the content of the obserrvation.
+
+```bash
+ curl $SITEURL/webservice/rest/server.php \
+  -d "wstoken=$TOKEN" \
+  -d 'wsfunction=local_competvet_get_eval_observation_info' \
+  -d "observationid=79787" \
+  -d 'moodlewsrestformat=json' -k
+```
+
+Returned value is:
+
+```json
+{
+  "id": 79787,
+  "category": 1,
+  "comments": [
+    {
+      "id": 478710,
+      "type": 1,
+      "usercreated": 932,
+      "comment": "<p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id",
+      "timecreated": 1703775582,
+      "timemodified": 1703775582
+    },
+    {
+      "id": 478711,
+      "type": 2,
+      "usercreated": 932,
+      "comment": "<p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id",
+      "timecreated": 1703775582,
+      "timemodified": 1703775582
+    }
+  ],
+  "criterialevels": [
+    {
+      "criterionid": 1,
+      "level": 50
+    },
+    {
+      "criterionid": 7,
+      "level": 50
+    }
+  ],
+  "criteriacomments": [
+    {
+      "criterionid": 30,
+      "comment": "<p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id"
+    },
+    {
+      "criterionid": 2,
+      "comment": "<p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id"
+    }
+  ]
+}
+
+```
+### Get situation criteria (Eval component)
+
+This API allows to retrieve information about the criteria for a given situation. It is used by the mobile application to display the list of criteria
+
+
+```bash
+ curl $SITEURL/webservice/rest/server.php \
+  -d "wstoken=$TOKEN" \
+  -d 'wsfunction=local_competvet_get_situation_criteria' \
+  -d "situationid=69" \
+  -d 'moodlewsrestformat=json' -k
+```
+
+Returns the list of all criteria for the given situation:
+
+```json
+[
+  {
+    "id": 28,
+    "label": "Capacité à identifier un motif de consultation (animal ou groupe d’animaux) et à recueillir une anamnèse",
+    "idnumber": "Q028",
+    "sort": 1,
+    "parentid": 27
+  },
+  {
+    "id": 17,
+    "label": "Capacité à mobiliser les notions théoriques en situation clinique",
+    "idnumber": "Q017",
+    "sort": 1,
+    "parentid": 16
+  },
+  {
+    "id": 2,
+    "label": "Respect des horaires de travail",
+    "idnumber": "Q002",
+    "sort": 1,
+    "parentid": 1
+  }
+ 
+]
+```
+
+```
 ## License ##
 
 2023 CALL Learning <laurent@call-learning.fr>
@@ -285,3 +533,8 @@ PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with
 this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Upgrade notes (API)
+
+## 2021-09-28
+Renamed local_competvet_get_user_evaluations => get_user_eval_observations so each component will have its own endpoint. 

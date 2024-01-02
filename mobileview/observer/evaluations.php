@@ -54,8 +54,8 @@ $PAGE->set_button(
     )
 );
 $debugs = [];
-['results' => $evaluations, 'debug' => $debugs[]] =
-    mobileview_helper::call_api(\local_competvet\external\get_user_evaluations::class,
+['results' => $observations, 'debug' => $debugs[]] =
+    mobileview_helper::call_api(\local_competvet\external\get_user_eval_observations::class,
         ['planningid' => $planningid, 'userid' => $studentid]);
 
 ['results' => $studentinfo, 'debug' => $debugs[]] =
@@ -85,7 +85,7 @@ echo $OUTPUT->heading(format_text($competvetname, FORMAT_HTML));
 echo $OUTPUT->user_picture($user, ['size' => 100, 'class' => 'd-inline-block']);
 echo $OUTPUT->heading(format_text($dates, FORMAT_HTML), 3, 'text-right');
 $widget = base::factory($asuserid, 'student_evaluations');
-$widget->set_data($evaluations, $studentinfo, $views);
+$widget->set_data($studentinfo, $views, $observations);
 $renderer = $PAGE->get_renderer('mod_competvet');
 echo $renderer->render($widget);
 foreach ($debugs as $debug) {

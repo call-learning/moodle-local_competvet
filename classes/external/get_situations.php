@@ -56,14 +56,7 @@ class get_situations extends external_api {
                     'tags' => new external_value(PARAM_RAW, 'User roles in this situation
                             (student, observer, assessor) in a JSON array, with the highest role first'),
                     'plannings' => new external_multiple_structure(
-                        new external_single_structure([
-                            'id' => new external_value(PARAM_INT, 'Plan ID'),
-                            'startdate' => new external_value(PARAM_INT, 'Plan start date'),
-                            'enddate' => new external_value(PARAM_INT, 'Plan end date'),
-                            'groupname' => new external_value(PARAM_TEXT, 'Group name'),
-                            'groupid' => new external_value(PARAM_INT, 'Group id (Internal ID)'),
-                            'session' => new external_value(PARAM_ALPHANUMEXT, 'Session name (unused now but might be later)'),
-                        ])
+                        get_planning_info::execute_returns(),
                     ),
                 ]
             )
