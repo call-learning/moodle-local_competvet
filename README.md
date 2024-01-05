@@ -333,10 +333,12 @@ statistics for their evaluation. The role is a string that can be used to determ
 {
   "students": [
     {
-      "id": 932,
-      "fullname": "Jakub Černý",
-      "userpictureurl": "http://competveteval.local/theme/image.php/boost/core/1704452088/u/f1",
-      "info": [
+      "userinfo": {
+        "id": 932,
+        "fullname": "Jakub Černý",
+        "userpictureurl": "http://competveteval.local/theme/image.php/boost/core/1704452514/u/f1"
+      },
+      "planninginfo": [
         {
           "type": "eval",
           "nbdone": 0,
@@ -350,10 +352,12 @@ statistics for their evaluation. The role is a string that can be used to determ
       ]
     },
     {
-      "id": 887,
-      "fullname": "Timm Fischer",
-      "userpictureurl": "http://competveteval.local/theme/image.php/boost/core/1704452088/u/f1",
-      "info": [
+      "userinfo": {
+        "id": 887,
+        "fullname": "Timm Fischer",
+        "userpictureurl": "http://competveteval.local/theme/image.php/boost/core/1704452514/u/f1"
+      },
+      "planninginfo": [
         {
           "type": "eval",
           "nbdone": 0,
@@ -365,26 +369,24 @@ statistics for their evaluation. The role is a string that can be used to determ
           "nbrequired": 2
         }
       ]
-    },
+    }
   ],
   "observers": [
     {
-      "id": 854,
-      "rolename": "admincompetvet",
-      "fullname": "Michael Smith",
-      "userpictureurl": "http://competveteval.local/theme/image.php/boost/core/1704225909/u/f1"
+      "userinfo": {
+        "id": 965,
+        "fullname": "芳 李",
+        "userpictureurl": "http://competveteval.local/theme/image.php/boost/core/1704452514/u/f1"
+      },
+      "rolename": "responsibleucue"
     },
     {
-      "id": 962,
-      "rolename": "admincompetvet",
-      "fullname": "Michael Johnson",
-      "userpictureurl": "http://competveteval.local/theme/image.php/boost/core/1704225909/u/f1"
-    },
-    {
-      "id": 963,
-      "rolename": "admincompetvet",
-      "fullname": "Tomáš Novák",
-      "userpictureurl": "http://competveteval.local/theme/image.php/boost/core/1704225909/u/f1"
+      "userinfo": {
+        "id": 860,
+        "fullname": "Lukáš Černý",
+        "userpictureurl": "http://competveteval.local/theme/image.php/boost/core/1704452514/u/f1"
+      },
+      "rolename": "evaluator"
     }
   ]
 }
@@ -457,46 +459,112 @@ Returned value is:
 ```json
 {
   "id": 79787,
-  "category": 1,
+  "category": 2,
+  "context": {
+    "id": 511800,
+    "userinfo": {
+      "id": 971,
+      "fullname": "秀英 黃",
+      "userpictureurl": "http://competveteval.local/theme/image.php/boost/core/1704462827/u/f1"
+    },
+    "comment": "<p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id</p>",
+    "timecreated": 1703776479,
+    "timemodified": 1703776479
+  },
   "comments": [
     {
-      "id": 478710,
-      "type": 1,
-      "usercreated": 932,
-      "comment": "<p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id",
-      "timecreated": 1703775582,
-      "timemodified": 1703775582
-    },
-    {
-      "id": 478711,
+      "id": 511801,
       "type": 2,
-      "usercreated": 932,
-      "comment": "<p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id",
-      "timecreated": 1703775582,
-      "timemodified": 1703775582
-    }
-  ],
-  "criterialevels": [
-    {
-      "criterionid": 1,
-      "level": 50
+      "userinfo": {
+        "id": 971,
+        "fullname": "秀英 黃",
+        "userpictureurl": "http://competveteval.local/theme/image.php/boost/core/1704462827/u/f1"
+      },
+      "comment": "<p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id</p>",
+      "commentlabel": "",
+      "timecreated": 1703776479,
+      "timemodified": 1703776479
     },
     {
-      "criterionid": 7,
-      "level": 50
-    }
-  ],
-  "criteriacomments": [
-    {
-      "criterionid": 30,
-      "comment": "<p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id"
+      "id": 511802,
+      "type": 3,
+      "userinfo": {
+        "id": 971,
+        "fullname": "秀英 黃",
+        "userpictureurl": "http://competveteval.local/theme/image.php/boost/core/1704462827/u/f1"
+      },
+      "comment": "<p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id</p>",
+      "commentlabel": "",
+      "timecreated": 1703776479,
+      "timemodified": 1703776479
     },
+  ],
+  "criteria": [
     {
-      "criterionid": 2,
-      "comment": "<p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id"
+      "criterioninfo": {
+        "id": 1,
+        "label": "Savoir être",
+        "idnumber": "Q001",
+        "sort": 1,
+        "parentid": 0
+      },
+      "level": 50,
+      "subcriteria": [
+        {
+          "criterioninfo": {
+            "id": 2,
+            "label": "Respect des horaires de travail",
+            "idnumber": "Q002",
+            "sort": 1,
+            "parentid": 1
+          },
+          "comment": "<p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id"
+        },
+        {
+          "criterioninfo": {
+            "id": 3,
+            "label": "Respect des interlocuteurs (clients, personnels, encadrants, pairs, ...)",
+            "idnumber": "Q003",
+            "sort": 2,
+            "parentid": 1
+          },
+          "comment": "<p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id"
+        },
+        {
+          "criterioninfo": {
+            "id": 4,
+            "label": "Respect du bien-être des animaux",
+            "idnumber": "Q004",
+            "sort": 3,
+            "parentid": 1
+          },
+          "comment": "<p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id"
+        },
+        {
+          "criterioninfo": {
+            "id": 5,
+            "label": "Respect des consignes vestimentaires, d’hygiène et de de biosécurité",
+            "idnumber": "Q005",
+            "sort": 4,
+            "parentid": 1
+          },
+          "comment": "<p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id"
+        },
+        {
+          "criterioninfo": {
+            "id": 6,
+            "label": "Respect du matériel mis à disposition",
+            "idnumber": "Q006",
+            "sort": 5,
+            "parentid": 1
+          },
+          "comment": "<p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id"
+        }
+      ]
     }
   ]
 }
+
 
 ```
 ### Get situation criteria (Eval component)
@@ -541,7 +609,6 @@ Returns the list of all criteria for the given situation:
 ]
 ```
 
-```
 ## License ##
 
 2023 CALL Learning <laurent@call-learning.fr>
@@ -560,13 +627,16 @@ this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Upgrade notes (API)
 
-## 2024-01-05
+### 2024-01-05
 
 Removed:
 get_users_for_planning : no longer useful and replaced by local_competvet_get_users_infos_for_planning
 local_competvet_get_planning_infos_students : changed into local_competvet_get_planning_infos_student (singular) to get planning
 info for one student only.
 
-## 2023-12-29
+get_user_info : will return id instead of userid.
+
+
+### 2023-12-29
 Renamed local_competvet_get_user_evaluations => get_user_eval_observations so each component will have its own endpoint. 
 

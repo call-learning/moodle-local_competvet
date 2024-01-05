@@ -24,6 +24,7 @@ use external_api;
 use external_function_parameters;
 use external_single_structure;
 use external_value;
+use mod_competvet\utils;
 use stdClass;
 use user_picture;
 
@@ -43,7 +44,7 @@ class user_info extends external_api {
     public static function execute_returns() {
         return new external_single_structure(
             [
-                'userid' => new external_value(PARAM_INT, 'ID type of user'),
+                'id' => new external_value(PARAM_INT, 'ID type of user'),
                 'fullname' => new external_value(PARAM_TEXT, 'User fullname'),
                 'userpictureurl' => new external_value(PARAM_URL, 'User picture (avatar) URL', VALUE_OPTIONAL),
             ]
@@ -67,14 +68,7 @@ class user_info extends external_api {
         if (!$user) {
             throw new \moodle_exception('invaliduserid', 'core_user', '', $userid);
         }
-        $userpicture = new user_picture($user);
-        $userpicture->includetoken = true;
-        $userpicture->size = 1; // Size f1.
-        return (object) [
-            'userid' => intval($user->id),
-            'fullname' => fullname($user),
-            'userpictureurl' => $userpicture->get_url($PAGE)->out(false),
-        ];
+        return (object) utils::get_user_info($userid);
     }
 
     /**

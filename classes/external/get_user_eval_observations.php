@@ -44,8 +44,8 @@ class get_user_eval_observations extends external_api {
             new external_single_structure(
                 [
                     'id' => new external_value(PARAM_INT, 'Observation ID'),
-                    'studentid' => new external_value(PARAM_INT, 'Student ID'),
-                    'observerid' => new external_value(PARAM_INT, 'Observer ID'),
+                    'observerinfo' => user_info::execute_returns(),
+                    'studentinfo' => user_info::execute_returns(),
                     'status' => new external_value(PARAM_INT, 'Status ID'),
                     'time' => new external_value(PARAM_INT, 'Time of the evaluation'),
                     'category' => new external_value(PARAM_INT, 'Category of the evaluation (autoeval = 1, eval = 2)'),

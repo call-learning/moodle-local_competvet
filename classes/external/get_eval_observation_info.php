@@ -44,34 +44,45 @@ class get_eval_observation_info extends external_api {
             [
                 'id' => new external_value(PARAM_INT, 'Observation ID'),
                 'category' => new external_value(PARAM_INT, 'Observation category (AUTOEVAL or EVAL'),
+                'context' =>
+                    new external_single_structure(
+                        [
+                            'id' => new external_value(PARAM_INT, 'Comment ID'),
+                            'userinfo' => user_info::execute_returns(),
+                            'comment' => new external_value(PARAM_RAW, 'Comment text'),
+                            'timecreated' => new external_value(PARAM_INT, 'Comment creation time'),
+                            'timemodified' => new external_value(PARAM_INT, 'Comment last modification time'),
+                        ]
+                    ),
                 'comments' => new external_multiple_structure(
                     new external_single_structure(
                         [
                             'id' => new external_value(PARAM_INT, 'Comment ID'),
                             'type' => new external_value(PARAM_INT, 'Comment type (autoeval, eval, certif...)'),
-                            'usercreated' => new external_value(PARAM_INT, 'User ID'),
+                            'userinfo' => user_info::execute_returns(),
                             'comment' => new external_value(PARAM_RAW, 'Comment text'),
+                            'commentlabel' => new external_value(PARAM_RAW, 'Comment label'),
                             'timecreated' => new external_value(PARAM_INT, 'Comment creation time'),
                             'timemodified' => new external_value(PARAM_INT, 'Comment last modification time'),
                         ]
                     )
                 ),
-                'criterialevels' => new external_multiple_structure(
+                'criteria' => new external_multiple_structure(
                     new external_single_structure(
                         [
-                            'criterionid' => new external_value(PARAM_INT, 'Criterion ID'),
+                            'criterioninfo' => get_situation_criteria::get_criteria_info_returns(),
                             'level' => new external_value(PARAM_INT, 'Criterion level'),
+                            'subcriteria' => new external_multiple_structure(
+                                new external_single_structure(
+                                    [
+                                        'criterioninfo' => get_situation_criteria::get_criteria_info_returns(),
+                                        'comment' => new external_value(PARAM_RAW, 'Criterion level'),
+                                    ]
+                                )
+                            ),
                         ]
                     )
                 ),
-                'criteriacomments' => new external_multiple_structure(
-                    new external_single_structure(
-                        [
-                            'criterionid' => new external_value(PARAM_INT, 'Criterion ID'),
-                            'comment' => new external_value(PARAM_RAW, 'Criterion comment'),
-                        ]
-                    )
-                )
             ]
         );
     }

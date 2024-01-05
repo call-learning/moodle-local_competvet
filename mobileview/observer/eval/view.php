@@ -58,23 +58,12 @@ $PAGE->set_button(
     )
 );
 $debugs = [];
-['results' => $situationcriteria, 'debug' => $debugs[]] =
-    mobileview_helper::call_api(
-        \local_competvet\external\get_situation_criteria::class,
-        ['situationid' => $planning->get('situationid')]
-    );
 
 ['results' => $observationinfo, 'debug' => $debugs[]] =
     mobileview_helper::call_api(
         \local_competvet\external\get_eval_observation_info::class,
         ['observationid' => $observationid]
     );
-
-/** @var core_renderer $OUTPUT */
-$criteriacomments =
-    array_combine(array_column($observationinfo['criteriacomments'], 'criterionid'), $observationinfo['criteriacomments']);
-$criterialevels =
-    array_combine(array_column($observationinfo['criterialevels'], 'criterionid'), $observationinfo['criterialevels']);
 
 echo $OUTPUT->header();
 $competvet = competvet::get_from_situation_id($planning->get('situationid'));
@@ -91,7 +80,7 @@ echo $OUTPUT->user_picture($studentuser, ['size' => 100, 'class' => 'd-inline-bl
 echo $OUTPUT->heading(format_text($dates, FORMAT_HTML), 3, 'text-right');
 echo $OUTPUT->heading(get_string('context', 'mod_competvet'), 4);
 $widget = base::factory($userid, 'student_eval');
-$widget->set_data($situationcriteria, $observationinfo);
+$widget->set_data($observationinfo);
 $renderer = $PAGE->get_renderer('mod_competvet');
 echo $renderer->render($widget);
 foreach ($debugs as $debug) {

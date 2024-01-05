@@ -46,15 +46,14 @@ class get_users_infos_for_planning extends external_api {
                 [
                     'students' => new external_multiple_structure(
                         new external_single_structure([
-                            'id' => new external_value(PARAM_INT, 'Student ID'),
-                            'fullname' => new external_value(PARAM_RAW, 'Student Name'),
-                            'userpictureurl' => new external_value(PARAM_URL, 'user picture (avatar)',
-                                VALUE_OPTIONAL),
-                            'info' => new external_multiple_structure(
+                            'userinfo' => user_info::execute_returns(),
+                            'planninginfo' => new external_multiple_structure(
                                 new external_single_structure(
                                     [
-                                        'type' => new external_value(PARAM_TEXT,
-                                            'Type of evaluation (eval, autoeval, certif, list)'),
+                                        'type' => new external_value(
+                                            PARAM_TEXT,
+                                            'Type of evaluation (eval, autoeval, certif, list)'
+                                        ),
                                         'nbdone' => new external_value(PARAM_INT, 'Nb of observation done'),
                                         'nbrequired' => new external_value(PARAM_INT, 'Nb of observation required'),
                                     ]
@@ -64,11 +63,8 @@ class get_users_infos_for_planning extends external_api {
                     ),
                     'observers' => new external_multiple_structure(
                         new external_single_structure([
-                            'id' => new external_value(PARAM_INT, 'Group ID'),
+                            'userinfo' => user_info::execute_returns(),
                             'rolename' => new external_value(PARAM_TEXT, 'Group Name'),
-                            'fullname' => new external_value(PARAM_RAW, 'Observer Name'),
-                            'userpictureurl' => new external_value(PARAM_URL, 'user picture (avatar)',
-                                VALUE_OPTIONAL),
                         ])
                     ),
                 ]

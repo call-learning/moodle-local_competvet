@@ -30,7 +30,9 @@ class mobileview_helper {
     public static function call_api(string $apifunctionname, array $parameters): array {
         $now = microtime(true);
         try {
+            $parameters = $apifunctionname::validate_parameters($apifunctionname::execute_parameters(), $parameters);
             $results = $apifunctionname::execute(...$parameters);
+            $results = $apifunctionname::clean_returnvalue($apifunctionname::execute_returns(), $results);
         } catch (\Throwable $e) {
             $results = $e;
             debugging($e->getMessage());

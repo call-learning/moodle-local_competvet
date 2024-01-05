@@ -34,6 +34,7 @@ use mod_competvet\local\api\situations;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class get_situation_criteria extends external_api {
+
     /**
      * Returns description of method parameters
      *
@@ -41,15 +42,19 @@ class get_situation_criteria extends external_api {
      */
     public static function execute_returns() {
         return new external_multiple_structure(
-                        new external_single_structure(
-                            [
-                                'id' => new external_value(PARAM_INT, 'Criterion ID'),
-                                'label' => new external_value(PARAM_TEXT, 'Criterion label'),
-                                'idnumber' => new external_value(PARAM_TEXT, 'Criterion idnumber'),
-                                'sort' => new external_value(PARAM_INT, 'Criterion sort'),
-                                'parentid' => new external_value(PARAM_INT, 'Criterion parentid'),
-                            ]
-                        )
+            self::get_criteria_info_returns()
+        );
+    }
+
+    public static function get_criteria_info_returns(): external_single_structure {
+        return new external_single_structure(
+            [
+                'id' => new external_value(PARAM_INT, 'Criterion ID'),
+                'label' => new external_value(PARAM_TEXT, 'Criterion label'),
+                'idnumber' => new external_value(PARAM_TEXT, 'Criterion idnumber'),
+                'sort' => new external_value(PARAM_INT, 'Criterion sort'),
+                'parentid' => new external_value(PARAM_INT, 'Criterion parentid'),
+            ]
         );
     }
 
