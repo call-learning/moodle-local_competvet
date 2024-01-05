@@ -27,13 +27,14 @@ use external_value;
 use mod_competvet\local\api\plannings;
 
 /**
- * Get users involved in the current planning.
+ * Get users involved in the current planning and information about the status
+ * of their evaluation.
  *
  * @package   local_competvet
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class get_users_for_planning extends external_api {
+class get_users_infos_for_planning extends external_api {
     /**
      * Returns description of method parameters
      *
@@ -49,6 +50,16 @@ class get_users_for_planning extends external_api {
                             'fullname' => new external_value(PARAM_RAW, 'Student Name'),
                             'userpictureurl' => new external_value(PARAM_URL, 'user picture (avatar)',
                                 VALUE_OPTIONAL),
+                            'info' => new external_multiple_structure(
+                                new external_single_structure(
+                                    [
+                                        'type' => new external_value(PARAM_TEXT,
+                                            'Type of evaluation (eval, autoeval, certif, list)'),
+                                        'nbdone' => new external_value(PARAM_INT, 'Nb of observation done'),
+                                        'nbrequired' => new external_value(PARAM_INT, 'Nb of observation required'),
+                                    ]
+                                )
+                            ),
                         ])
                     ),
                     'observers' => new external_multiple_structure(
@@ -74,7 +85,7 @@ class get_users_for_planning extends external_api {
         ['planningid' => $planningid] =
             self::validate_parameters(self::execute_parameters(), ['planningid' => $planningid]);
         self::validate_context(context_system::instance());
-        return plannings::get_users_for_planning_id($planningid);
+        return plannings::get_users_infos_for_planning_id($planningid);
     }
 
     /**

@@ -59,10 +59,10 @@ $debugs = [];
         ['planningid' => $planningid, 'userid' => $studentid]);
 
 ['results' => $studentinfo, 'debug' => $debugs[]] =
-    mobileview_helper::call_api(\local_competvet\external\get_planning_infos_students::class,
+    mobileview_helper::call_api(\local_competvet\external\get_planning_infos_student::class,
         ['planningid' => $planningid, 'userid' => $studentid]);
 
-$userplanninginfo = $studentinfo[0]['info'];
+$userplanninginfo = $studentinfo['info'];
 if (!empty($userplanninginfo)) {
     $userplanninginfo = array_combine(array_column($userplanninginfo, 'type'), $userplanninginfo);
 }

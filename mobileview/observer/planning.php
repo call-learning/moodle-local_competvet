@@ -56,11 +56,8 @@ $PAGE->set_button(
 );
 
 
-['results' => $users, 'debug' => $debugs[]] =
-    mobileview_helper::call_api(\local_competvet\external\get_users_for_planning::class, ['planningid' => $planningid]);
-
-['results' => $studentinfo, 'debug' => $debugs[]] =
-    mobileview_helper::call_api(\local_competvet\external\get_planning_infos_students::class, ['planningid' => $planningid]);
+['results' => $userswithinfo, 'debug' => $debugs[]] =
+    mobileview_helper::call_api(\local_competvet\external\get_users_infos_for_planning::class, ['planningid' => $planningid]);
 
 /** @var core_renderer $OUTPUT */
 echo $OUTPUT->header();
@@ -74,9 +71,8 @@ $dates = get_string('mobileview:planningdates', 'local_competvet', [
 
 echo $OUTPUT->heading(format_text($competvetname, FORMAT_HTML));
 echo $OUTPUT->heading(format_text($dates, FORMAT_HTML), 3, 'text-right');
-$studentinfo = array_combine(array_column($studentinfo, 'id'), $studentinfo);
 $widget = base::factory($asuserid, 'planning');
-$widget->set_data($users, $studentinfo, $planninginfo['groupname'],
+$widget->set_data($userswithinfo, $planninginfo['groupname'],
     new moodle_url('/local/competvet/mobileview/observer/evaluations.php', ['planningid' => $planningid]));
 $renderer = $PAGE->get_renderer('mod_competvet');
 echo $renderer->render($widget);

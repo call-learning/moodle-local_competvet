@@ -313,7 +313,7 @@ Results:
 }
 ```
 
-### Get the user information for plannings: local_competvet_get_users_for_planning
+### Get the user information for plannings: local_competvet_get_users_infos_for_planning
 
 This API callback is used to get the list of users for a given planning. It is used by the mobile application to get the list of users 
 categorised by role (student, observer...).
@@ -321,13 +321,13 @@ categorised by role (student, observer...).
 ```bash
  curl $SITEURL/webservice/rest/server.php \
   -d "wstoken=$TOKEN" \
-  -d 'wsfunction=local_competvet_get_users_for_planning' \
+  -d 'wsfunction=local_competvet_get_users_infos_for_planning' \
   -d "planningid=8008" \
   -d 'moodlewsrestformat=json' -k
 ```
 
-Get a list of user for a given planning. The result is a list of users with their role (student, observer...). The role is a string that can be used to determine
-the exact role (not used currently in the app, except maybe for display).
+Get a list of user for a given planning. The result is a list of users with their role (student, observer...) but also for students the
+statistics for their evaluation. The role is a string that can be used to determine the exact role (not used currently in the app, except maybe for display).
 
 ```json
 {
@@ -335,12 +335,36 @@ the exact role (not used currently in the app, except maybe for display).
     {
       "id": 932,
       "fullname": "Jakub Černý",
-      "userpictureurl": "http://competveteval.local/theme/image.php/boost/core/1704225909/u/f1"
+      "userpictureurl": "http://competveteval.local/theme/image.php/boost/core/1704452088/u/f1",
+      "info": [
+        {
+          "type": "eval",
+          "nbdone": 0,
+          "nbrequired": 4
+        },
+        {
+          "type": "autoeval",
+          "nbdone": 0,
+          "nbrequired": 2
+        }
+      ]
     },
     {
       "id": 887,
       "fullname": "Timm Fischer",
-      "userpictureurl": "http://competveteval.local/theme/image.php/boost/core/1704225909/u/f1"
+      "userpictureurl": "http://competveteval.local/theme/image.php/boost/core/1704452088/u/f1",
+      "info": [
+        {
+          "type": "eval",
+          "nbdone": 0,
+          "nbrequired": 4
+        },
+        {
+          "type": "autoeval",
+          "nbdone": 0,
+          "nbrequired": 2
+        }
+      ]
     },
   ],
   "observers": [
@@ -536,5 +560,13 @@ this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Upgrade notes (API)
 
-## 2021-09-28
+## 2024-01-05
+
+Removed:
+get_users_for_planning : no longer useful and replaced by local_competvet_get_users_infos_for_planning
+local_competvet_get_planning_infos_students : changed into local_competvet_get_planning_infos_student (singular) to get planning
+info for one student only.
+
+## 2023-12-29
 Renamed local_competvet_get_user_evaluations => get_user_eval_observations so each component will have its own endpoint. 
+

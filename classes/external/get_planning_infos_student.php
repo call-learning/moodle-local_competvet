@@ -27,20 +27,20 @@ use external_value;
 use mod_competvet\local\api\plannings;
 
 /**
- * Get users involved in the current planning.
+ * Get planning information for a given student.
  *
  * @package   local_competvet
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class get_planning_infos_students extends external_api {
+class get_planning_infos_student extends external_api {
     /**
      * Returns description of method parameters
      *
-     * @return external_multiple_structure
+     * @return external_single_structure
      */
-    public static function execute_returns() {
-        return new external_multiple_structure(
+    public static function execute_returns(): external_single_structure {
+        return
             new external_single_structure(
                 [
                     'id' => new external_value(PARAM_INT, 'Student ID'),
@@ -54,8 +54,7 @@ class get_planning_infos_students extends external_api {
                         )
                     ),
                 ]
-            )
-        );
+            );
     }
 
     /**
@@ -65,16 +64,12 @@ class get_planning_infos_students extends external_api {
      * @param int $userid
      * @return array
      */
-    public static function execute(int $planningid, ?int $userid = null): array {
+    public static function execute(int $planningid, int $userid): array {
         ['planningid' => $planningid, 'userid' => $userid] =
             self::validate_parameters(self::execute_parameters(), ['planningid' => $planningid, 'userid' => $userid]);
         self::validate_context(context_system::instance());
-        if (!empty($userid)) {
-            $planninginfos = plannings::get_planning_info_for_student($planningid, $userid);
-        } else {
-            $planninginfos = plannings::get_planning_info_for_students($planningid);
-        }
-        return array_values($planninginfos);
+        $planninginfos = plannings::get_planning_info_for_student($planningid, $userid);
+        return $planninginfos;
     }
 
     /**
