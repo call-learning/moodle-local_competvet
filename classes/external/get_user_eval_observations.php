@@ -24,6 +24,7 @@ use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
 use external_value;
+use local_competvet\api_helpers;
 use mod_competvet\local\api\observations;
 
 /**
@@ -44,8 +45,8 @@ class get_user_eval_observations extends external_api {
             new external_single_structure(
                 [
                     'id' => new external_value(PARAM_INT, 'Observation ID'),
-                    'observerinfo' => user_info::execute_returns(),
-                    'studentinfo' => user_info::execute_returns(),
+                    'observerinfo' => new external_single_structure(api_helpers::get_user_info_structure()),
+                    'studentinfo' => new external_single_structure(api_helpers::get_user_info_structure()),
                     'status' => new external_value(PARAM_INT, 'Status ID'),
                     'time' => new external_value(PARAM_INT, 'Time of the evaluation'),
                     'category' => new external_value(PARAM_INT, 'Category of the evaluation (autoeval = 1, eval = 2)'),

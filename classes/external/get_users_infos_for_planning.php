@@ -24,6 +24,7 @@ use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
 use external_value;
+use local_competvet\api_helpers;
 use mod_competvet\local\api\plannings;
 
 /**
@@ -46,7 +47,9 @@ class get_users_infos_for_planning extends external_api {
                 [
                     'students' => new external_multiple_structure(
                         new external_single_structure([
-                            'userinfo' => user_info::execute_returns(),
+                            'userinfo' => new external_single_structure(
+                                api_helpers::get_user_info_structure()
+                            ),
                             'planninginfo' => new external_multiple_structure(
                                 new external_single_structure(
                                     [
@@ -63,7 +66,9 @@ class get_users_infos_for_planning extends external_api {
                     ),
                     'observers' => new external_multiple_structure(
                         new external_single_structure([
-                            'userinfo' => user_info::execute_returns(),
+                            'userinfo' => new external_single_structure(
+                                api_helpers::get_user_info_structure()
+                            ),
                             'rolename' => new external_value(PARAM_TEXT, 'Group Name'),
                         ])
                     ),

@@ -627,15 +627,19 @@ this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Upgrade notes (API)
 
+### 2024-01-16
+
+Added:
+* create_eval_blank_observation
+
 ### 2024-01-05
 
-Removed:
-get_users_for_planning : no longer useful and replaced by local_competvet_get_users_infos_for_planning
-local_competvet_get_planning_infos_students : changed into local_competvet_get_planning_infos_student (singular) to get planning
+Removed: 
+* get_users_for_planning : no longer useful and replaced by local_competvet_get_users_infos_for_planning
+* local_competvet_get_planning_infos_students : changed into local_competvet_get_planning_infos_student (singular) to get planning
 info for one student only.
 
 get_user_info : will return id instead of userid.
-
 
 ### 2023-12-29
 Renamed local_competvet_get_user_evaluations => get_user_eval_observations so each component will have its own endpoint. 

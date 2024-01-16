@@ -24,6 +24,7 @@ use external_api;
 use external_function_parameters;
 use external_single_structure;
 use external_value;
+use local_competvet\api_helpers;
 use mod_competvet\utils;
 use stdClass;
 use user_picture;
@@ -43,11 +44,7 @@ class user_info extends external_api {
      */
     public static function execute_returns() {
         return new external_single_structure(
-            [
-                'id' => new external_value(PARAM_INT, 'ID type of user'),
-                'fullname' => new external_value(PARAM_TEXT, 'User fullname'),
-                'userpictureurl' => new external_value(PARAM_URL, 'User picture (avatar) URL', VALUE_OPTIONAL),
-            ]
+           api_helpers::get_user_info_structure()
         );
     }
 

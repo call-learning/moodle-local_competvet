@@ -25,6 +25,7 @@ use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
 use external_value;
+use local_competvet\api_helpers;
 use mod_competvet\local\api\situations;
 
 /**
@@ -56,7 +57,9 @@ class get_situations extends external_api {
                     'tags' => new external_value(PARAM_RAW, 'User roles in this situation
                             (student, observer, assessor) in a JSON array, with the highest role first'),
                     'plannings' => new external_multiple_structure(
-                        get_planning_info::execute_returns(),
+                        new external_single_structure(
+                            api_helpers::get_planning_info_structure()
+                        )
                     ),
                 ]
             )

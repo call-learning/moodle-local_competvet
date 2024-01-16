@@ -24,6 +24,7 @@ use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
 use external_value;
+use local_competvet\api_helpers;
 use mod_competvet\local\api\situations;
 
 /**
@@ -42,19 +43,9 @@ class get_situation_criteria extends external_api {
      */
     public static function execute_returns() {
         return new external_multiple_structure(
-            self::get_criteria_info_returns()
-        );
-    }
-
-    public static function get_criteria_info_returns(): external_single_structure {
-        return new external_single_structure(
-            [
-                'id' => new external_value(PARAM_INT, 'Criterion ID'),
-                'label' => new external_value(PARAM_TEXT, 'Criterion label'),
-                'idnumber' => new external_value(PARAM_TEXT, 'Criterion idnumber'),
-                'sort' => new external_value(PARAM_INT, 'Criterion sort'),
-                'parentid' => new external_value(PARAM_INT, 'Criterion parentid'),
-            ]
+            new external_single_structure(
+                api_helpers::get_criteria_info_structure()
+            )
         );
     }
 

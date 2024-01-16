@@ -24,6 +24,7 @@ use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
 use external_value;
+use local_competvet\api_helpers;
 use mod_competvet\local\api\observations;
 
 /**
@@ -48,7 +49,7 @@ class get_eval_observation_info extends external_api {
                     new external_single_structure(
                         [
                             'id' => new external_value(PARAM_INT, 'Comment ID'),
-                            'userinfo' => user_info::execute_returns(),
+                            'userinfo' => new external_value(api_helpers::get_user_info_structure()),
                             'comment' => new external_value(PARAM_RAW, 'Comment text'),
                             'timecreated' => new external_value(PARAM_INT, 'Comment creation time'),
                             'timemodified' => new external_value(PARAM_INT, 'Comment last modification time'),
@@ -59,7 +60,7 @@ class get_eval_observation_info extends external_api {
                         [
                             'id' => new external_value(PARAM_INT, 'Comment ID'),
                             'type' => new external_value(PARAM_INT, 'Comment type (autoeval, eval, certif...)'),
-                            'userinfo' => user_info::execute_returns(),
+                            'userinfo' => new external_value(api_helpers::get_user_info_structure()),
                             'comment' => new external_value(PARAM_RAW, 'Comment text'),
                             'commentlabel' => new external_value(PARAM_RAW, 'Comment label'),
                             'timecreated' => new external_value(PARAM_INT, 'Comment creation time'),
@@ -70,12 +71,14 @@ class get_eval_observation_info extends external_api {
                 'criteria' => new external_multiple_structure(
                     new external_single_structure(
                         [
-                            'criterioninfo' => get_situation_criteria::get_criteria_info_returns(),
+                            'criterioninfo' => api_helpers::get_criteria_info_structure(),
                             'level' => new external_value(PARAM_INT, 'Criterion level'),
                             'subcriteria' => new external_multiple_structure(
                                 new external_single_structure(
                                     [
-                                        'criterioninfo' => get_situation_criteria::get_criteria_info_returns(),
+                                        'criterioninfo' => new external_single_structure(
+                                            api_helpers::get_criteria_info_structure()
+                                        ),
                                         'comment' => new external_value(PARAM_RAW, 'Criterion level'),
                                     ]
                                 )

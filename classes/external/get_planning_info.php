@@ -25,6 +25,7 @@ use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
 use external_value;
+use local_competvet\api_helpers;
 use mod_competvet\local\api\plannings;
 use mod_competvet\local\api\situations;
 
@@ -43,15 +44,7 @@ class get_planning_info extends external_api {
      */
     public static function execute_returns() {
         return new external_single_structure(
-            [
-                'id' => new external_value(PARAM_INT, 'Plan ID'),
-                'startdate' => new external_value(PARAM_INT, 'Plan start date'),
-                'enddate' => new external_value(PARAM_INT, 'Plan end date'),
-                'groupname' => new external_value(PARAM_TEXT, 'Group name'),
-                'groupid' => new external_value(PARAM_INT, 'Group id (Internal ID)'),
-                'session' => new external_value(PARAM_ALPHANUMEXT, 'Session name (unused now but might be later)'),
-                'situationid' => new external_value(PARAM_INT, 'Situation ID'),
-            ]
+            api_helpers::get_planning_info_structure()
         );
     }
 
