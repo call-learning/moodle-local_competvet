@@ -33,32 +33,19 @@ global $PAGE, $DB, $OUTPUT, $USER;
 
 require_login();
 $observationid = required_param('evalid', PARAM_INT);
-$currenttab = optional_param('currenttab', 'eval', PARAM_ALPHA);
 
-$context = context_system::instance();
-$PAGE->set_context($context);
 $currenturl = new moodle_url(
-    '/local/competvet/mobileview/observer/eval/view.php',
+    '/local/competvet/mobileview/common/eval/view.php',
     ['evalid' => $observationid]
 );
-$PAGE->set_url($currenturl);
+mobileview_helper::mobile_view_header($currenturl);
 
 $observation = observation::get_record(['id' => $observationid]);
 $planning = planning::get_record(['id' => $observation->get('planningid')]);
 $groupname = groups_get_group_name($planning->get('groupid'));
 $userid = $observation->get('studentid');
-$PAGE->set_button(
-    $OUTPUT->single_button(
-        new moodle_url(
-            '/local/competvet/mobileview/observer/evaluations.php',
-            ['studentid' => $userid, 'planningid' => $planning->get('id'), 'foruserid' => $observation->get('studentid')]
-        ),
-        get_string('back'),
-        'get'
-    )
-);
-$debugs = [];
 
+$debugs = [];
 ['results' => $observationinfo, 'debug' => $debugs[]] =
     mobileview_helper::call_api(
         \local_competvet\external\get_eval_observation_info::class,
@@ -78,9 +65,11 @@ $studentuser = core_user::get_user($userid);
 echo $OUTPUT->heading(format_text($competvetname, FORMAT_HTML));
 echo $OUTPUT->user_picture($studentuser, ['size' => 100, 'class' => 'd-inline-block']);
 echo $OUTPUT->heading(format_text($dates, FORMAT_HTML), 3, 'text-right');
-echo $OUTPUT->heading(get_string('context', 'mod_competvet'), 4);
 $widget = base::factory($userid, 'student_eval');
-$widget->set_data($observationinfo);
+$widget->set_data($observationinfo, new moodle_url(
+    '/local/competvet/mobileview/common/eval/view_subcriteria.php',
+    ['evalid' => $observation->get('id'), 'backurl' => $PAGE->url]
+));
 $renderer = $PAGE->get_renderer('mod_competvet');
 echo $renderer->render($widget);
 foreach ($debugs as $debug) {

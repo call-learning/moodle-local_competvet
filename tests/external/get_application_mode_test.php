@@ -59,14 +59,14 @@ class get_application_mode_test extends externallib_advanced_testcase {
                 ],
                 'expected' => 'student',
             ],
-            'observer and assessor in course' => [
+            'observer and evaluator in course' => [
                 'definition' => [
                     'course 1' => [
                         'roles' => ['observer'],
                         'activities' => ['SIT1' => null, 'SIT2' => null, 'SIT3' => null],
                     ],
                     'course 2' => [
-                        'roles' => ['assessor'],
+                        'roles' => ['evaluator'],
                         'activities' => ['SIT4' => null, 'SIT5' => null, 'SIT6' => null],
                     ],
                 ],

@@ -24,53 +24,43 @@ use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
 use external_value;
-use mod_competvet\local\api\plannings;
+use local_competvet\api_helpers;
+use mod_competvet\local\api\observations;
 
 /**
- * Get planning information for a given student.
+ * Delete a given eval observation.
  *
  * @package   local_competvet
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class get_planning_infos_student extends external_api {
+class delete_eval_observation extends external_api {
     /**
      * Returns description of method parameters
      *
      * @return external_single_structure
      */
     public static function execute_returns(): external_single_structure {
-        return
-            new external_single_structure(
-                [
-                    'id' => new external_value(PARAM_INT, 'Student ID'),
-                    'planningid' => new external_value(PARAM_INT, 'Planning ID'),
-                    'info' => new external_multiple_structure(
-                        new external_single_structure(
-                            [
-                                'type' => new external_value(PARAM_TEXT, 'Type of evaluation (eval, autoeval, certif, list)'),
-                                'nbdone' => new external_value(PARAM_INT, 'Nb of observation done'),
-                                'nbrequired' => new external_value(PARAM_INT, 'Nb of observation required'),
-                            ]
-                        )
-                    ),
-                ]
-            );
+        return new external_single_structure([]);
     }
 
     /**
-     * Return the list of situations the user is registered in
+     * Return the list of criteria for this situation.
      *
-     * @param int $planningid
-     * @param int $userid
+     * @param int $observationid
      * @return array
      */
-    public static function execute(int $planningid, int $userid): array {
-        ['planningid' => $planningid, 'userid' => $userid] =
-            self::validate_parameters(self::execute_parameters(), ['planningid' => $planningid, 'userid' => $userid]);
+    public static function execute(int $observationid): array {
+        [
+            'observationid' => $observationid,
+        ] =
+            self::validate_parameters(self::execute_parameters(), [
+                'observationid' => $observationid,
+            ]);
         self::validate_context(context_system::instance());
-        $planninginfos = plannings::get_planning_info_for_student($planningid, $userid);
-        return $planninginfos;
+        // TODO validate role.
+        observations::delete_observation($observationid);
+        return [];
     }
 
     /**
@@ -81,9 +71,7 @@ class get_planning_infos_student extends external_api {
     public static function execute_parameters() {
         return new external_function_parameters(
             [
-                'planningid' => new external_value(PARAM_INT, 'id of the planning'),
-                'userid' => new external_value(PARAM_INT,
-                    'id of the user we want stats for, or all users for this planning if not.'),
+                'id' => new external_value(PARAM_INT, 'Observation ID'),
             ]
         );
     }

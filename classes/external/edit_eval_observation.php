@@ -28,52 +28,47 @@ use local_competvet\api_helpers;
 use mod_competvet\local\api\observations;
 
 /**
- * Get observation info for the eval component and a student id.
+ * Edit a given eval observation.
  *
  * @package   local_competvet
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class get_eval_observation_info extends external_api {
+class edit_eval_observation extends external_api {
     /**
      * Returns description of method parameters
      *
      * @return external_single_structure
      */
     public static function execute_returns(): external_single_structure {
-        return new external_single_structure(
-            [
-                'id' => new external_value(PARAM_INT, 'Observation ID'),
-                'category' => new external_value(PARAM_INT, 'Observation category (AUTOEVAL or EVAL'),
-                'context' =>
-                    new external_single_structure(
-                        api_helpers::get_context_structure()
-                    ),
-                'comments' => new external_multiple_structure(
-                    new external_single_structure(
-                        api_helpers::get_comment_structure()
-                    )
-                ),
-                'criteria' => new external_multiple_structure(
-                    new external_single_structure(
-                        api_helpers::get_criteria_structure()
-                    )
-                ),
-            ]
-        );
+        return new external_single_structure([]);
     }
 
     /**
      * Return the list of criteria for this situation.
      *
      * @param int $observationid
+     * @param string|null $context
+     * @param array|null $comments
+     * @param array $criteria
      * @return array
      */
-    public static function execute(int $observationid): array {
-        ['observationid' => $observationid] =
-            self::validate_parameters(self::execute_parameters(), ['observationid' => $observationid]);
+    public static function execute(int $observationid, ?string $context = '', ?array $comments = [], array $criteria = []): array {
+        [
+            'observationid' => $observationid,
+            'context' => $context,
+            'comments' => $comments,
+            'criteria' => $criteria,
+        ] =
+            self::validate_parameters(self::execute_parameters(), [
+                'observationid' => $observationid,
+                'context' => $context,
+                'comments' => $comments,
+                'criteria' => $criteria,
+            ]);
         self::validate_context(context_system::instance());
-        return observations::get_observation_information($observationid);
+        observations::edit_observation($observationid, $context, $comments, $criteria);
+        return [];
     }
 
     /**
@@ -84,7 +79,27 @@ class get_eval_observation_info extends external_api {
     public static function execute_parameters() {
         return new external_function_parameters(
             [
-                'observationid' => new external_value(PARAM_INT, 'id of the observation'),
+                'id' => new external_value(PARAM_INT, 'Observation ID'),
+                'context' =>
+                    new external_single_structure(
+                        api_helpers::get_context_structure(),
+                        'Context',
+                        VALUE_OPTIONAL
+                    ),
+                'comments' => new external_multiple_structure(
+                    new external_single_structure(
+                        api_helpers::get_comment_structure()
+                    ),
+                    'Comments',
+                    VALUE_OPTIONAL
+                ),
+                'criteria' => new external_multiple_structure(
+                    new external_single_structure(
+                        api_helpers::get_criteria_info_structure()
+                    ),
+                    'Criteria',
+                    VALUE_OPTIONAL
+                ),
             ]
         );
     }

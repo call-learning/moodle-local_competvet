@@ -53,9 +53,9 @@ class get_situations extends external_api {
                     'evalnum' => new external_value(PARAM_INT, 'Required evaluation count'),
                     'autoevalnum' => new external_value(PARAM_INT, 'Required auto-evaluation count'),
                     'roles' => new external_value(PARAM_RAW, 'User roles in this situation
-                            (student, observer, assessor) in a JSON array, with the highest role first'),
+                            (student, observer, evaluator) in a JSON array, with the highest role first'),
                     'tags' => new external_value(PARAM_RAW, 'User roles in this situation
-                            (student, observer, assessor) in a JSON array, with the highest role first'),
+                            (student, observer, evaluator) in a JSON array, with the highest role first'),
                     'plannings' => new external_multiple_structure(
                         new external_single_structure(
                             api_helpers::get_planning_info_structure()

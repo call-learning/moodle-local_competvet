@@ -29,11 +29,9 @@ global $PAGE, $DB, $OUTPUT, $USER;
 
 require_login();
 $userid = optional_param('userid', $USER->id, PARAM_INT);
-
-$context = context_system::instance();
-$PAGE->set_context($context);
 $currenturl = new moodle_url('/local/competvet/mobileview/observer/index.php', ['userid' => $userid]);
-$PAGE->set_url($currenturl);
+mobileview_helper::mobile_view_header($currenturl);
+
 $debugs = [];
 ['results' => $situations, 'debug' => $debugs[]] =
     mobileview_helper::call_api(\local_competvet\external\get_situations::class, ['userid' => $userid, 'nofutureplanning' => true]);
@@ -64,7 +62,7 @@ foreach ($possibletags as $tag) {
         if (in_array($tag, $tags)) {
             $currenturl = new moodle_url(
                 '/local/competvet/mobileview/observer/plannings.php',
-                ['userid' => $userid, 'situationid' => $situation['id']]
+                ['userid' => $userid, 'situationid' => $situation['id'], 'backurl' => $PAGE->url]
             );
             $situationlink = html_writer::link(
                 $currenturl,

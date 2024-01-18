@@ -36,3 +36,4 @@ $string['mobileview:usertype:students']  = 'Students ({$a})';
 $string['mobileview:eval']  = 'Eval';
 $string['mobileview:certif']  = 'Certif';
 $string['mobileview:list']  = 'List';
+$string['usertype:display'] = 'User type: {$a}';

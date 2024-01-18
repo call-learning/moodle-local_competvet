@@ -16,7 +16,9 @@
 namespace local_competvet;
 
 
+use context_system;
 use moodle_exception;
+use moodle_url;
 
 /**
  * Mobile view helper class.
@@ -40,6 +42,26 @@ class mobileview_helper {
             $duration = microtime(true) - $now;
             $debug = new output\local\mobileview\debug($apifunctionname, $parameters, $results, $duration);
             return ['results' => $results, 'debug' => $debug];
+        }
+    }
+
+    public static function mobile_view_header(moodle_url $currenturl, ?moodle_url $backurl = null) {
+        global $PAGE, $OUTPUT;
+        $backurl = optional_param('backurl', $backurl, PARAM_URL);
+        $context = context_system::instance();
+        $PAGE->set_context($context);
+        if (!empty($backurl)) {
+            $currenturl->param('backurl', $backurl);
+        }
+        $PAGE->set_url($currenturl);
+        if ($backurl) {
+            $PAGE->set_button(
+                $OUTPUT->single_button(
+                    $backurl,
+                    get_string('back'),
+                    'get'
+                )
+            );
         }
     }
 }

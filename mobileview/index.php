@@ -30,14 +30,13 @@ global $PAGE, $DB, $OUTPUT, $USER;
 require_login();
 $userid = optional_param('userid', $USER->id, PARAM_INT);
 
-$context = context_system::instance();
 if (!($user = \core_user::get_user($userid))) {
     $user = $USER;
 }
 $debugs = [];
 ['results' => $usertype, 'debug' => $debugs[]] =
     mobileview_helper::call_api(\local_competvet\external\get_application_mode::class, ['userid' => $user->id]);
-$usertype = $usertype->type;
+$usertype = $usertype['type'];
 if ($usertype == 'unknown' && !is_primary_admin($user->id)) {
     throw new moodle_exception('unknownusertype', 'mod_competvet');
 }
@@ -51,13 +50,13 @@ if ($usertype === 'student') {
     $redirecturl = new moodle_url('/local/competvet/mobileview/observer/index.php', $params);
 }
 $currenturl = new moodle_url('/local/competvet/mobileview/index.php', ['userid' => $userid]);
-$PAGE->set_url($currenturl);
+mobileview_helper::mobile_view_header($currenturl, null);
 
-// Output a single button to continue
+// Output a single button to continue.
 echo $OUTPUT->header();
 echo $OUTPUT->continue_button($redirecturl);
+echo $OUTPUT->container(get_string('usertype:display', 'local_competvet', $usertype), 'card', 'usertype');
 foreach ($debugs as $debug) {
     echo $OUTPUT->render($debug);
 }
 echo $OUTPUT->footer();
-

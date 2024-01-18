@@ -55,7 +55,6 @@ class user_info extends external_api {
      * @return stdClass
      */
     public static function execute(int $userid): stdClass {
-        global $PAGE;
         self::validate_parameters(self::execute_parameters(), ['userid' => $userid]);
         self::validate_context(context_system::instance());
         $user = null;

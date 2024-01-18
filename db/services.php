@@ -56,7 +56,7 @@ $functions = [
         'description' => 'Get Situations and planning for a given user or the current user',
         'ajax' => true,
         'type' => 'read',
-        'loginrequired' => false,
+        'loginrequired' => true,
         'services' => [utils::COMPETVET_MOBILE_SERVICE],
     ],
     'local_competvet_get_eval_observation_info' => [
@@ -65,7 +65,7 @@ $functions = [
         'description' => 'Get Observation information for the eval component of application',
         'ajax' => true,
         'type' => 'read',
-        'loginrequired' => false,
+        'loginrequired' => true,
         'services' => [utils::COMPETVET_MOBILE_SERVICE],
     ],
     'local_competvet_get_planning_infos_student' => [
@@ -75,7 +75,7 @@ $functions = [
         regarding students for a given planning',
         'ajax' => true,
         'type' => 'read',
-        'loginrequired' => false,
+        'loginrequired' => true,
         'services' => [utils::COMPETVET_MOBILE_SERVICE],
     ],
     'local_competvet_get_plannings_info' => [
@@ -84,7 +84,7 @@ $functions = [
         'description' => 'Get planning information statistics',
         'ajax' => true,
         'type' => 'read',
-        'loginrequired' => false,
+        'loginrequired' => true,
         'services' => [utils::COMPETVET_MOBILE_SERVICE],
     ],
     'local_competvet_get_situation_criteria' => [
@@ -93,7 +93,7 @@ $functions = [
         'description' => 'Get all criteria for a given situation',
         'ajax' => true,
         'type' => 'read',
-        'loginrequired' => false,
+        'loginrequired' => true,
         'services' => [utils::COMPETVET_MOBILE_SERVICE],
     ],
     'local_competvet_get_user_eval_observations' => [
@@ -102,7 +102,7 @@ $functions = [
         'description' => 'Get all evaluation (EVAL) on a given planning for the given user',
         'ajax' => true,
         'type' => 'read',
-        'loginrequired' => false,
+        'loginrequired' => true,
         'services' => [utils::COMPETVET_MOBILE_SERVICE],
     ],
     'local_competvet_get_planning_info' => [
@@ -111,7 +111,7 @@ $functions = [
         'description' => 'Get info related to a given planning',
         'ajax' => true,
         'type' => 'read',
-        'loginrequired' => false,
+        'loginrequired' => true,
         'services' => [utils::COMPETVET_MOBILE_SERVICE],
     ],
     'local_competvet_get_users_infos_for_planning' => [
@@ -120,7 +120,34 @@ $functions = [
         'description' => 'Get all users involved in this planning (i.e. students and observers) and info about observations',
         'ajax' => true,
         'type' => 'read',
-        'loginrequired' => false,
+        'loginrequired' => true,
+        'services' => [utils::COMPETVET_MOBILE_SERVICE],
+    ],
+    'local_competvet_create_eval_observation' => [
+        'classname' => \local_competvet\external\create_eval_observation::class,
+        'methodname' => 'execute',
+        'description' => 'Create a new eval observation',
+        'ajax' => true,
+        'type' => 'write',
+        'loginrequired' => true,
+        'services' => [utils::COMPETVET_MOBILE_SERVICE],
+    ],
+    'local_competvet_create_eval_observation' => [
+        'classname' => \local_competvet\external\edit_eval_observation::class,
+        'methodname' => 'execute',
+        'description' => 'Edit a given eval observation',
+        'ajax' => true,
+        'type' => 'write',
+        'loginrequired' => true,
+        'services' => [utils::COMPETVET_MOBILE_SERVICE],
+    ],
+    'local_competvet_delete_eval_observation' => [
+        'classname' => \local_competvet\external\delete_eval_observation::class,
+        'methodname' => 'execute',
+        'description' => 'Delete a given eval observation',
+        'ajax' => true,
+        'type' => 'write',
+        'loginrequired' => true,
         'services' => [utils::COMPETVET_MOBILE_SERVICE],
     ],
 ];

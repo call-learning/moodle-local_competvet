@@ -15,22 +15,25 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace local_competvet;
 
+use external_multiple_structure;
+use external_single_structure;
 use external_value;
 
 /**
  * API Helpers
  *
- * External services : user profile
+ * Common structures used in the API.
+ *
+ * @package   local_competvet
+ * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class api_helpers {
-    public static function get_user_info_structure() {
-        return [
-            'id' => new \external_value(PARAM_INT, 'ID type of user'),
-            'fullname' => new \external_value(PARAM_TEXT, 'User fullname'),
-            'userpictureurl' => new \external_value(PARAM_URL, 'User picture (avatar) URL', VALUE_OPTIONAL),
-        ];
-    }
-
+    /**
+     * Get planning info structure
+     *
+     * @return array
+     */
     public static function get_planning_info_structure() {
         return [
             'id' => new external_value(PARAM_INT, 'Plan ID'),
@@ -43,6 +46,97 @@ class api_helpers {
         ];
     }
 
+    /**
+     * Get comment structure
+     *
+     * @return array
+     */
+    public static function get_comment_structure() {
+        return [
+            'id' => new external_value(PARAM_INT, 'Comment ID', VALUE_OPTIONAL),
+            'comment' => new external_value(PARAM_RAW, 'Comment text'),
+            'commentlabel' => new external_value(PARAM_RAW, 'Comment label', VALUE_OPTIONAL),
+            'type' => new external_value(PARAM_INT, 'Comment type (autoeval, eval, certif...)', VALUE_OPTIONAL),
+            'userinfo' => new external_single_structure(self::get_user_info_structure(), 'User information', VALUE_OPTIONAL),
+            'timecreated' => new external_value(PARAM_INT, 'Comment creation time', VALUE_OPTIONAL),
+            'timemodified' => new external_value(PARAM_INT, 'Comment last modification time', VALUE_OPTIONAL),
+        ];
+    }
+
+    /**
+     * Get user info structure
+     *
+     * @return array
+     */
+    public static function get_user_info_structure() {
+        return [
+            'id' => new \external_value(PARAM_INT, 'ID type of user'),
+            'fullname' => new \external_value(PARAM_TEXT, 'User fullname'),
+            'userpictureurl' => new \external_value(PARAM_URL, 'User picture (avatar) URL', VALUE_OPTIONAL),
+        ];
+    }
+
+    /**
+     * Get context structure
+     *
+     * @return array
+     */
+    public static function get_context_structure() {
+        return [
+            'id' => new external_value(PARAM_INT, 'Comment ID', VALUE_OPTIONAL),
+            'comment' => new external_value(PARAM_RAW, 'Comment text'),
+            'userinfo' => new external_single_structure(self::get_user_info_structure(), VALUE_OPTIONAL),
+            'timecreated' => new external_value(PARAM_INT, 'Comment creation time', VALUE_OPTIONAL),
+            'timemodified' => new external_value(PARAM_INT, 'Comment last modification time', VALUE_OPTIONAL),
+        ];
+    }
+
+    /**
+     * Get criteria structure
+     *
+     * @return array
+     */
+    public static function get_criteria_structure() {
+        return [
+            'id' => new external_value(PARAM_INT, 'Observation criteria ID', VALUE_OPTIONAL),
+            'level' => new external_value(PARAM_INT, 'Criterion level', VALUE_OPTIONAL),
+            'subcriteria' => new external_multiple_structure(
+                new external_single_structure(
+                    self::get_subcriteria_info_structure()
+                ),
+                'Subcriteria',
+                VALUE_OPTIONAL
+            ),
+            'criterioninfo' => new external_single_structure(
+                self::get_criteria_info_structure(),
+                'Criterion info',
+                VALUE_OPTIONAL
+            ),
+        ];
+    }
+
+    /**
+     * Get criteria info structure
+     *
+     * @return array
+     */
+    public static function get_subcriteria_info_structure() {
+        return [
+            'id' => new external_value(PARAM_INT, 'Observation subcriteria ID', VALUE_OPTIONAL),
+            'comment' => new external_value(PARAM_RAW, 'Criterion level'),
+            'criterioninfo' => new external_single_structure(
+                self::get_criteria_info_structure(),
+                'SubCriterion info',
+                VALUE_OPTIONAL
+            ),
+        ];
+    }
+
+    /**
+     * Get criteria info structure
+     *
+     * @return array
+     */
     public static function get_criteria_info_structure() {
         return [
             'id' => new external_value(PARAM_INT, 'Criterion ID'),

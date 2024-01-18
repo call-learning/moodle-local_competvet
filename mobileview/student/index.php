@@ -33,9 +33,8 @@ require_login();
 $userid = optional_param('userid', $USER->id, PARAM_INT);
 
 $context = context_system::instance();
-$PAGE->set_context($context);
 $currenturl = new moodle_url('/local/competvet/mobileview/student/index.php', ['userid' => $userid]);
-$PAGE->set_url($currenturl);
+mobileview_helper::mobile_view_header($currenturl,);
 
 ['results' => $situations, 'debug' => $debugs[]] =
     mobileview_helper::call_api(\local_competvet\external\get_situations::class, ['userid' => $userid, 'nofutureplanning' => true]);
@@ -49,19 +48,13 @@ foreach ($situations as $situation) {
         $planningidstosituationid = array_fill_keys($allsituationplanningsid, $situation['id']) + $planningidstosituationid;
         $allplanningsdefinitions = array_merge($allplanningsdefinitions, $situation['plannings']);
 }
+
 $allplanningsdefinitions = array_combine(array_column($allplanningsdefinitions, 'id'), $allplanningsdefinitions);
 $debugs = [];
 ['results' => $planningstats, 'debug' => $debugs[]] =
     mobileview_helper::call_api(\local_competvet\external\get_plannings_infos::class, ['userid' => $userid, 'plannings' =>
         json_encode(array_keys($planningidstosituationid))]);
 
-$PAGE->set_button(
-    $OUTPUT->single_button(
-        new moodle_url('/local/competvet/mobileview/observer/index.php', ['userid' => $userid]),
-        get_string('back'),
-        'get'
-    )
-);
 echo $OUTPUT->header();
 $planningbycategory = array_reduce($planningstats, function ($carry, $item) {
     $carry[$item['categorytext']][] = $item;
@@ -86,6 +79,7 @@ foreach ($planningbycategory as $categorytext => $plannings) {
         $planninglink = new moodle_url('/local/competvet/mobileview/student/myevaluations.php', [
             'userid' => $userid,
             'planningid' => $planning['id'],
+            'backurl' => $PAGE->url,
         ]);
         echo $OUTPUT->container(html_writer::link($planninglink, $dates), 'font-weight-bold', 'planningdates');
         echo $OUTPUT->container_end();

@@ -21,45 +21,46 @@
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 use local_competvet\mobileview_helper;
 use mod_competvet\competvet;
+use mod_competvet\local\persistent\observation;
 use mod_competvet\local\persistent\planning;
 use mod_competvet\output\view\base;
 
-require(__DIR__ . '/../../../../config.php');
+require(__DIR__ . '/../../../../../config.php');
 global $PAGE, $DB, $OUTPUT, $USER;
 
 require_login();
-$planningid = required_param('planningid', PARAM_INT);
-$studentid = required_param('studentid', PARAM_INT);
-$asuserid = optional_param('asuserid', $USER->id, PARAM_INT);
-$currenttab = optional_param('currenttab', 'eval', PARAM_ALPHA);
+$observationid = required_param('evalid', PARAM_INT);
+$criteriaid = required_param('criterionid', PARAM_INT);
 
-$currenturl = new moodle_url('/local/competvet/mobileview/observer/evaluations.php',
-    ['asuserid' => $asuserid, 'planningid' => $planningid, 'studentid' => $studentid]);
+$currenturl = new moodle_url(
+    '/local/competvet/mobileview/observer/eval/view_subcriteria.php',
+    ['evalid' => $observationid, 'criteriaid' => $criteriaid]);
 mobileview_helper::mobile_view_header($currenturl);
 
-$planning = planning::get_record(['id' => $planningid]);
+$observation = observation::get_record(['id' => $observationid]);
+$planning = planning::get_record(['id' => $observation->get('planningid')]);
 $groupname = groups_get_group_name($planning->get('groupid'));
+$userid = $observation->get('studentid');
 
 $debugs = [];
-['results' => $observations, 'debug' => $debugs[]] =
-    mobileview_helper::call_api(\local_competvet\external\get_user_eval_observations::class,
-        ['planningid' => $planningid, 'userid' => $studentid]);
 
-['results' => $studentinfo, 'debug' => $debugs[]] =
-    mobileview_helper::call_api(\local_competvet\external\get_planning_infos_student::class,
-        ['planningid' => $planningid, 'userid' => $studentid]);
+['results' => $observationinfo, 'debug' => $debugs[]] =
+    mobileview_helper::call_api(
+        \local_competvet\external\get_eval_observation_info::class,
+        ['observationid' => $observationid]
+    );
 
-$userplanninginfo = $studentinfo['info'];
-if (!empty($userplanninginfo)) {
-    $userplanninginfo = array_combine(array_column($userplanninginfo, 'type'), $userplanninginfo);
+$criterion = null;
+foreach ($observationinfo['criteria'] as $evalcriterion) {
+    if ($evalcriterion['criterioninfo']['id'] == $criteriaid) {
+        $criterion = $evalcriterion;
+        break;
+    }
 }
-$views = [
-    'eval' => new moodle_url('/local/competvet/mobileview/common/eval/view.php', ['backurl' => $PAGE->url]),
-    'autoeval' => new moodle_url('/local/competvet/mobileview/common/autoeval/view.php', ['backurl' => $PAGE->url]),
-];
-/** @var core_renderer $OUTPUT */
+
 echo $OUTPUT->header();
 $competvet = competvet::get_from_situation_id($planning->get('situationid'));
 $competvetinstance = $competvet->get_instance();
@@ -69,12 +70,15 @@ $dates = get_string('mobileview:planningdates', 'local_competvet', [
     'enddate' => planning::get_planning_date_string($planning->get('enddate')),
 ]);
 
-$user = core_user::get_user($studentid);
+$studentuser = core_user::get_user($userid);
 echo $OUTPUT->heading(format_text($competvetname, FORMAT_HTML));
-echo $OUTPUT->user_picture($user, ['size' => 100, 'class' => 'd-inline-block']);
+echo $OUTPUT->user_picture($studentuser, ['size' => 100, 'class' => 'd-inline-block']);
 echo $OUTPUT->heading(format_text($dates, FORMAT_HTML), 3, 'text-right');
-$widget = base::factory($asuserid, 'student_evaluations');
-$widget->set_data($studentinfo, $views, $observations);
+$widget = base::factory($userid, 'student_eval_subcriteria');
+$widget->set_data($criterion['subcriteria'], new moodle_url(
+    '/local/competvet/mobileview/observer/eval/view_subcriteria.php',
+    ['evalid' => $observation->get('id'), 'backurl' => $PAGE->url]
+));
 $renderer = $PAGE->get_renderer('mod_competvet');
 echo $renderer->render($widget);
 foreach ($debugs as $debug) {

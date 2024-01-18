@@ -33,29 +33,13 @@ global $PAGE, $DB, $OUTPUT, $USER;
 require_login();
 $planningid = required_param('planningid', PARAM_INT);
 $asuserid = optional_param('asuserid', $USER->id, PARAM_INT);
-
-$context = context_system::instance();
-$PAGE->set_context($context);
 $currenturl =
     new moodle_url('/local/competvet/mobileview/observer/planning.php', ['userid' => $asuserid, 'planningid' => $planningid]);
-$PAGE->set_url($currenturl);
+mobileview_helper::mobile_view_header($currenturl);
 
 $debugs = [];
 ['results' => $planninginfo, 'debug' => $debugs[]] =
     mobileview_helper::call_api(\local_competvet\external\get_planning_info::class, ['planningid' => $planningid]);
-
-$PAGE->set_button(
-    $OUTPUT->single_button(
-        new moodle_url(
-            '/local/competvet/mobileview/observer/plannings.php',
-            ['asuserid' => $asuserid, 'situationid' => $planninginfo['situationid']]
-        ),
-        get_string('back'),
-        'get'
-    )
-);
-
-
 ['results' => $userswithinfo, 'debug' => $debugs[]] =
     mobileview_helper::call_api(\local_competvet\external\get_users_infos_for_planning::class, ['planningid' => $planningid]);
 
@@ -73,7 +57,7 @@ echo $OUTPUT->heading(format_text($competvetname, FORMAT_HTML));
 echo $OUTPUT->heading(format_text($dates, FORMAT_HTML), 3, 'text-right');
 $widget = base::factory($asuserid, 'planning');
 $widget->set_data($userswithinfo, $planninginfo['groupname'],
-    new moodle_url('/local/competvet/mobileview/observer/evaluations.php', ['planningid' => $planningid]));
+    new moodle_url('/local/competvet/mobileview/observer/evaluations.php', ['planningid' => $planningid, 'backurl' => $PAGE->url]));
 $renderer = $PAGE->get_renderer('mod_competvet');
 echo $renderer->render($widget);
 foreach ($debugs as $debug) {
