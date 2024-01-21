@@ -31,11 +31,10 @@ global $PAGE, $DB, $OUTPUT, $USER;
 
 require_login();
 $planningid = required_param('planningid', PARAM_INT);
-$asuserid = optional_param('asuserid', $USER->id, PARAM_INT);
 $currenttab = optional_param('currenttab', 'eval', PARAM_ALPHA);
 $studentid = $USER->id;
 $currenturl = new moodle_url('/local/competvet/mobileview/student/myevaluations.php',
-    ['asuserid' => $asuserid, 'planningid' => $planningid]);
+    ['planningid' => $planningid]);
 mobileview_helper::mobile_view_header($currenturl);
 
 $planning = planning::get_record(['id' => $planningid]);
@@ -72,7 +71,7 @@ $user = core_user::get_user($studentid);
 echo $OUTPUT->heading(format_text($competvetname, FORMAT_HTML));
 echo $OUTPUT->user_picture($user, ['size' => 100, 'class' => 'd-inline-block']);
 echo $OUTPUT->heading(format_text($dates, FORMAT_HTML), 3, 'text-right');
-$widget = base::factory($asuserid, 'student_evaluations');
+$widget = base::factory($USER->id, 'student_evaluations');
 $widget->set_data($studentinfo, $views, $observations);
 $renderer = $PAGE->get_renderer('mod_competvet');
 echo $renderer->render($widget);

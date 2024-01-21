@@ -32,11 +32,10 @@ global $PAGE, $DB, $OUTPUT, $USER;
 require_login();
 $planningid = required_param('planningid', PARAM_INT);
 $studentid = required_param('studentid', PARAM_INT);
-$asuserid = optional_param('asuserid', $USER->id, PARAM_INT);
 $currenttab = optional_param('currenttab', 'eval', PARAM_ALPHA);
 
 $currenturl = new moodle_url('/local/competvet/mobileview/observer/evaluations.php',
-    ['asuserid' => $asuserid, 'planningid' => $planningid, 'studentid' => $studentid]);
+    ['planningid' => $planningid, 'studentid' => $studentid]);
 mobileview_helper::mobile_view_header($currenturl);
 
 $planning = planning::get_record(['id' => $planningid]);

@@ -21,6 +21,7 @@ require_once($CFG->libdir . '/externallib.php');
 use context_system;
 use external_api;
 use external_function_parameters;
+use external_multiple_structure;
 use external_single_structure;
 use external_value;
 use local_competvet\api_helpers;
@@ -51,28 +52,42 @@ class create_eval_observation extends external_api {
      * Return the list of criteria for this situation.
      *
      * @param int $category
-     * @param int $studentid
      * @param int $planningid
+     * @param int $studentid
      * @param int|null $observerid
+     * @param object|null $context
+     * @param array|null $comments
+     * @param array $criteria
      * @return array
      */
-    public static function execute(int $category, int $studentid, int $planningid, ?int $observerid = 0, array $criteria = []): array {
+    public static function execute(
+        int $category,
+        int $planningid,
+        int $studentid,
+        ?int $observerid = 0,
+        ?object $context = null,
+        ?array $comments = [],
+        array $criteria = []
+    ): array {
         [
             'category' => $category,
-            'studentid' => $studentid,
             'planningid' => $planningid,
+            'studentid' => $studentid,
             'observerid' => $observerid,
-            'criteria' => $criteria,
+            'context' => $context,
         ] =
             self::validate_parameters(self::execute_parameters(), [
                 'category' => $category,
-                'studentid' => $studentid,
                 'planningid' => $planningid,
+                'studentid' => $studentid,
                 'observerid' => $observerid,
+                'context' => $context,
+                'comments' => $comments,
                 'criteria' => $criteria,
             ]);
         self::validate_context(context_system::instance());
-        $observationid = observations::create_observation($category, $studentid, $planningid, $observerid, $criteria);
+        $observationid =
+            observations::create_observation($category, $planningid, $studentid, $observerid, $context, $comments, $criteria);
         return ['observationid' => $observationid];
     }
 
@@ -94,17 +109,17 @@ class create_eval_observation extends external_api {
                         'Context of the observation',
                         VALUE_OPTIONAL
                     ),
-                'criteria' => new \external_multiple_structure(
+                'comments' => new external_multiple_structure(
                     new external_single_structure(
-                        [
-                            'id' => new external_value(PARAM_INT, 'id of the criterion'),
-                            'grade' => new external_value(PARAM_INT, 'grade of the criterion', VALUE_OPTIONAL),
-                            'comment' => new external_value(PARAM_TEXT, 'comment of the criterion', VALUE_OPTIONAL),
-                            'isactive' => new external_value(PARAM_BOOL, 'is the criterion active', VALUE_DEFAULT, 1),
-                        ]
+                        api_helpers::get_comment_structure()
                     ),
-                    'Criteria of the observation',
-                    VALUE_OPTIONAL,
+                    'Comments',
+                    VALUE_OPTIONAL
+                ),
+                'criteria' => new external_multiple_structure(
+                    new external_single_structure(
+                        api_helpers::get_criteria_structure()
+                    )
                 ),
             ]
         );

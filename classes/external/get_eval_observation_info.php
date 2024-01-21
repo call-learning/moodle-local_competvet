@@ -59,6 +59,8 @@ class get_eval_observation_info extends external_api {
                         api_helpers::get_criteria_structure()
                     )
                 ),
+                'canedit' => new external_value(PARAM_BOOL, 'Can edit'),
+                'candelete' => new external_value(PARAM_BOOL, 'Can delete'),
             ]
         );
     }

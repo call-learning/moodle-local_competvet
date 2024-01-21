@@ -33,14 +33,13 @@ global $PAGE, $DB, $OUTPUT, $USER;
 
 require_login();
 $situationid = required_param('situationid', PARAM_INT);
-$asuserid = optional_param('asuserid', $USER->id, PARAM_INT);
 $currenturl =
-    new moodle_url('/local/competvet/mobileview/observer/plannings.php', ['situationid' => $situationid, 'asuserid' => $asuserid]);
+    new moodle_url('/local/competvet/mobileview/observer/plannings.php', ['situationid' => $situationid]);
 mobileview_helper::mobile_view_header($currenturl);
 
 $debugs = [];
 ['results' => $situations, 'debug' => $debugs[]] =
-    mobileview_helper::call_api(get_situations::class, ['userid' => $asuserid, 'nofutureplanning' => true]);
+    mobileview_helper::call_api(get_situations::class, ['userid' => $USER->id, 'nofutureplanning' => true]);
 
 // Now find the situation we are interested in and extract the planning ids.
 $planningids = [];
@@ -56,14 +55,14 @@ $planningids = array_map(function($planning) {
 }, $currentplannings);
 
 ['results' => $planningstats, 'debug' => $debugs[]] =
-    mobileview_helper::call_api(get_plannings_infos::class, ['userid' => $asuserid, 'plannings' => json_encode($planningids)]);
+    mobileview_helper::call_api(get_plannings_infos::class, ['userid' => $USER->id, 'plannings' => json_encode($planningids)]);
 
 $competvet = competvet::get_from_situation_id($situationid);
 
 echo $OUTPUT->header();
-$widget = base::factory($asuserid, 'plannings');
+$widget = base::factory($USER->id, 'plannings');
 $widget->set_data($currentplannings, $planningstats,
-    new moodle_url('/local/competvet/mobileview/observer/planning.php', ['asuserid' => $asuserid, 'backurl' => $PAGE->url]));
+    new moodle_url('/local/competvet/mobileview/observer/planning.php', ['backurl' => $PAGE->url]));
 
 echo $OUTPUT->heading(format_text($competvet->get_instance()->name, FORMAT_HTML));
 $renderer = $PAGE->get_renderer('mod_competvet');

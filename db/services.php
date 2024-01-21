@@ -132,7 +132,7 @@ $functions = [
         'loginrequired' => true,
         'services' => [utils::COMPETVET_MOBILE_SERVICE],
     ],
-    'local_competvet_create_eval_observation' => [
+    'local_competvet_edit_eval_observation' => [
         'classname' => \local_competvet\external\edit_eval_observation::class,
         'methodname' => 'execute',
         'description' => 'Edit a given eval observation',

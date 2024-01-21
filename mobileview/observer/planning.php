@@ -32,9 +32,8 @@ global $PAGE, $DB, $OUTPUT, $USER;
 
 require_login();
 $planningid = required_param('planningid', PARAM_INT);
-$asuserid = optional_param('asuserid', $USER->id, PARAM_INT);
 $currenturl =
-    new moodle_url('/local/competvet/mobileview/observer/planning.php', ['userid' => $asuserid, 'planningid' => $planningid]);
+    new moodle_url('/local/competvet/mobileview/observer/planning.php', ['userid' => $USER->id, 'planningid' => $planningid]);
 mobileview_helper::mobile_view_header($currenturl);
 
 $debugs = [];
@@ -55,7 +54,7 @@ $dates = get_string('mobileview:planningdates', 'local_competvet', [
 
 echo $OUTPUT->heading(format_text($competvetname, FORMAT_HTML));
 echo $OUTPUT->heading(format_text($dates, FORMAT_HTML), 3, 'text-right');
-$widget = base::factory($asuserid, 'planning');
+$widget = base::factory($USER->id, 'planning');
 $widget->set_data($userswithinfo, $planninginfo['groupname'],
     new moodle_url('/local/competvet/mobileview/observer/evaluations.php', ['planningid' => $planningid, 'backurl' => $PAGE->url]));
 $renderer = $PAGE->get_renderer('mod_competvet');

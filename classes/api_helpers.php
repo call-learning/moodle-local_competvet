@@ -71,7 +71,7 @@ class api_helpers {
     public static function get_user_info_structure() {
         return [
             'id' => new \external_value(PARAM_INT, 'ID type of user'),
-            'fullname' => new \external_value(PARAM_TEXT, 'User fullname'),
+            'fullname' => new \external_value(PARAM_TEXT, 'User fullname', VALUE_OPTIONAL),
             'userpictureurl' => new \external_value(PARAM_URL, 'User picture (avatar) URL', VALUE_OPTIONAL),
         ];
     }
@@ -123,7 +123,7 @@ class api_helpers {
     public static function get_subcriteria_info_structure() {
         return [
             'id' => new external_value(PARAM_INT, 'Observation subcriteria ID', VALUE_OPTIONAL),
-            'comment' => new external_value(PARAM_RAW, 'Criterion level'),
+            'comment' => new external_value(PARAM_RAW, 'Criterion comment', VALUE_OPTIONAL),
             'criterioninfo' => new external_single_structure(
                 self::get_criteria_info_structure(),
                 'SubCriterion info',
@@ -140,10 +140,38 @@ class api_helpers {
     public static function get_criteria_info_structure() {
         return [
             'id' => new external_value(PARAM_INT, 'Criterion ID'),
-            'label' => new external_value(PARAM_TEXT, 'Criterion label'),
-            'idnumber' => new external_value(PARAM_TEXT, 'Criterion idnumber'),
-            'sort' => new external_value(PARAM_INT, 'Criterion sort'),
-            'parentid' => new external_value(PARAM_INT, 'Criterion parentid'),
+            'label' => new external_value(PARAM_TEXT, 'Criterion label', VALUE_OPTIONAL),
+            'idnumber' => new external_value(PARAM_TEXT, 'Criterion idnumber', VALUE_OPTIONAL),
+            'sort' => new external_value(PARAM_INT, 'Criterion sort', VALUE_OPTIONAL),
+            'parentid' => new external_value(PARAM_INT, 'Criterion parentid', VALUE_OPTIONAL),
+        ];
+    }
+
+
+    /**
+     * Get criteria info structure
+     *
+     * @return array
+     */
+    public static function get_observation_criteria_level_value_structure() {
+        return [
+            'id' => new external_value(PARAM_INT, 'Criterion Instance (comment or level) ID', VALUE_OPTIONAL),
+            'criterionid' => new external_value(PARAM_INT, 'Criterion ID', VALUE_OPTIONAL),
+            'level' => new external_value(PARAM_INT, 'Criterion level', VALUE_OPTIONAL),
+            'isactive' => new external_value(PARAM_BOOL, 'Criterion is active', VALUE_OPTIONAL),
+        ];
+    }
+
+    /**
+     * Get criteria info structure
+     *
+     * @return array
+     */
+    public static function get_observation_criteria_comment_structure() {
+        return [
+            'id' => new external_value(PARAM_INT, 'Criterion Instance (comment or level) ID', VALUE_OPTIONAL),
+            'criterionid' => new external_value(PARAM_INT, 'Criterion ID', VALUE_OPTIONAL),
+            'comment' => new external_value(PARAM_RAW, 'Criterion comment', VALUE_OPTIONAL),
         ];
     }
 }
