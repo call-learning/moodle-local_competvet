@@ -24,8 +24,9 @@
  */
 
 use local_competvet\mobileview_helper;
+use mod_competvet\output\view\base;
 
-require(__DIR__ . '/../../../config.php');
+require(__DIR__ . '../../../../config.php');
 global $PAGE, $DB, $OUTPUT, $USER;
 require_login();
 $userid = optional_param('userid', $USER->id, PARAM_INT);
@@ -34,29 +35,19 @@ if (!($user = \core_user::get_user($userid))) {
     $user = $USER;
 }
 $debugs = [];
-['results' => $usertype, 'debug' => $debugs[]] =
-    mobileview_helper::call_api(\local_competvet\external\get_application_mode::class, ['userid' => $user->id]);
-$usertype = $usertype['type'];
-if ($usertype == 'unknown' && !is_primary_admin($user->id)) {
-    throw new moodle_exception('unknownusertype', 'mod_competvet');
-}
-$params = [];
-if ($userid != $USER->id) {
-    $params['userid'] = $userid;
-}
-if ($usertype === 'student') {
-    $redirecturl = new moodle_url('/local/competvet/mobileview/student/index.php', $params);
-} else {
-    $redirecturl = new moodle_url('/local/competvet/mobileview/observer/index.php', $params);
-}
-$currenturl = new moodle_url('/local/competvet/mobileview/index.php', ['userid' => $userid]);
-mobileview_helper::mobile_view_header($currenturl, null);
+['results' => $todos, 'debug' => $debugs[]] =
+    mobileview_helper::call_api(\local_competvet\external\get_todos::class, []);
+
+$widget = base::factory($USER->id, 'todos');
+$widget->set_data($todos);
+
+$renderer = $PAGE->get_renderer('mod_competvet');
 
 // Output a single button to continue.
 echo $OUTPUT->header();
-echo $OUTPUT->continue_button($redirecturl);
-echo $OUTPUT->container(get_string('usertype:display', 'local_competvet', $usertype), 'card', 'usertype');
-echo $OUTPUT->render(new \local_competvet\output\local\mobileview\footer('situation'));
+echo $renderer->render($widget);
+
+echo $OUTPUT->render(new \local_competvet\output\local\mobileview\footer('todo'));
 foreach ($debugs as $debug) {
     echo $OUTPUT->render($debug);
 }

@@ -69,7 +69,6 @@ class get_users_infos_for_planning extends external_api {
                             'userinfo' => new external_single_structure(
                                 api_helpers::get_user_info_structure()
                             ),
-                            'rolename' => new external_value(PARAM_TEXT, 'Group Name'),
                         ])
                     ),
                 ]

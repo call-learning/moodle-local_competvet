@@ -59,6 +59,8 @@ $widget->set_data($userswithinfo, $planninginfo['groupname'],
     new moodle_url('/local/competvet/mobileview/observer/evaluations.php', ['planningid' => $planningid, 'backurl' => $PAGE->url]));
 $renderer = $PAGE->get_renderer('mod_competvet');
 echo $renderer->render($widget);
+
+echo $OUTPUT->render(new \local_competvet\output\local\mobileview\footer('situation'));
 foreach ($debugs as $debug) {
     echo $OUTPUT->render($debug);
 }

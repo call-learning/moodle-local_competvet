@@ -37,3 +37,7 @@ $string['mobileview:eval']  = 'Eval';
 $string['mobileview:certif']  = 'Certif';
 $string['mobileview:list']  = 'List';
 $string['usertype:display'] = 'User type: {$a}';
+$string['mobileview:tab:situation']  = 'Situation';
+$string['mobileview:tab:search']  = 'Search';
+$string['mobileview:tab:todo']  = 'TODO';
+

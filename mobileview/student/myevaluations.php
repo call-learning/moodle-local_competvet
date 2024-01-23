@@ -75,6 +75,8 @@ $widget = base::factory($USER->id, 'student_evaluations');
 $widget->set_data($studentinfo, $views, $observations);
 $renderer = $PAGE->get_renderer('mod_competvet');
 echo $renderer->render($widget);
+
+echo $OUTPUT->render(new \local_competvet\output\local\mobileview\footer('situation'));
 foreach ($debugs as $debug) {
     echo $OUTPUT->render($debug);
 }

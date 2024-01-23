@@ -86,6 +86,7 @@ foreach ($planningbycategory as $categorytext => $plannings) {
     }
     print_collapsible_region_end();
 }
+echo $OUTPUT->render(new \local_competvet\output\local\mobileview\footer('situation'));
 foreach ($debugs as $debug) {
     echo $OUTPUT->render($debug);
 }

@@ -67,6 +67,8 @@ $widget->set_data($currentplannings, $planningstats,
 echo $OUTPUT->heading(format_text($competvet->get_instance()->name, FORMAT_HTML));
 $renderer = $PAGE->get_renderer('mod_competvet');
 echo $renderer->render($widget);
+
+echo $OUTPUT->render(new \local_competvet\output\local\mobileview\footer('situation'));
 foreach ($debugs as $debug) {
     echo $OUTPUT->render($debug);
 }

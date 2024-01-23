@@ -23,7 +23,10 @@ use external_api;
 use external_function_parameters;
 use external_single_structure;
 use external_value;
+use mod_competvet\competvet;
 use mod_competvet\local\api\todos;
+use mod_competvet\local\persistent\planning;
+use mod_competvet\local\persistent\situation;
 
 /**
  * Ask for a given eval observation.
@@ -34,54 +37,59 @@ use mod_competvet\local\api\todos;
  */
 class ask_eval_observation extends external_api {
     /**
-     * Returns description of method parameters
+     * Returns description of method return value
      *
      * @return external_single_structure
      */
     public static function execute_returns(): external_single_structure {
-        return new external_single_structure([]);
+        return new \external_single_structure(
+            [
+                'todoid' => new external_value(PARAM_INT, 'Observation instance id'),
+            ]
+        );
     }
 
     /**
-     * Return the list of criteria for this situation.
+     * Execute and return observation list
      *
-     * @param int $observationid
-     * @param object|null $context
-     * @param array|null $comments
-     * @param array $criteria
-     * @return array
+     * @param int $observationid - Observation instance id
+     * @return array|array[]
+     * @throws \invalid_parameter_exception
      */
-    public static function execute(string $context, int $planningid, int $observerid): array {
-        global $USER;
+    public static function execute(string $context, int $planningid, int $observerid, int $studentid): array {
         [
             'context' => $context,
             'planningid' => $planningid,
             'observerid' => $observerid,
+            'studentid' => $studentid,
         ] =
             self::validate_parameters(self::execute_parameters(), [
                 'context' => $context,
                 'planningid' => $planningid,
                 'observerid' => $observerid,
+                'studentid' => $studentid,
             ]);
-        self::validate_context(context_system::instance());
-
-        todos::ask_for_observation($context, $planningid, $observerid, $USER->id);
-        return [];
+        $planning = planning::get_record(['id' => $planningid]);
+        $situation = situation::get_record(['id' => $planning->get('situationid')]);
+        $competvet = competvet::get_from_situation($situation);
+        self::validate_context($competvet->get_context());
+        return [
+            'todoid' => todos::ask_for_observation($context, $planningid, $observerid, $studentid),
+        ];
     }
+
 
     /**
      * Returns description of method parameters
      *
      * @return external_function_parameters
      */
-    public static function execute_parameters() {
-        return new external_function_parameters(
-            [
-                'id' => new external_value(PARAM_INT, 'Observation ID'),
-                'context' => new external_value(PARAM_TEXT, 'Context information'),
-                'planningid' => new external_value(PARAM_INT, 'Planning ID'),
-                'observerid' => new external_value(PARAM_INT, 'Observer ID'),
-            ]
-        );
+    public static function execute_parameters(): external_function_parameters {
+        return new external_function_parameters([
+            'context' => new external_value(PARAM_TEXT, 'Context', VALUE_REQUIRED),
+            'planningid' => new external_value(PARAM_INT, 'Planning instance id', VALUE_REQUIRED),
+            'observerid' => new external_value(PARAM_INT, 'Observer id', VALUE_REQUIRED),
+            'studentid' => new external_value(PARAM_INT, 'Student id', VALUE_REQUIRED),
+        ]);
     }
 }

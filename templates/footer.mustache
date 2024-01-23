@@ -1,0 +1,50 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local/competvet/footer
+
+    Template for debug
+
+    Example context (json):
+    {
+        'tabs' =>
+            {
+                'label' => get_string('mobileview:tab:situation', 'local_competvet'),
+                'baseurl' => new \moodle_url('/local/competvet/mobileview/index.php'),
+                'name' => 'situation',
+            },
+            {
+                'label' => get_string('mobileview:tab:search', 'local_competvet'),
+                'name' => 'search',
+                'baseurl' => new \moodle_url('/local/competvet/mobileview/search/index.php'),
+            },
+            {
+                'label' => get_string('mobileview:tab:todo', 'local_competvet'),
+                'baseurl' => new \moodle_url('/local/competvet/mobileview/todo/index.php'),
+                'name' => 'todo',
+                'selected' => true,
+            }
+    }
+}}
+<div class="mobileview-footer nav-pills nav-justified m-5 bg-gray">
+    <nav class="nav">
+    {{#tabs}}
+        <a href="{{baseurl}}" class="mobileview-footer__tab nav-link {{#selected}}active{{/selected}}">{{label}}</a>
+    {{/tabs}}
+    </nav>
+
+</div>
