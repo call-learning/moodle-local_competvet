@@ -54,17 +54,18 @@ class user_info extends external_api {
      * @param int $userid
      * @return stdClass
      */
-    public static function execute(int $userid): stdClass {
+    public static function execute(int $userid = 0): stdClass {
+        global $USER;
         self::validate_parameters(self::execute_parameters(), ['userid' => $userid]);
         self::validate_context(context_system::instance());
-        $user = null;
-        if ($userid) {
+        $user = $USER;
+        if ($userid > 0) {
             $user = core_user::get_user($userid);
         }
-        if (!$user) {
+        if (empty($user->id)) {
             throw new \moodle_exception('invaliduserid', 'core_user', '', $userid);
         }
-        return (object) utils::get_user_info($userid);
+        return (object) utils::get_user_info($user->id);
     }
 
     /**

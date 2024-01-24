@@ -1,4 +1,3 @@
-<?php
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,21 +14,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details.
+ * Javascript adding a new observation.
  *
- * @package   local_competvet
- * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @module     local_competvet/local/forms/observation_add_form
+ * @copyright  2023 Laurent David <laurent@call-learning.fr>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+import {init as modInit} from "mod_competvet/local/forms/eval_observation_edit";
+import {createModalDebugFromEvent} from "./modal_debug";
 
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->version = 2023122909;      // The current module version (Date: YYYYMMDDXX).
-$plugin->requires = 2020061501;      // Requires this Moodle version (3.9.1).
-$plugin->maturity = MATURITY_RC;
-$plugin->release = '0.4.0'; // New API.
-$plugin->component = 'local_competvet';// Full name of the plugin (used for diagnostics).
-$plugin->cron = 0;
-$plugin->dependencies = [
-    // 'mod_competvet' => ANY_VERSION,
-];
+export const init = (modulename) => {
+    modInit(modulename, createModalDebugFromEvent);
+};

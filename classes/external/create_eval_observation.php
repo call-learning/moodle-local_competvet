@@ -55,9 +55,9 @@ class create_eval_observation extends external_api {
      * @param int $planningid
      * @param int $studentid
      * @param int|null $observerid
-     * @param object|null $context
+     * @param array|null $context
      * @param array|null $comments
-     * @param array $criteria
+     * @param array|null $criteria
      * @return array
      */
     public static function execute(
@@ -65,9 +65,9 @@ class create_eval_observation extends external_api {
         int $planningid,
         int $studentid,
         ?int $observerid = 0,
-        ?object $context = null,
-        ?array $comments = [],
-        array $criteria = []
+        ?array $context = null,
+        ?array $comments = null,
+        ?array $criteria = null
     ): array {
         [
             'category' => $category,
@@ -75,19 +75,26 @@ class create_eval_observation extends external_api {
             'studentid' => $studentid,
             'observerid' => $observerid,
             'context' => $context,
+            'comments' => $comments,
+            'criteria' => $criteria,
         ] =
             self::validate_parameters(self::execute_parameters(), [
                 'category' => $category,
                 'planningid' => $planningid,
                 'studentid' => $studentid,
                 'observerid' => $observerid,
-                'context' => $context,
-                'comments' => $comments,
-                'criteria' => $criteria,
+                'context' => $context ?? ['comment' => ''],
+                'comments' => $comments ?? [],
+                'criteria' => $criteria ?? [],
             ]);
         self::validate_context(context_system::instance());
+        if (empty($observerid)) {
+            global $USER;
+            $observerid = $USER->id;
+        }
         $observationid =
-            observations::create_observation($category, $planningid, $studentid, $observerid, $context, $comments, $criteria);
+            observations::create_observation($category, $planningid, $studentid, $observerid,
+                empty($context) ? null : (object) $context, $comments, $criteria);
         return ['observationid' => $observationid];
     }
 
@@ -100,9 +107,9 @@ class create_eval_observation extends external_api {
         return new external_function_parameters(
             [
                 'category' => new external_value(PARAM_INT, 'Observation category (AUTOEVAL or EVAL'),
-                'studentid' => new external_value(PARAM_INT, 'id of the student'),
-                'observerid' => new external_value(PARAM_INT, 'id of the student'),
                 'planningid' => new external_value(PARAM_INT, 'id of the student'),
+                'studentid' => new external_value(PARAM_INT, 'id of the student'),
+                'observerid' => new external_value(PARAM_INT, 'id of the student', VALUE_OPTIONAL),
                 'context' =>
                     new external_single_structure(
                         api_helpers::get_context_structure(),
@@ -111,15 +118,17 @@ class create_eval_observation extends external_api {
                     ),
                 'comments' => new external_multiple_structure(
                     new external_single_structure(
-                        api_helpers::get_comment_structure()
+                        api_helpers::get_comment_structure(),
                     ),
                     'Comments',
-                    VALUE_OPTIONAL
+                    VALUE_OPTIONAL,
                 ),
                 'criteria' => new external_multiple_structure(
                     new external_single_structure(
                         api_helpers::get_criteria_structure()
-                    )
+                    ),
+                    'Criteria',
+                    VALUE_OPTIONAL,
                 ),
             ]
         );

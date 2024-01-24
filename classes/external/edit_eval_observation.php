@@ -80,7 +80,7 @@ class edit_eval_observation extends external_api {
     public static function execute_parameters() {
         return new external_function_parameters(
             [
-                'id' => new external_value(PARAM_INT, 'Observation ID'),
+                'observationid' => new external_value(PARAM_INT, 'Observation ID'),
                 'context' =>
                     new external_single_structure(
                         api_helpers::get_context_structure(),

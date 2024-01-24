@@ -72,4 +72,5 @@ echo $OUTPUT->render(new \local_competvet\output\local\mobileview\footer('situat
 foreach ($debugs as $debug) {
     echo $OUTPUT->render($debug);
 }
+
 echo $OUTPUT->footer();

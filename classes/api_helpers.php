@@ -86,7 +86,7 @@ class api_helpers {
         return [
             'id' => new external_value(PARAM_INT, 'Comment ID', VALUE_OPTIONAL),
             'comment' => new external_value(PARAM_RAW, 'Comment text'),
-            'userinfo' => new external_single_structure(self::get_user_info_structure(), VALUE_OPTIONAL),
+            'userinfo' => new external_single_structure(self::get_user_info_structure(), 'User information', VALUE_OPTIONAL),
             'timecreated' => new external_value(PARAM_INT, 'Comment creation time', VALUE_OPTIONAL),
             'timemodified' => new external_value(PARAM_INT, 'Comment last modification time', VALUE_OPTIONAL),
         ];
@@ -147,7 +147,6 @@ class api_helpers {
             'parentid' => new external_value(PARAM_INT, 'Criterion parentid', VALUE_OPTIONAL),
         ];
     }
-
 
     /**
      * Get criteria info structure
