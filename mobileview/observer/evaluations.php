@@ -21,7 +21,11 @@
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+use local_competvet\external\get_planning_infos_student;
+use local_competvet\external\get_user_eval_observations;
 use local_competvet\mobileview_helper;
+use local_competvet\output\local\mobileview\footer;
 use mod_competvet\competvet;
 use mod_competvet\local\persistent\planning;
 use mod_competvet\output\view\base;
@@ -36,18 +40,19 @@ $currenttab = optional_param('currenttab', 'eval', PARAM_ALPHA);
 
 $currenturl = new moodle_url('/local/competvet/mobileview/observer/evaluations.php',
     ['planningid' => $planningid, 'studentid' => $studentid]);
-mobileview_helper::mobile_view_header($currenturl);
+$backurl = mobileview_helper::mobile_view_header($currenturl,
+    new moodle_url('/local/competvet/mobileview/observer/planning.php', ['planningid' => $planningid]));
 
 $planning = planning::get_record(['id' => $planningid]);
 $groupname = groups_get_group_name($planning->get('groupid'));
 
 $debugs = [];
 ['results' => $observations, 'debug' => $debugs[]] =
-    mobileview_helper::call_api(\local_competvet\external\get_user_eval_observations::class,
+    mobileview_helper::call_api(get_user_eval_observations::class,
         ['planningid' => $planningid, 'userid' => $studentid]);
 
 ['results' => $studentinfo, 'debug' => $debugs[]] =
-    mobileview_helper::call_api(\local_competvet\external\get_planning_infos_student::class,
+    mobileview_helper::call_api(get_planning_infos_student::class,
         ['planningid' => $planningid, 'userid' => $studentid]);
 
 $userplanninginfo = $studentinfo['info'];
@@ -55,8 +60,8 @@ if (!empty($userplanninginfo)) {
     $userplanninginfo = array_combine(array_column($userplanninginfo, 'type'), $userplanninginfo);
 }
 $views = [
-    'eval' => new moodle_url('/local/competvet/mobileview/common/eval/view.php', ['backurl' => $PAGE->url]),
-    'autoeval' => new moodle_url('/local/competvet/mobileview/common/autoeval/view.php', ['backurl' => $PAGE->url]),
+    'eval' => new moodle_url('/local/competvet/mobileview/common/eval/view.php', ['returnurl' => $PAGE->url->out()]),
+    'autoeval' => new moodle_url('/local/competvet/mobileview/common/autoeval/view.php', ['returnurl' => $PAGE->url->out()]),
 ];
 /** @var core_renderer $OUTPUT */
 echo $OUTPUT->header();
@@ -72,12 +77,12 @@ $user = core_user::get_user($studentid);
 echo $OUTPUT->heading(format_text($competvetname, FORMAT_HTML));
 echo $OUTPUT->user_picture($user, ['size' => 100, 'class' => 'd-inline-block']);
 echo $OUTPUT->heading(format_text($dates, FORMAT_HTML), 3, 'text-right');
-$widget = base::factory($USER->id, 'student_evaluations', 0, 'local_competvet');
+$widget = base::factory($USER->id, 'student_evaluations', 0, 'local_competvet', $backurl);
 $widget->set_data($studentinfo, $views, $observations);
 $renderer = $PAGE->get_renderer('mod_competvet');
 echo $renderer->render($widget);
 
-echo $OUTPUT->render(new \local_competvet\output\local\mobileview\footer('situation'));
+echo $OUTPUT->render(new footer('situation'));
 foreach ($debugs as $debug) {
     echo $OUTPUT->render($debug);
 }

@@ -25,6 +25,7 @@
 use local_competvet\external\get_plannings_infos;
 use local_competvet\external\get_situations;
 use local_competvet\mobileview_helper;
+use local_competvet\output\local\mobileview\footer;
 use mod_competvet\competvet;
 use mod_competvet\output\view\base;
 
@@ -34,8 +35,8 @@ global $PAGE, $DB, $OUTPUT, $USER;
 require_login();
 $situationid = required_param('situationid', PARAM_INT);
 $currenturl =
-    new moodle_url('/local/competvet/mobileview/observer/plannings.php', ['situationid' => $situationid]);
-mobileview_helper::mobile_view_header($currenturl);
+    new moodle_url('/local/competvet/mobileview/observer/index.php');
+$backurl = mobileview_helper::mobile_view_header($currenturl, new moodle_url('/local/competvet/mobileview/observer/index.php'));
 
 $debugs = [];
 ['results' => $situations, 'debug' => $debugs[]] =
@@ -62,13 +63,13 @@ $competvet = competvet::get_from_situation_id($situationid);
 echo $OUTPUT->header();
 $widget = base::factory($USER->id, 'plannings');
 $widget->set_data($currentplannings, $planningstats,
-    new moodle_url('/local/competvet/mobileview/observer/planning.php', ['backurl' => $PAGE->url]));
+    new moodle_url('/local/competvet/mobileview/observer/planning.php'));
 
 echo $OUTPUT->heading(format_text($competvet->get_instance()->name, FORMAT_HTML));
 $renderer = $PAGE->get_renderer('mod_competvet');
 echo $renderer->render($widget);
 
-echo $OUTPUT->render(new \local_competvet\output\local\mobileview\footer('situation'));
+echo $OUTPUT->render(new footer('situation'));
 foreach ($debugs as $debug) {
     echo $OUTPUT->render($debug);
 }

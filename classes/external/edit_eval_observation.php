@@ -48,13 +48,17 @@ class edit_eval_observation extends external_api {
      * Return the list of criteria for this situation.
      *
      * @param int $observationid
-     * @param object|null $context
+     * @param array|null $context
      * @param array|null $comments
      * @param array $criteria
      * @return array
      */
-    public static function execute(int $observationid, ?object $context = null, ?array $comments = [],
-        array $criteria = []): array {
+    public static function execute(
+        int $observationid,
+        ?array $context = null,
+        ?array $comments = null,
+        ?array $criteria = null
+    ): array {
         [
             'observationid' => $observationid,
             'context' => $context,
@@ -68,7 +72,7 @@ class edit_eval_observation extends external_api {
                 'criteria' => $criteria,
             ]);
         self::validate_context(context_system::instance());
-        observations::edit_observation($observationid, $context, $comments, $criteria);
+        observations::edit_observation($observationid, (object) $context, $comments, $criteria);
         return [];
     }
 
@@ -97,7 +101,9 @@ class edit_eval_observation extends external_api {
                 'criteria' => new external_multiple_structure(
                     new external_single_structure(
                         api_helpers::get_criteria_structure()
-                    )
+                    ),
+                    'Criteria',
+                    VALUE_OPTIONAL,
                 ),
             ]
         );

@@ -163,6 +163,24 @@ $functions = [
         'loginrequired' => true,
         'services' => [utils::COMPETVET_MOBILE_SERVICE],
     ],
+    'local_competvet_get_todos' => [
+        'classname' => \local_competvet\external\get_todos::class,
+        'methodname' => 'execute',
+        'description' => 'Get the TODO list for a user',
+        'ajax' => true,
+        'type' => 'read',
+        'loginrequired' => true,
+        'services' => [utils::COMPETVET_MOBILE_SERVICE],
+    ],
+    'local_competvet_update_todo_status' => [
+        'classname' => \local_competvet\external\update_todo_status::class,
+        'methodname' => 'execute',
+        'description' => 'Update TODO status (done, refused, cancelled, pending)',
+        'ajax' => true,
+        'type' => 'write',
+        'loginrequired' => true,
+        'services' => [utils::COMPETVET_MOBILE_SERVICE],
+    ],
 ];
 
 $services = utils::get_mobile_services_definition($functions);

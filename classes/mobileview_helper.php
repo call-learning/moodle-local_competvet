@@ -45,14 +45,10 @@ class mobileview_helper {
         }
     }
 
-    public static function mobile_view_header(moodle_url $currenturl, ?moodle_url $backurl = null) {
+    public static function mobile_view_header(moodle_url $currenturl, ?moodle_url $backurl = null): moodle_url {
         global $PAGE, $OUTPUT;
-        $backurl = optional_param('backurl', $backurl, PARAM_URL);
         $context = context_system::instance();
         $PAGE->set_context($context);
-        if (!empty($backurl)) {
-            $currenturl->param('backurl', $backurl);
-        }
         $PAGE->set_url($currenturl);
         if ($backurl) {
             $PAGE->set_button(
@@ -63,5 +59,6 @@ class mobileview_helper {
                 )
             );
         }
+        return $backurl ?? $currenturl;
     }
 }

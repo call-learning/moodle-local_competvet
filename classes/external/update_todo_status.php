@@ -27,6 +27,7 @@ use external_single_structure;
 use external_value;
 use local_competvet\api_helpers;
 use mod_competvet\local\api\todos;
+use mod_competvet\local\persistent\todo;
 
 /**
  * Get current user's todo list.
@@ -35,7 +36,7 @@ use mod_competvet\local\api\todos;
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class get_todos extends external_api {
+class update_todo_status extends external_api {
     /**
      * Returns description of method parameters
      *
@@ -43,28 +44,23 @@ class get_todos extends external_api {
      */
     public static function execute_returns() {
         return new external_multiple_structure(
-            new external_single_structure(
-                api_helpers::get_todo_info_structure()
-            )
+            new external_single_structure([])
         );
     }
 
     /**
      * Return the list of todos for this user (or current user if not specified).
      *
-     * @param int|null $userid
+     * @param int $id
      * @return array
      */
-    public static function execute(?int $userid = null): array {
+    public static function execute(int $id, int $status = todo::STATUS_DONE): array {
         global $USER;
-        ['userid' => $userid] =
-            self::validate_parameters(self::execute_parameters(), ['userid' => $userid]);
+        ['id' => $userid, 'status' => $status] =
+            self::validate_parameters(self::execute_parameters(), ['id' => $id, 'status' => $status]);
         self::validate_context(context_system::instance());
-        if (!$userid) {
-            $userid = $USER->id;
-        }
-        self::validate_context(context_user::instance($userid));
-        return todos::get_todos_for_user($userid);
+        todos::update_todo_status($id, $status);
+        return [];
     }
 
     /**
@@ -75,7 +71,8 @@ class get_todos extends external_api {
     public static function execute_parameters() {
         return new external_function_parameters(
             [
-                'userid' => new external_value(PARAM_INT, 'id of the user (optional parameter)', VALUE_DEFAULT, 0),
+                'id' => new external_value(PARAM_INT, 'id of the todo'),
+                'status' => new external_value(PARAM_INT, 'Status of the todo', VALUE_DEFAULT, todo::STATUS_DONE),
             ]
         );
     }

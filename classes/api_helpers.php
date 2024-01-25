@@ -43,6 +43,7 @@ class api_helpers {
             'groupid' => new external_value(PARAM_INT, 'Group id (Internal ID)'),
             'session' => new external_value(PARAM_ALPHANUMEXT, 'Session name (unused now but might be later)'),
             'situationid' => new external_value(PARAM_INT, 'Situation ID'),
+            'situationname' => new external_value(PARAM_TEXT, 'Situation name', VALUE_OPTIONAL),
         ];
     }
 
@@ -172,6 +173,19 @@ class api_helpers {
             'id' => new external_value(PARAM_INT, 'Criterion Instance (comment or level) ID', VALUE_OPTIONAL),
             'criterionid' => new external_value(PARAM_INT, 'Criterion ID', VALUE_OPTIONAL),
             'comment' => new external_value(PARAM_RAW, 'Criterion comment', VALUE_OPTIONAL),
+        ];
+    }
+
+    public static function get_todo_info_structure() {
+        return [
+            'id' => new external_value(PARAM_INT, 'TODO internal ID'),
+            'user' => new external_single_structure(self::get_user_info_structure(), 'User information'),
+            'targetuser' => new external_single_structure(self::get_user_info_structure(),
+                'Target User information'),
+            'planning' => new external_single_structure(self::get_planning_info_structure(), 'Planning information'),
+            'status' => new external_value(PARAM_INT, 'TODO current Status'),
+            'action' => new external_value(PARAM_INT, 'TODO action to perform'),
+            'data' => new external_value(PARAM_RAW, 'TODO data (JSON)'),
         ];
     }
 }

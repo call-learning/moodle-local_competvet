@@ -34,7 +34,7 @@ $userid = optional_param('userid', $USER->id, PARAM_INT);
 
 $context = context_system::instance();
 $currenturl = new moodle_url('/local/competvet/mobileview/student/index.php', ['userid' => $userid]);
-mobileview_helper::mobile_view_header($currenturl,);
+$backurl = mobileview_helper::mobile_view_header($currenturl, new moodle_url('/local/competvet/mobileview/index.php'));
 
 ['results' => $situations, 'debug' => $debugs[]] =
     mobileview_helper::call_api(\local_competvet\external\get_situations::class, ['userid' => $userid, 'nofutureplanning' => true]);
@@ -79,7 +79,6 @@ foreach ($planningbycategory as $categorytext => $plannings) {
         $planninglink = new moodle_url('/local/competvet/mobileview/student/myevaluations.php', [
             'userid' => $userid,
             'planningid' => $planning['id'],
-            'backurl' => $PAGE->url,
         ]);
         echo $OUTPUT->container(html_writer::link($planninglink, $dates), 'font-weight-bold', 'planningdates');
         echo $OUTPUT->container_end();

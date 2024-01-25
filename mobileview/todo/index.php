@@ -24,13 +24,17 @@
  */
 
 use local_competvet\mobileview_helper;
+use local_competvet\output\local\mobileview\footer;
+use mod_competvet\local\persistent\todo;
 use mod_competvet\output\view\base;
 
-require(__DIR__ . '../../../../config.php');
+require(__DIR__ . '/../../../../config.php');
 global $PAGE, $DB, $OUTPUT, $USER;
 require_login();
 $userid = optional_param('userid', $USER->id, PARAM_INT);
-
+$currenturl =
+    new moodle_url('/local/competvet/mobileview/todo/index.php', ['userid' => $USER->id]);
+mobileview_helper::mobile_view_header($currenturl);
 if (!($user = \core_user::get_user($userid))) {
     $user = $USER;
 }
@@ -38,8 +42,11 @@ $debugs = [];
 ['results' => $todos, 'debug' => $debugs[]] =
     mobileview_helper::call_api(\local_competvet\external\get_todos::class, []);
 
-$widget = base::factory($USER->id, 'todos');
-$widget->set_data($todos);
+$widget = base::factory($USER->id, 'todos',  0, 'local_competvet');
+$widget->set_data($todos, [
+    todo::ACTION_EVAL_OBSERVATION_ASKED =>
+        new moodle_url('/local/competvet/mobileview/common/eval/view.php', ['evalid' => 'OBSERVATIONID'])
+]);
 
 $renderer = $PAGE->get_renderer('mod_competvet');
 
@@ -47,7 +54,7 @@ $renderer = $PAGE->get_renderer('mod_competvet');
 echo $OUTPUT->header();
 echo $renderer->render($widget);
 
-echo $OUTPUT->render(new \local_competvet\output\local\mobileview\footer('todo'));
+echo $OUTPUT->render(new footer('todo'));
 foreach ($debugs as $debug) {
     echo $OUTPUT->render($debug);
 }

@@ -42,6 +42,8 @@ $string['mobileview:tab:search']  = 'Search';
 $string['mobileview:tab:todo']  = 'TODO';
 
 $string['observation:add'] = 'Add an observation';
+$string['observation:created'] = 'Observation created';
+$string['observation:edited'] = 'Observation edited';
 $string['observation:ask'] = 'Ask for an observation';
 $string['observation:ask:save'] = 'Select observer';
 $string['observation:asked'] = 'Observation asked';
@@ -54,3 +56,4 @@ $string['observation:edit:save'] = 'Save';
 $string['observation:comment:commentno'] = 'Comment {no}';
 $string['observation:comment:add'] = 'Add comment';
 $string['observation:comment:deleteno'] = 'Delete comment {no}';
+$string['todo:updated'] = 'Todo updated';

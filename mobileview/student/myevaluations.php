@@ -35,7 +35,7 @@ $currenttab = optional_param('currenttab', 'eval', PARAM_ALPHA);
 $studentid = $USER->id;
 $currenturl = new moodle_url('/local/competvet/mobileview/student/myevaluations.php',
     ['planningid' => $planningid]);
-mobileview_helper::mobile_view_header($currenturl);
+$backurl = mobileview_helper::mobile_view_header($currenturl, new moodle_url('/local/competvet/mobileview/student/index.php'));
 
 $planning = planning::get_record(['id' => $planningid]);
 $groupname = groups_get_group_name($planning->get('groupid'));
@@ -54,8 +54,8 @@ if (!empty($userplanninginfo)) {
     $userplanninginfo = array_combine(array_column($userplanninginfo, 'type'), $userplanninginfo);
 }
 $views = [
-    'eval' => new moodle_url('/local/competvet/mobileview/common/eval/view.php', ['backurl' => $PAGE->url]),
-    'autoeval' => new moodle_url('/local/competvet/mobileview/common/autoeval/view.php', ['backurl' => $PAGE->url]),
+    'eval' => new moodle_url('/local/competvet/mobileview/common/eval/view.php', ['returnurl' => $PAGE->url->out()]),
+    'autoeval' => new moodle_url('/local/competvet/mobileview/common/autoeval/view.php', ['returnurl' => $PAGE->url->out()]),
 ];
 /** @var core_renderer $OUTPUT */
 echo $OUTPUT->header();
@@ -71,7 +71,7 @@ $user = core_user::get_user($studentid);
 echo $OUTPUT->heading(format_text($competvetname, FORMAT_HTML));
 echo $OUTPUT->user_picture($user, ['size' => 100, 'class' => 'd-inline-block']);
 echo $OUTPUT->heading(format_text($dates, FORMAT_HTML), 3, 'text-right');
-$widget = base::factory($USER->id, 'student_evaluations', 0, 'local_competvet');
+$widget = base::factory($USER->id, 'student_evaluations',  0, 'local_competvet', $backurl);
 $widget->set_data($studentinfo, $views, $observations);
 $renderer = $PAGE->get_renderer('mod_competvet');
 echo $renderer->render($widget);

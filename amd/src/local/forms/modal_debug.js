@@ -25,6 +25,7 @@ import Notification from 'core/notification';
 import ModalFactory from 'core/modal_factory';
 import ModalEvents from 'core/modal_events';
 import Template from "core/templates";
+import {get_string as getString} from 'core/str';
 
 /**
  * Create Modal debug dialog
@@ -41,13 +42,13 @@ export const createModalDebug = async (data) => {
                 'debugs': data.debugs
             }),
             type: ModalFactory.types.CANCEL,
-            large: true
+            large: true,
         });
+        modal.setButtonText('cancel', await getString('ok'));
         modal.show();
         modal.getRoot().on(ModalEvents.hidden, () => {
             if (data.returnurl) {
-                window.location.assign(event.detail.returnurl);
-                window.location.reload();
+                window.location.assign(data.returnurl);
             }
         });
         return modal;
@@ -64,5 +65,5 @@ export const createModalDebug = async (data) => {
  */
 export const createModalDebugFromEvent = async(event) => {
     const data = {...event.detail};
-    const modal = await createModalDebug(data);
+    await createModalDebug(data);
 };

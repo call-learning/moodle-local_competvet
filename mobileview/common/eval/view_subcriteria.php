@@ -38,7 +38,11 @@ $criteriaid = required_param('criterionid', PARAM_INT);
 $currenturl = new moodle_url(
     '/local/competvet/mobileview/observer/eval/view_subcriteria.php',
     ['evalid' => $observationid, 'criteriaid' => $criteriaid]);
-mobileview_helper::mobile_view_header($currenturl);
+
+if ($returnurl = optional_param('returnurl', null, PARAM_URL)) {
+    $currenturl->param('returnurl', $returnurl);
+}
+$backurl = mobileview_helper::mobile_view_header($currenturl, new moodle_url($returnurl));
 
 $observation = observation::get_record(['id' => $observationid]);
 $planning = planning::get_record(['id' => $observation->get('planningid')]);
@@ -74,10 +78,10 @@ $studentuser = core_user::get_user($userid);
 echo $OUTPUT->heading(format_text($competvetname, FORMAT_HTML));
 echo $OUTPUT->user_picture($studentuser, ['size' => 100, 'class' => 'd-inline-block']);
 echo $OUTPUT->heading(format_text($dates, FORMAT_HTML), 3, 'text-right');
-$widget = base::factory($userid, 'student_eval_subcriteria');
+$widget = base::factory($userid, 'student_eval_subcriteria', 0, 'local_competvet', $backurl);
 $widget->set_data($criterion['subcriteria'], new moodle_url(
     '/local/competvet/mobileview/observer/eval/view_subcriteria.php',
-    ['evalid' => $observation->get('id'), 'backurl' => $PAGE->url]
+    ['evalid' => $observation->get('id')]
 ));
 $renderer = $PAGE->get_renderer('mod_competvet');
 echo $renderer->render($widget);

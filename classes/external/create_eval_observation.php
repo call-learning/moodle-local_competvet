@@ -65,7 +65,7 @@ class create_eval_observation extends external_api {
         int $planningid,
         int $studentid,
         ?int $observerid = 0,
-        ?array $context = null,
+        ?string $context = null,
         ?array $comments = null,
         ?array $criteria = null
     ): array {
@@ -83,7 +83,7 @@ class create_eval_observation extends external_api {
                 'planningid' => $planningid,
                 'studentid' => $studentid,
                 'observerid' => $observerid,
-                'context' => $context ?? ['comment' => ''],
+                'context' => $context,
                 'comments' => $comments ?? [],
                 'criteria' => $criteria ?? [],
             ]);
@@ -94,7 +94,7 @@ class create_eval_observation extends external_api {
         }
         $observationid =
             observations::create_observation($category, $planningid, $studentid, $observerid,
-                empty($context) ? null : (object) $context, $comments, $criteria);
+                $context, $comments, $criteria);
         return ['observationid' => $observationid];
     }
 
@@ -110,12 +110,7 @@ class create_eval_observation extends external_api {
                 'planningid' => new external_value(PARAM_INT, 'id of the student'),
                 'studentid' => new external_value(PARAM_INT, 'id of the student'),
                 'observerid' => new external_value(PARAM_INT, 'id of the student', VALUE_OPTIONAL),
-                'context' =>
-                    new external_single_structure(
-                        api_helpers::get_context_structure(),
-                        'Context of the observation',
-                        VALUE_OPTIONAL
-                    ),
+                'context' => new external_value(PARAM_TEXT, 'context', VALUE_OPTIONAL),
                 'comments' => new external_multiple_structure(
                     new external_single_structure(
                         api_helpers::get_comment_structure(),

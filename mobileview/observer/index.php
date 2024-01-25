@@ -22,7 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use local_competvet\external\get_situations;
 use local_competvet\mobileview_helper;
+use local_competvet\output\local\mobileview\footer;
 
 require(__DIR__ . '/../../../../config.php');
 global $PAGE, $DB, $OUTPUT, $USER;
@@ -30,11 +32,11 @@ global $PAGE, $DB, $OUTPUT, $USER;
 require_login();
 $userid = optional_param('userid', $USER->id, PARAM_INT);
 $currenturl = new moodle_url('/local/competvet/mobileview/observer/index.php', ['userid' => $userid]);
-mobileview_helper::mobile_view_header($currenturl);
+$backurl = mobileview_helper::mobile_view_header($currenturl, new moodle_url('/local/competvet/mobileview/index.php'));
 
 $debugs = [];
 ['results' => $situations, 'debug' => $debugs[]] =
-    mobileview_helper::call_api(\local_competvet\external\get_situations::class, ['userid' => $userid, 'nofutureplanning' => true]);
+    mobileview_helper::call_api(get_situations::class, ['userid' => $userid, 'nofutureplanning' => true]);
 
 // Sort situation by tags.
 usort($situations, function($a, $b) {
@@ -62,7 +64,7 @@ foreach ($possibletags as $tag) {
         if (in_array($tag, $tags)) {
             $currenturl = new moodle_url(
                 '/local/competvet/mobileview/observer/plannings.php',
-                ['userid' => $userid, 'situationid' => $situation['id'], 'backurl' => $PAGE->url]
+                ['userid' => $userid, 'situationid' => $situation['id']]
             );
             $situationlink = html_writer::link(
                 $currenturl,
@@ -74,7 +76,7 @@ foreach ($possibletags as $tag) {
     print_collapsible_region_end();
 }
 
-echo $OUTPUT->render(new \local_competvet\output\local\mobileview\footer('situation'));
+echo $OUTPUT->render(new footer('situation'));
 foreach ($debugs as $debug) {
     echo $OUTPUT->render($debug);
 }

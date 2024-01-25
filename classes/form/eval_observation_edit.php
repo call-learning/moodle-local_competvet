@@ -76,9 +76,9 @@ class eval_observation_edit extends \mod_competvet\form\eval_observation_edit {
                 );
             return [
                 'result' => true,
-                'content' => get_string('edited'),
+                'content' => get_string('observation:edited', 'local_competvet'),
                 'debugs' =>  array_map(fn($debug) => $debug->export_for_template($renderer), $debugs),
-                'returnurl' => $this->get_page_url_for_dynamic_submission(),
+                'returnurl' => ($this->get_page_url_for_dynamic_submission())->out_as_local_url(),
             ];
         } catch (\Exception $e) {
             return [

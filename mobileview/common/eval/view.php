@@ -38,7 +38,13 @@ $currenturl = new moodle_url(
     '/local/competvet/mobileview/common/eval/view.php',
     ['evalid' => $observationid]
 );
-mobileview_helper::mobile_view_header($currenturl);
+
+if ($returnurl = optional_param('returnurl', null, PARAM_URL)) {
+    $currenturl->param('returnurl', $returnurl);
+}
+// Store the origin URL in the session so that we can return to it after the user has finished.
+
+$backurl = mobileview_helper::mobile_view_header($currenturl, $returnurl ? new moodle_url($returnurl) : null);
 
 $observation = observation::get_record(['id' => $observationid]);
 $planning = planning::get_record(['id' => $observation->get('planningid')]);
@@ -65,10 +71,10 @@ $studentuser = core_user::get_user($userid);
 echo $OUTPUT->heading(format_text($competvetname, FORMAT_HTML));
 echo $OUTPUT->user_picture($studentuser, ['size' => 100, 'class' => 'd-inline-block']);
 echo $OUTPUT->heading(format_text($dates, FORMAT_HTML), 3, 'text-right');
-$widget = base::factory($userid, 'student_eval', 0, 'local_competvet');
+$widget = base::factory($userid, 'student_eval', 0, 'local_competvet', $backurl);
 $widget->set_data($observationinfo, new moodle_url(
     '/local/competvet/mobileview/common/eval/view_subcriteria.php',
-    ['evalid' => $observation->get('id'), 'backurl' => $PAGE->url]
+    ['evalid' => $observation->get('id'), 'returnurl' => $currenturl->out()]
 ));
 $renderer = $PAGE->get_renderer('mod_competvet');
 echo $renderer->render($widget);

@@ -25,9 +25,10 @@ import ModalEvents from 'core/modal_events';
 import {genericFormCreate, getSelectedElement} from "mod_competvet/local/forms/generic_form_helper";
 import {createModalDebug, createModalDebugFromEvent} from "./modal_debug";
 import {get_string as getString} from 'core/str';
+import Notification from 'core/notification';
 
 export const init = async (modulename) => {
-    const selectedElements = getSelectedElement('add');
+    const selectedElements = getSelectedElement('addfromtodo');
     if (!selectedElements) {
         return;
     }
@@ -35,14 +36,12 @@ export const init = async (modulename) => {
         element.addEventListener('click', async (event) => {
             event.preventDefault();
             const data = event.target.closest('[data-action]').dataset;
-            let datasetLowercase = Object.entries(data).reduce((acc, [key, value]) => {
-                acc[key.toLowerCase()] = value; // Convert key to lowercase
-                return acc;
-            }, {});
             const payLoad = {
                 category: 1, // Observation.
-                planningid: datasetLowercase.planningid,
-                studentid: datasetLowercase.studentid,
+                planningid: data.planningId,
+                studentid: data.studentId,
+                observerid: data.observerId,
+                context: data.context,
             };
             const observation = await Ajax.call([
                 {
@@ -50,11 +49,11 @@ export const init = async (modulename) => {
                     args: payLoad,
                 }
             ])[0];
-            const modal = await createModalDebug({
+            const modalObs = await createModalDebug({
                 content: await getString('observation:created', 'local_competvet'),
                 debugs: [
                     {
-                        apifunction: 'local_competvet_ask_eval_observation',
+                        apifunction: 'local_competvet_create_eval_observation',
                         params: JSON.stringify(payLoad),
                         results: [
                             JSON.stringify(observation)
@@ -62,10 +61,46 @@ export const init = async (modulename) => {
                     }
                 ]
             });
-            modal.show();
-            modal.getRoot().on(ModalEvents.cancel, () => {
-                genericFormCreate({'id' : observation.observationid }, 'edit', modulename, createModalDebugFromEvent);
-            });
+            modalObs.show();
+            // Replace :OBSERVATIONID by the real observation id in the return url..
+            const returnUrl = data.returnurl.replace('OBSERVATIONID', observation.observationid);
+            modalObs.getRoot().on(ModalEvents.cancel, () => processTodo(
+                data.todoId,
+                {id: observation.observationid, returnurl: returnUrl},
+                modulename
+            ));
         });
     });
+};
+
+const processTodo = async (todoId, editObservationParameters, modulename) => {
+    const payLoad = {
+        id: todoId,
+    };
+    try {
+        const updatedTodo = await Ajax.call([
+            {
+                methodname: `local_competvet_update_todo_status`,
+                args: payLoad,
+            }
+        ])[0];
+        const modalTodo = await createModalDebug({
+            content: await getString('todo:updated', 'local_competvet'),
+            debugs: [
+                {
+                    apifunction: 'local_competvet_update_todo',
+                    params: JSON.stringify(payLoad),
+                    results: [
+                        JSON.stringify(updatedTodo)
+                    ]
+                }
+            ]
+        });
+        modalTodo.show();
+        modalTodo.getRoot().on(ModalEvents.cancel, () => {
+            genericFormCreate(editObservationParameters, 'edit', modulename, createModalDebugFromEvent);
+        });
+    } catch (error) {
+        await Notification.exception(error);
+    }
 };
