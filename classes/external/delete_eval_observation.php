@@ -52,10 +52,10 @@ class delete_eval_observation extends external_api {
      */
     public static function execute(int $observationid): array {
         [
-            'observationid' => $observationid,
+            'id' => $observationid,
         ] =
             self::validate_parameters(self::execute_parameters(), [
-                'observationid' => $observationid,
+                'id' => $observationid,
             ]);
         self::validate_context(context_system::instance());
         // TODO validate role.

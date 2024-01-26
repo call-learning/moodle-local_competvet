@@ -20,6 +20,7 @@ require_once($CFG->libdir . '/externallib.php');
 
 use context_system;
 use external_api;
+use external_description;
 use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
@@ -89,14 +90,14 @@ class edit_eval_observation extends external_api {
                     new external_single_structure(
                         api_helpers::get_context_structure(),
                         'Context',
-                        VALUE_OPTIONAL
+                        VALUE_OPTIONAL,
                     ),
                 'comments' => new external_multiple_structure(
                     new external_single_structure(
-                        api_helpers::get_comment_structure()
+                        api_helpers::get_comment_structure(),
                     ),
                     'Comments',
-                    VALUE_OPTIONAL
+                    VALUE_OPTIONAL,
                 ),
                 'criteria' => new external_multiple_structure(
                     new external_single_structure(
@@ -107,5 +108,31 @@ class edit_eval_observation extends external_api {
                 ),
             ]
         );
+    }
+
+    /**
+     * Fix for when any root parameter is empty
+     *
+     * @param external_description $description
+     * @param $params
+     * @return array|bool|mixed
+     */
+    public static function validate_parameters(external_description $description, $params) {
+        $params = parent::validate_parameters($description, $params);
+        // Check if param has a key missing and add null to it.
+        if ($description::class === external_function_parameters::class) {
+            $orderedparams = [];
+            foreach ($description->keys as $key => $param) {
+                if (array_key_exists($key, $params)) {
+                    // If the key exists in $params, use its value
+                    $orderedparams[$key] = $params[$key];
+                } else {
+                    // If the key does not exist in $params and the param is single_value, use null if not use an empty array.
+                    $orderedparams[$key] = $param::class === external_multiple_structure::class ? [] : null;
+                }
+            }
+            $params = $orderedparams;
+        }
+        return $params;
     }
 }

@@ -34,7 +34,7 @@ use mod_competvet\local\api\situations;
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class get_situation_criteria extends external_api {
+class get_eval_situation_criteria extends external_api {
 
     /**
      * Returns description of method parameters
@@ -56,7 +56,6 @@ class get_situation_criteria extends external_api {
      * @return array
      */
     public static function execute(int $situationid): array {
-        global $USER;
         ['situationid' => $situationid] =
             self::validate_parameters(self::execute_parameters(), ['situationid' => $situationid]);
         self::validate_context(context_system::instance());
