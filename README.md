@@ -262,7 +262,8 @@ The result (here for two plannings)
       "groupname": "Group 4",
       "groupid": 22,
       "session": "2023",
-      "situationid": 3
+      "situationid": 3,
+      "situationname": "UC0513 Repro 0",
     }
   },
   {
@@ -309,7 +310,8 @@ Results:
   "groupname": "Group 0",
   "groupid": 560,
   "session": "2023",
-  "situationid": 71
+  "situationid": 71,
+  "situationname": "UC0514 Anesth\u00e9sie 2",
 }
 ```
 
@@ -376,17 +378,17 @@ statistics for their evaluation. The role is a string that can be used to determ
       "userinfo": {
         "id": 965,
         "fullname": "芳 李",
-        "userpictureurl": "http://competveteval.local/theme/image.php/boost/core/1704452514/u/f1"
-      },
-      "rolename": "responsibleucue"
+        "userpictureurl": "http://competveteval.local/theme/image.php/boost/core/1704452514/u/f1",
+        "role": "responsibleucue"
+      }
     },
     {
       "userinfo": {
         "id": 860,
         "fullname": "Lukáš Černý",
-        "userpictureurl": "http://competveteval.local/theme/image.php/boost/core/1704452514/u/f1"
-      },
-      "rolename": "evaluator"
+        "userpictureurl": "http://competveteval.local/theme/image.php/boost/core/1704452514/u/f1",
+        "rolename": "evaluator"
+      }
     }
   ]
 }
@@ -609,6 +611,198 @@ Returns the list of all criteria for the given situation:
 ]
 ```
 
+### Get Evaluation Observation Information: `local_competvet_get_eval_observation_info`
+
+The `local_competvet_get_eval_observation_info` API function retrieves detailed information about a specific evaluation observation. This includes data about the observation context, comments made, and various evaluation criteria.
+
+#### Parameters:
+
+- `observationid`: (integer) The ID of the evaluation observation to retrieve information for.
+
+**Usage Example with curl:**
+
+```bash
+curl $SITEURL/webservice/rest/server.php    
+ -d "wstoken=$TOKEN"  
+  -d 'wsfunction=local_competvet_get_eval_observation_info'  
+   -d 'observationid=[observation_id]'   -d 'moodlewsrestformat=json' -k
+```
+
+Replace `[observation_id]` with the actual ID of the observation you want to retrieve information for.
+
+#### Expected Output:
+
+A JSON object containing detailed information about the evaluation observation, including its context, comments, criteria, and whether it can be edited or deleted.
+
+**Sample Response:**
+
+```json
+{
+    "id": 88214,
+    "category": 2,
+    "context": {
+        "id": 528322,
+        "comment": "test",
+        "userinfo": {
+            "id": 853,
+            "fullname": "Anastasia Kozlova",
+            "userpictureurl": "http://competveteval.local/theme/image.php/_s/boost/core/1706289695/u/f1"
+        },
+        "timecreated": 1706303774,
+        "timemodified": 1706303774
+    },
+    "comments": [
+        {
+            "id": 528323,
+            "comment": "test comment",
+            "commentlabel": "",
+            "type": 2,
+            "userinfo": {
+                "id": 853,
+                "fullname": "Anastasia Kozlova",
+                "userpictureurl": "http://competveteval.local/theme/image.php/_s/boost/core/1706289695/u/f1"
+            },
+            "timecreated": 1706303774,
+            "timemodified": 1706303774
+        }
+    ],
+    "criteria": [
+        // ... Criteria details ...
+    ],
+    "canedit": false,
+    "candelete": false
+}
+```
+
+The response includes an array of `criteria` each containing detailed information about specific evaluation criteria, as well as permissions for editing and deleting the observation.
+
+
+### Create Evaluation Observation: `local_competvet_create_eval_observation`
+
+This API function is used to create a new evaluation observation.
+It allows the creation of a detailed observation record linked to a specific student, planning, and observer.
+
+Parameters:
+* planningid: (integer) The ID of the planning associated with this observation.
+* studentid: (integer) The ID of the student who is the subject of the observation.
+* observerid: (integer) The ID of the observer making the observation.
+* context: (string) A brief description or context of the observation.
+* comments: (array) An array of comments related to the observation.
+
+
+**Usage Example:**
+
+```bash
+curl $SITEURL/webservice/rest/server.php  
+    -d "wstoken=$TOKEN"   
+    -d 'wsfunction=local_competvet_create_eval_observation'  
+    -d 'planningid=12345' \
+    -d 'studentid=67890' \
+    -d 'observerid=13579' \
+    -d 'context=Initial observation of student performance' \
+    -d 'moodlewsrestformat=json' -k
+```
+
+Result:
+
+```json
+{
+    "observationid": 88214
+}
+```
+---
+
+### Edit Evaluation Observation: `local_competvet_edit_eval_observation`
+
+The `local_competvet_edit_eval_observation` API function allows for modifying an existing evaluation observation in the Moodle CompetVet system. This function enables updating the observation context and the criteria associated with the observation.
+
+#### Parameters:
+
+- `observationid`: (integer) The ID of the evaluation observation to be edited.
+- `context`: (array) A context object containing:
+    - `id`: (integer) The ID of the context.
+    - `comment`: (string) A comment related to the context.
+- `criteria`: (array) An array of criteria objects, each containing:
+    - `id`: (integer) The ID of a criterion.
+    - `level`: (integer) The level or score assigned to the criterion.
+
+**Usage Example with curl:**
+
+```bash
+curl https://<Your URL>/webservice/rest/server.php   -d "wstoken=$TOKEN"   -d 'wsfunction=local_competvet_edit_eval_observation'   -d 'observationid=[observation_id]'   -d 'context[id]=[context_id]&context[comment]=Test comment'   -d 'criteria[0][id]=[criteria_id]&criteria[0][level]=100'   -d 'moodlewsrestformat=json' -k
+```
+
+Replace `[observation_id]`, `[context_id]`, and `[criteria_id]` with the actual IDs and values relevant to the observation you wish to edit.
+
+
+---
+
+### Delete Evaluation Observation: `local_competvet_delete_eval_observation`
+
+This API function is used to delete an evaluation observation.
+
+**Usage Example:**
+
+```bash
+curl $SITEURL/webservice/rest/server.php   
+  -d "wstoken=$TOKEN"   
+  -d 'wsfunction=local_competvet_delete_eval_observation'   -d 'id=[observationid]'   -d 'moodlewsrestformat=json' -k
+```
+
+---
+
+### Ask for Evaluation Observation: `local_competvet_ask_eval_observation`
+
+This API function is used to request an evaluation observation. This means that this will be added (with the context provided)
+to the list of TODOs for the observer. The observer will then be able to create the observation.
+
+**Usage Example:**
+
+```bash
+curl $SITEURL/webservice/rest/server.php   
+  -d "wstoken=$TOKEN"   -d 'wsfunction=local_competvet_ask_eval_observation'  
+  -d 'planningid=1234'
+  -d 'studentid=345'
+  -d 'observerid=345'
+  -d 'context="Test string"'
+  -d 'moodlewsrestformat=json' -k
+```
+
+Results:
+
+```json
+{
+    "todoid": 88214
+}
+```
+---
+
+### Get Todos: `local_competvet_get_todos`
+
+This API function is used to retrieve a list of todos.
+
+**Usage Example:**
+
+```bash
+curl $SITEURL/webservice/rest/server.php   -d "wstoken=$TOKEN"   -d 'wsfunction=local_competvet_get_todos'   -d 'moodlewsrestformat=json' -k
+```
+
+---
+
+### Update Todo Status: `local_competvet_update_todo_status`
+
+This API function is used to update the status of a todo.
+
+**Usage Example:**
+
+```bash
+curl $SITEURL/webservice/rest/server.php   -d "wstoken=$TOKEN"   -d 'wsfunction=local_competvet_update_todo_status'   -d 'additional_parameters_here'   -d 'moodlewsrestformat=json' -k
+```
+
+---
+
+Please replace `<Your URL>`, `$TOKEN`, and `additional_parameters_here` with the appropriate values for your Moodle instance and the specific API calls.
+
 ## License ##
 
 2023 CALL Learning <laurent@call-learning.fr>
@@ -627,11 +821,20 @@ this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Upgrade notes (API)
 
-### 2024-01-16
+### 2024-01-26
 
-Added:
-* create_eval_blank_observation
+Added: 
 
+* local_competvet_get_planning_info : get planning info, add the situation name so it is easier to display.
+* local_competvet_get_planning_infos_students : get planning info for all students in a given planning. For observer add the role as role in the userinfo.
+
+New API:
+* local_competvet_create_eval_observation
+* local_competvet_edit_eval_observation
+* local_competvet_delete_eval_observation
+* local_competvet_ask_eval_observation
+* local_competvet_get_todos
+* local_competvet_update_todo_status
 ### 2024-01-05
 
 Removed: 
@@ -640,6 +843,7 @@ Removed:
 info for one student only.
 
 get_user_info : will return id instead of userid.
+
 
 ### 2023-12-29
 Renamed local_competvet_get_user_evaluations => get_user_eval_observations so each component will have its own endpoint. 

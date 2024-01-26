@@ -132,17 +132,17 @@ $token = $authresponse['token'];
 $userid = $authresponse['userid'];
 
 // Example - Get Application Mode.
-cli_writeln("Example - Get Application Mode");
+cli_writeln("Example - Get Application Mode: local_competvet_get_application_mode");
 $response = query_api_with_token($baseurl, $token, 'local_competvet_get_application_mode', ['userid' => $userid]);
 cli_writeln(json_encode($response, JSON_PRETTY_PRINT));
 
 // Example - Get User Profile.
-cli_writeln("Example - Get User Profile");
+cli_writeln("Example - Get User Profile: local_competvet_get_user_profile");
 $response = query_api_with_token($baseurl, $token, 'local_competvet_get_user_profile', ['userid' => $userid]);
 cli_writeln(json_encode($response, JSON_PRETTY_PRINT));
 
 // Example - Get Situations for Current User.
-cli_writeln("Example - Get Situations for Current User");
+cli_writeln("Example - Get Situations for Current User: local_competvet_get_situations");
 $situations = query_api_with_token($baseurl, $token, 'local_competvet_get_situations', []);
 cli_writeln(json_encode($situations, JSON_PRETTY_PRINT));
 if (count($situations) > 0) {
@@ -150,7 +150,7 @@ if (count($situations) > 0) {
     $firsttwoplanningsid = array_map(fn($planning) => $planning['id'], $firsttwoplannings);
     // Example - Get Planning Information
     // Assuming $plannings is an array of planning IDs.
-    cli_writeln("Example - Get Planning Information");
+    cli_writeln("Example - Get Planning Information: local_competvet_get_plannings_info");
     $response = query_api_with_token(
         $baseurl,
         $token,
@@ -161,7 +161,7 @@ if (count($situations) > 0) {
 
     // Example - Get User Information for Planning
     // Assuming $planningid is set.
-    cli_writeln("Example - Get User Information for Planning");
+    cli_writeln("Example - Get User Information for Planning: local_competvet_get_users_infos_for_planning");
     $response = query_api_with_token(
         $baseurl,
         $token,
@@ -173,7 +173,7 @@ if (count($situations) > 0) {
     // Get situation Grid
     // Get the first situation id.
     $firstsituationid = $situations[0]['id'];
-    cli_writeln("Example - Get Situation Criteria");
+    cli_writeln("Example - Get Situation Criteria: local_competvet_get_eval_situation_criteria");
     $allcriteria = query_api_with_token(
         $baseurl,
         $token,
@@ -185,7 +185,7 @@ if (count($situations) > 0) {
 
     // Example - Create eval observation
     // Assuming $planningid is set.
-    cli_writeln("Example - Create eval observation");
+    cli_writeln("Example - Create eval observation: local_competvet_create_eval_observation");
     $response = query_api_with_token($baseurl, $token, 'local_competvet_create_eval_observation', [
         'category' => 1,
         'planningid' => $firsttwoplanningsid[0],
@@ -202,7 +202,7 @@ if (count($situations) > 0) {
 
     $observationid = $response['observationid'];
     // Now get the observation information.
-    cli_writeln("Example - Get Observation Information");
+    cli_writeln("Example - Get Observation Information: local_competvet_get_eval_observation_info");
     $response = query_api_with_token($baseurl, $token, 'local_competvet_get_eval_observation_info', [
         'observationid' => $observationid,
     ]);
@@ -226,7 +226,7 @@ if (count($situations) > 0) {
             ],
     ]);
 
-    cli_writeln("Example - Get Observation Information");
+    cli_writeln("Example - Get Observation Information: local_competvet_get_eval_observation_info");
     $response = query_api_with_token($baseurl, $token, 'local_competvet_get_eval_observation_info', [
         'observationid' => $observationid,
     ]);
@@ -234,14 +234,14 @@ if (count($situations) > 0) {
     cli_writeln(json_encode($response['context'], JSON_PRETTY_PRINT));
 
     // Now delete the observation.
-    cli_writeln("Example - Delete Observation Information");
+    cli_writeln("Example - Delete Observation Information: local_competvet_delete_eval_observation");
     $response = query_api_with_token($baseurl, $token, 'local_competvet_delete_eval_observation', [
         'id' => $observationid,
     ]);
     cli_writeln(json_encode($response, JSON_PRETTY_PRINT));
 
     // Now ask for observations.
-    cli_writeln("Example - Ask for Observation");
+    cli_writeln("Example - Ask for Observation: local_competvet_ask_eval_observation");
     $response = query_api_with_token($baseurl, $token, 'local_competvet_ask_eval_observation', [
         'planningid' => $firsttwoplanningsid[0],
         'studentid' => $userid,
