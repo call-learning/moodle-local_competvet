@@ -50,7 +50,7 @@ class idplist_test extends advanced_testcase {
         $idplist = \local_competvet\external\idplist::execute();
         $this->assertEquals(
             [
-                'url' => 'https://www.example.com/moodle/local/competveteval/login/cas-login.php?authCAS=CAS',
+                'url' => 'https://www.example.com/moodle/local/competvet/webservices/cas-login.php?authCAS=CAS',
                 'iconurl' => '',
                 'name' => 'Test CAS',
             ],

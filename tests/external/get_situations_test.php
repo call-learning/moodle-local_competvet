@@ -81,7 +81,7 @@ class get_situations_test extends externallib_advanced_testcase {
      */
     public function test_get_situations(string $username, array $expected) {
         $this->setUser(\core_user::get_user_by_username($username));
-        $situations = $this->get_situations();
+        $situations = $this->get_situations(null, true); // Ignore future situations.
         test_helpers::remove_elements_for_assertions($situations, ['id', 'intro']);
         $this->assertEquals($expected, $situations);
     }
@@ -95,7 +95,7 @@ class get_situations_test extends externallib_advanced_testcase {
     public static function all_for_user_provider_with_planning(): array {
         global $CFG;
         $results = [];
-        include_once($CFG->dirroot . '/local/competvet/tests/fixtures/get_situations_test_results.php');
+        include_once($CFG->dirroot . '/local/competvet/tests/fixtures/get_situations_no_future_test_results.php');
         return [
             'student1 situations' => [
                 'student1',

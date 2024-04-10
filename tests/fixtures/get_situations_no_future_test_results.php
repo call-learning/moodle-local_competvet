@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 defined('MOODLE_INTERNAL') || die();
-
 $results['student1results'] = [
     [
         'plannings' =>
@@ -88,24 +87,6 @@ $results['student1results'] = [
         'autoevalnum' => 1,
         'roles' => '["student"]',
     ],
-    [
-        'plannings' =>
-            [
-
-                [
-                    'startdate' => '1714345200',
-                    'enddate' => '1704582000',
-                    'session' => '2023',
-                    'groupname' => 'group 8.1',
-                ],
-            ],
-        'tags' => '["y:1"]',
-        'shortname' => 'SIT7',
-        'name' => 'SIT7',
-        'evalnum' => 1,
-        'autoevalnum' => 1,
-        'roles' => '["student"]',
-    ],
 ];
 $results['student2results'] = [
     [
@@ -158,24 +139,6 @@ $results['student2results'] = [
         'tags' => '["y:1"]',
         'shortname' => 'SIT4',
         'name' => 'SIT4',
-        'evalnum' => 1,
-        'autoevalnum' => 1,
-        'roles' => '["student"]',
-    ],
-    [
-        'plannings' =>
-            [
-
-                [
-                    'startdate' => '1714345200',
-                    'enddate' => '1704582000',
-                    'session' => '2023',
-                    'groupname' => 'group 8.1',
-                ],
-            ],
-        'tags' => '["y:1"]',
-        'shortname' => 'SIT7',
-        'name' => 'SIT7',
         'evalnum' => 1,
         'autoevalnum' => 1,
         'roles' => '["student"]',
@@ -313,60 +276,6 @@ $results['observer2results'] = [
             'tags' => '["y:3"]',
             'shortname' => 'SIT6',
             'name' => 'SIT6',
-            'evalnum' => 1,
-            'autoevalnum' => 1,
-            'roles' => '["observer"]',
-        ],
-        [
-            'plannings' =>
-                [
-
-                    [
-                        'startdate' => '1714345200',
-                        'enddate' => '1704582000',
-                        'session' => '2023',
-                        'groupname' => 'group 8.1',
-                    ],
-                ],
-            'tags' => '["y:1"]',
-            'shortname' => 'SIT7',
-            'name' => 'SIT7',
-            'evalnum' => 1,
-            'autoevalnum' => 1,
-            'roles' => '["observer"]',
-        ],
-        [
-            'plannings' =>
-                [
-
-                    [
-                        'startdate' => '1716937200',
-                        'enddate' => '1704582000',
-                        'session' => '2023',
-                        'groupname' => 'group 8.3',
-                    ],
-                ],
-            'tags' => '["y:2"]',
-            'shortname' => 'SIT8',
-            'name' => 'SIT8',
-            'evalnum' => 1,
-            'autoevalnum' => 1,
-            'roles' => '["observer"]',
-        ],
-        [
-            'plannings' =>
-                [
-
-                    [
-                        'startdate' => '1719529200',
-                        'enddate' => '1704582000',
-                        'session' => '2023',
-                        'groupname' => 'group 8.4',
-                    ],
-                ],
-            'tags' => '["y:3"]',
-            'shortname' => 'SIT9',
-            'name' => 'SIT9',
             'evalnum' => 1,
             'autoevalnum' => 1,
             'roles' => '["observer"]',
