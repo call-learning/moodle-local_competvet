@@ -1,0 +1,17 @@
+---
+
+- hosts: all
+  become: true
+  vars_files:
+    - vars/webserver.yml
+    - vars/database.yml
+  tasks:
+    - name: Environnement
+      debug:
+        msg: "{{ lookup('env','INSTANCE_URL') }}"
+    - name: Domain name
+      debug:
+        var: domain_name
+    - name: Domain name
+      debug:
+        var: moodle_database

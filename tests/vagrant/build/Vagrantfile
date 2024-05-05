@@ -1,0 +1,32 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+# Note: this requires vagrant-dns plugin
+
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = "ubuntu/jammy64"
+
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+
+  config.vm.provider :virtualbox do |v|
+    v.memory = 4096
+    v.linked_clone = true
+  end
+  config.vm.hostname = "moodlecompetvet.test"
+  config.vm.network :private_network, ip: "192.168.56.2", hostname: true
+
+  config.vm.provision "ansible" do |ansible|
+    ansible.verbose = "vv"
+    ansible.compatibility_mode = "2.0"
+    ansible.playbook = "./playbook.yml"
+    ansible.raw_arguments = ["-i", "./inventories/vagrant"]
+    ansible.groups = {
+        "webserver" => ["default"],
+        "database" => ["default"],
+        "cache" => [ "default" ],
+        "all:vars" => {"ansible_python_interpreter" => "/usr/bin/python3"}
+    }
+  end
+
+end
