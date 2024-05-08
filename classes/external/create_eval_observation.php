@@ -109,8 +109,8 @@ class create_eval_observation extends external_api {
                 'category' => new external_value(PARAM_INT, 'Observation category (AUTOEVAL or EVAL'),
                 'planningid' => new external_value(PARAM_INT, 'id of the student'),
                 'studentid' => new external_value(PARAM_INT, 'id of the student'),
-                'observerid' => new external_value(PARAM_INT, 'id of the student', VALUE_OPTIONAL),
-                'context' => new external_value(PARAM_TEXT, 'context', VALUE_OPTIONAL),
+                'observerid' => new external_value(PARAM_INT, 'id of the student', VALUE_OPTIONAL, 0),
+                'context' => new external_value(PARAM_TEXT, 'context', VALUE_OPTIONAL, null),
                 'comments' => new external_multiple_structure(
                     new external_single_structure(
                         api_helpers::get_comment_structure(),

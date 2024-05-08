@@ -67,8 +67,11 @@ class get_user_eval_observations extends external_api {
         ['planningid' => $planningid, 'userid' => $userid] =
             self::validate_parameters(self::execute_parameters(), ['planningid' => $planningid, 'userid' => $userid]);
         self::validate_context(context_system::instance());
-        return observations::get_user_observations($planningid, $userid);
-
+        try {
+            return observations::get_user_observations($planningid, $userid);
+        } catch (\Exception $e) {
+            return [];
+        }
     }
 
     /**
