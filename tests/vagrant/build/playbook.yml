@@ -1,4 +1,33 @@
 ---
 
-- import_playbook: database.yml
-- import_playbook: webserver.yml
+#- import_playbook: database.yml
+#- import_playbook: webserver.yml
+
+- name: Setup Repository and Update Script
+  hosts: all
+  # We need to get the root repository.
+  tasks:
+    - name: Ensure git is installed
+      apt:
+        name: git
+        state: present
+      become: yes
+    - name: Convert shallow clone to a full clone
+      command:
+        cmd: "git fetch --unshallow"
+        chdir: "{{ moodle_src_path }}"
+      become: true
+      become_user: "{{ moodle_webserver_user }}"  # Check out as www-data
+      ignore_errors: yes
+    - name: Create the tool path if it does not exist
+      file:
+          path: "{{ tools_path }}"
+          state: directory
+          mode: '0755'
+      become: yes
+    - name: Deploy the update script
+      template:
+        src: update_repo.sh.j2
+        dest: "{{ tools_path }}/update_repo.sh"
+        mode: '0755'
+      become: yes

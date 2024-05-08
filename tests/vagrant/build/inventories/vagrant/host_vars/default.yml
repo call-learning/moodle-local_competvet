@@ -68,4 +68,8 @@ apache_vhosts:
       <FilesMatch \.php$>
         SetHandler "proxy:fcgi://{{ php_fpm_listen }}"
       </FilesMatch>
-      
+
+moodle_src_path: "/srv/moodle/src"
+moodle_webserver_user: "{{ (ansible_os_family == \"RedHat\") | ternary('apache','www-data') }}"
+moodle_webserver_group: "{{ (ansible_os_family == \"RedHat\") | ternary('apache','www-data') }}"
+tools_path: "/srv/tools"

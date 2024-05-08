@@ -1,0 +1,10 @@
+#!/bin/bash
+# Navigate to the repository folder
+cd {{ moodle_src_path }}
+
+# Pull the latest changes from the repository
+sudo -u {{moodle_webserver_user}} git pull origin
+sudo -u {{moodle_webserver_user}} git submodule sync
+sudo -u {{moodle_webserver_user}} git submodule update --init --recursive
+
+echo "Repository has been updated."
