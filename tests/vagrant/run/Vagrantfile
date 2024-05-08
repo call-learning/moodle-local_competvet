@@ -1,0 +1,11 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+# Note: this requires vagrant-dns plugin
+
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = "lmedavid/competvet"
+  config.vm.hostname = "moodlecompetvet.test"
+  config.vm.network :private_network, ip: "192.168.56.2", hostname: true
+end

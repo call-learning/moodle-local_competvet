@@ -1,0 +1,12 @@
+roles
+*.retry
+.idea/
+*.pyc
+dumps/
+.vagrant
+*.vault-pw
+tests/*.log
+run_samples
+openrc.sh
+.vagrant
+*.box
