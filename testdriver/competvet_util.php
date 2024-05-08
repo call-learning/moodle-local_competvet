@@ -17,7 +17,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once($CFG->libdir . '/testing/classes/util.php');
-
+// No NAMESPACE here because it confuses get_framework() in util.php.
 use Behat\Gherkin\Keywords\ArrayKeywords;
 use Behat\Gherkin\Lexer;
 use Behat\Gherkin\Parser;
@@ -25,24 +25,157 @@ use tool_generator\local\testscenario\parsedfeature;
 use tool_generator\local\testscenario\steprunner;
 
 class competvet_util extends testing_util {
-
-    static public $datarootskiponreset = ['.', '..', 'filedir', 'lang', 'muc', 'session'];
+    public static $datarootskiponreset = ['.', '..', 'filedir', 'lang', 'muc', 'session'];
     /** @var array of valid steps indexed by given expression tag. */
     private array $validsteps;
     private behat_data_generators $behatgenerator;
+    /**
+     * @var int last value of db writes counter, used for db resetting
+     */
+    private static $lastdbwrites = null;
 
-    public static function start_test() {
+    public function __construct() {
+        global $CFG, $SITE, $DB, $FULLME;
+        self::$globals['_SERVER'] = $_SERVER;
+        self::$globals['CFG'] = clone($CFG);
+        self::$globals['SITE'] = clone($SITE);
+        self::$globals['DB'] = $DB;
+        self::$globals['FULLME'] = $FULLME;
+    }
+    public function init_test() {
         global $CFG;
         @mkdir($CFG->dataroot . '/competvet', 0777, true);
+        // Run all adhoc task.
+        $now = time();
+        while (($task = \core\task\manager::get_next_adhoc_task($now)) !== null) {
+            try {
+                $task->execute();
+                \core\task\manager::adhoc_task_complete($task);
+            } catch (Exception $e) {
+                \core\task\manager::adhoc_task_failed($task);
+            }
+        }
+        self::reset_test();
+    }
+
+    /**
+     * Gets the name of the locale for testing environment (Australian English)
+     * depending on platform environment.
+     *
+     * @return string the locale name.
+     */
+    protected static function get_locale_name() {
+        global $CFG;
+        if ($CFG->ostype === 'WINDOWS') {
+            return 'English_Australia.1252';
+        } else {
+            return 'en_AU.UTF-8';
+        }
+    }
+
+    public function reset_test() {
+        global $DB, $CFG, $SITE, $COURSE, $PAGE, $OUTPUT, $SESSION, $FULLME, $FILTERLIB_PRIVATE;
+        // reset global $DB in case somebody mocked it
+        $DB = self::get_global_backup('DB');
+
+        if ($DB->is_transaction_started()) {
+            // we can not reset inside transaction
+            $DB->force_transaction_rollback();
+        }
+
+        self::reset_database();
+        $localename = self::get_locale_name();
+        $warnings = [];
+        // restore original globals
+        $_SERVER = self::get_global_backup('_SERVER');
+        $CFG = self::get_global_backup('CFG');
+        $SITE = self::get_global_backup('SITE');
+        $FULLME = self::get_global_backup('FULLME');
+        $_GET = [];
+        $_POST = [];
+        $_FILES = [];
+        $_REQUEST = [];
+        $COURSE = $SITE;
+
+        // reinitialise following globals
+        $OUTPUT = new bootstrap_renderer();
+        $PAGE = new moodle_page();
+        $FULLME = null;
+        $ME = null;
+        $SCRIPT = null;
+        $FILTERLIB_PRIVATE = null;
+        if (!empty($SESSION->notifications)) {
+            $SESSION->notifications = [];
+        }
+
+        // Empty sessison and set fresh new not-logged-in user.
+        \core\session\manager::init_empty_session();
+
+        // Reset all static caches.
+        accesslib_clear_all_caches(true);
+        accesslib_reset_role_cache();
+        get_string_manager()->reset_caches(true);
+        reset_text_filters_cache(true);
+        get_message_processors(false, true, true);
+        filter_manager::reset_caches();
+        core_filetypes::reset_caches();
+        \core_search\manager::clear_static();
+        core_user::reset_caches();
+        \core\output\icon_system::reset_caches();
+        core_courseformat\base::reset_course_cache(0);
+        get_fast_modinfo(0, 0, true);
+
+        // purge dataroot directory
+        //self::reset_dataroot();
+
+        // restore original config once more in case resetting of caches changed CFG
+        $CFG = self::get_global_backup('CFG');
+
+        // inform data generator
+        self::get_data_generator()->reset();
+
+        // fix PHP settings
+        error_reporting($CFG->debug);
+
+        // Reset the date/time class.
+        core_date::store_default_php_timezone();
+        date_default_timezone_set($CFG->timezone);
+
+        // Make sure the time locale is consistent - that is Australian English.
+        setlocale(LC_TIME, $localename);
+
+        // Reset the log manager cache.
+        get_log_manager(true);
+
+        // Reset user agent.
+        core_useragent::instance(true, null);
+
+        // verify db writes just in case something goes wrong in reset
+        if (self::$lastdbwrites != $DB->perf_get_writes()) {
+            error_log('Unexpected DB writes in phpunit_util::reset_all_data()');
+            self::$lastdbwrites = $DB->perf_get_writes();
+        }
+
+        if ($warnings) {
+            $warnings = implode("\n", $warnings);
+            trigger_error($warnings, E_USER_WARNING);
+        }
+
         self::store_versions_hash();
         self::store_database_state();
     }
 
     public static function stop_test() {
-        global $CFG;
+        self::reset_database();
+        cache_helper::purge_all();
+        // Reset the cache API so that it recreates it's required directories as well.
+        cache_factory::reset();
+    }
+
+    public function deinit() {
         self::reset_database();
         remove_dir(self::get_dataroot() . '/filedir', false);
-            // Here we don't call reset data root as it might be on a dev site.
+        // Here we don't call reset data root as it might be on a dev site.
         cache_helper::purge_all();
         // Reset the cache API so that it recreates it's required directories as well.
         cache_factory::reset();
@@ -207,5 +340,30 @@ class competvet_util extends testing_util {
             $result = $step->execute() && $result;
         }
         return $result;
+    }
+
+    /** @var array An array of original globals, restored after each test */
+    protected static $globals = [];
+    /**
+     * Returns original state of global variable.
+     * @static
+     * @param string $name
+     * @return mixed
+     */
+    public static function get_global_backup($name) {
+        if ($name === 'DB') {
+            // no cloning of database object,
+            // we just need the original reference, not original state
+            return self::$globals['DB'];
+        }
+        if (isset(self::$globals[$name])) {
+            if (is_object(self::$globals[$name])) {
+                $return = clone(self::$globals[$name]);
+                return $return;
+            } else {
+                return self::$globals[$name];
+            }
+        }
+        return null;
     }
 }
