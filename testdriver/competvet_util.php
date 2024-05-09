@@ -17,6 +17,9 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once($CFG->libdir . '/testing/classes/util.php');
+require_once($CFG->libdir . '/testing/lib.php');
+
+
 // No NAMESPACE here because it confuses get_framework() in util.php.
 use Behat\Gherkin\Keywords\ArrayKeywords;
 use Behat\Gherkin\Lexer;
@@ -26,13 +29,11 @@ use tool_generator\local\testscenario\steprunner;
 
 class competvet_util extends testing_util {
     public static $datarootskiponreset = ['.', '..', 'filedir', 'lang', 'muc', 'session'];
+    /** @var array An array of original globals, restored after each test */
+    protected static $globals = [];
     /** @var array of valid steps indexed by given expression tag. */
     private array $validsteps;
     private behat_data_generators $behatgenerator;
-    /**
-     * @var int last value of db writes counter, used for db resetting
-     */
-    private static $lastdbwrites = null;
 
     public function __construct() {
         global $CFG, $SITE, $DB, $FULLME;
@@ -42,9 +43,11 @@ class competvet_util extends testing_util {
         self::$globals['DB'] = $DB;
         self::$globals['FULLME'] = $FULLME;
     }
+
     public function init_test() {
         global $CFG;
-        @mkdir($CFG->dataroot . '/competvet', 0777, true);
+        $framework = self::get_framework();
+        @mkdir($CFG->dataroot . '/' . $framework, 0777, true);
         // Run all adhoc task.
         $now = time();
         while (($task = \core\task\manager::get_next_adhoc_task($now)) !== null) {
@@ -59,34 +62,41 @@ class competvet_util extends testing_util {
     }
 
     /**
-     * Gets the name of the locale for testing environment (Australian English)
-     * depending on platform environment.
+     * Execute a parsed feature.
      *
-     * @return string the locale name.
+     * @param parsedfeature $parsedfeature the parsed feature to execute.
+     * @return bool true if all steps were executed successfully.
      */
-    protected static function get_locale_name() {
-        global $CFG;
-        if ($CFG->ostype === 'WINDOWS') {
-            return 'English_Australia.1252';
-        } else {
-            return 'en_AU.UTF-8';
+    public function execute(parsedfeature $parsedfeature): bool {
+        if (!$parsedfeature->is_valid()) {
+            return false;
         }
+        $result = true;
+        $steps = $parsedfeature->get_all_steps();
+        foreach ($steps as $step) {
+            $result = $step->execute() && $result;
+        }
+        return $result;
     }
 
+    /**
+     * Go back to previous version
+     *
+     * @return void
+     */
     public function reset_test() {
         global $DB, $CFG, $SITE, $COURSE, $PAGE, $OUTPUT, $SESSION, $FULLME, $FILTERLIB_PRIVATE;
-        // reset global $DB in case somebody mocked it
+        // Reset global $DB in case somebody mocked it.
         $DB = self::get_global_backup('DB');
 
         if ($DB->is_transaction_started()) {
-            // we can not reset inside transaction
+            // We can not reset inside transaction.
             $DB->force_transaction_rollback();
         }
 
         self::reset_database();
         $localename = self::get_locale_name();
-        $warnings = [];
-        // restore original globals
+        // Restore original globals.
         $_SERVER = self::get_global_backup('_SERVER');
         $CFG = self::get_global_backup('CFG');
         $SITE = self::get_global_backup('SITE');
@@ -97,12 +107,10 @@ class competvet_util extends testing_util {
         $_REQUEST = [];
         $COURSE = $SITE;
 
-        // reinitialise following globals
+        // Reinitialise following globals.
         $OUTPUT = new bootstrap_renderer();
         $PAGE = new moodle_page();
         $FULLME = null;
-        $ME = null;
-        $SCRIPT = null;
         $FILTERLIB_PRIVATE = null;
         if (!empty($SESSION->notifications)) {
             $SESSION->notifications = [];
@@ -125,16 +133,13 @@ class competvet_util extends testing_util {
         core_courseformat\base::reset_course_cache(0);
         get_fast_modinfo(0, 0, true);
 
-        // purge dataroot directory
-        //self::reset_dataroot();
-
-        // restore original config once more in case resetting of caches changed CFG
+        // Restore original config once more in case resetting of caches changed CFG.
         $CFG = self::get_global_backup('CFG');
 
-        // inform data generator
+        // Inform data generator.
         self::get_data_generator()->reset();
 
-        // fix PHP settings
+        // Fix PHP settings.
         error_reporting($CFG->debug);
 
         // Reset the date/time class.
@@ -150,31 +155,69 @@ class competvet_util extends testing_util {
         // Reset user agent.
         core_useragent::instance(true, null);
 
-        // verify db writes just in case something goes wrong in reset
-        if (self::$lastdbwrites != $DB->perf_get_writes()) {
-            error_log('Unexpected DB writes in phpunit_util::reset_all_data()');
-            self::$lastdbwrites = $DB->perf_get_writes();
-        }
-
-        if ($warnings) {
-            $warnings = implode("\n", $warnings);
-            trigger_error($warnings, E_USER_WARNING);
-        }
-
         self::store_versions_hash();
         self::store_database_state();
     }
 
-    public static function stop_test() {
-        self::reset_database();
-        cache_helper::purge_all();
-        // Reset the cache API so that it recreates it's required directories as well.
-        cache_factory::reset();
+    /**
+     * Returns original state of global variable.
+     *
+     * @static
+     * @param string $name
+     * @return mixed
+     */
+    public static function get_global_backup($name) {
+        if ($name === 'DB') {
+            // no cloning of database object,
+            // we just need the original reference, not original state
+            return self::$globals['DB'];
+        }
+        if (isset(self::$globals[$name])) {
+            if (is_object(self::$globals[$name])) {
+                $return = clone(self::$globals[$name]);
+                return $return;
+            } else {
+                return self::$globals[$name];
+            }
+        }
+        return null;
     }
 
+    /**
+     * Gets the name of the locale for testing environment (Australian English)
+     * depending on platform environment.
+     *
+     * @return string the locale name.
+     */
+    protected static function get_locale_name() {
+        global $CFG;
+        if ($CFG->ostype === 'WINDOWS') {
+            return 'English_Australia.1252';
+        } else {
+            return 'en_AU.UTF-8';
+        }
+    }
+
+    /**
+     * Reset the database for good.
+     */
     public function deinit() {
         self::reset_database();
-        remove_dir(self::get_dataroot() . '/filedir', false);
+        $framework = self::get_framework();
+        $path = self::get_dataroot() . '/' . $framework . '/';
+        if (!empty(trim($path, '/')) && file_exists($path)) {
+            $handle = opendir($path);
+            while (false !== ($item = readdir($handle))) {
+                if ($item == '.' || $item == '..') {
+                    continue;
+                }
+                if (is_dir("$path/$item")) {
+                    remove_dir("$path/$item", false);
+                } else {
+                    unlink("$path/$item");
+                }
+            }
+        }
         // Here we don't call reset data root as it might be on a dev site.
         cache_helper::purge_all();
         // Reset the cache API so that it recreates it's required directories as well.
@@ -322,48 +365,5 @@ class competvet_util extends testing_util {
         $lexer = new Lexer($keywords);
         $parser = new Parser($lexer);
         return $parser;
-    }
-
-    /**
-     * Execute a parsed feature.
-     *
-     * @param parsedfeature $parsedfeature the parsed feature to execute.
-     * @return bool true if all steps were executed successfully.
-     */
-    public function execute(parsedfeature $parsedfeature): bool {
-        if (!$parsedfeature->is_valid()) {
-            return false;
-        }
-        $result = true;
-        $steps = $parsedfeature->get_all_steps();
-        foreach ($steps as $step) {
-            $result = $step->execute() && $result;
-        }
-        return $result;
-    }
-
-    /** @var array An array of original globals, restored after each test */
-    protected static $globals = [];
-    /**
-     * Returns original state of global variable.
-     * @static
-     * @param string $name
-     * @return mixed
-     */
-    public static function get_global_backup($name) {
-        if ($name === 'DB') {
-            // no cloning of database object,
-            // we just need the original reference, not original state
-            return self::$globals['DB'];
-        }
-        if (isset(self::$globals[$name])) {
-            if (is_object(self::$globals[$name])) {
-                $return = clone(self::$globals[$name]);
-                return $return;
-            } else {
-                return self::$globals[$name];
-            }
-        }
-        return null;
     }
 }

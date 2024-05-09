@@ -28,3 +28,10 @@
       notify:
         - restart apache
       changed_when: False
+    - name: Install composer dependencies
+      command: composer install
+      args:
+        chdir: "{{ moodle_src_path }}"
+      changed_when: False
+      become_user: "{{ moodle_webserver_user }}"  # Check out as www-data
+      become: true

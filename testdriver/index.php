@@ -25,8 +25,8 @@ require_once('../../../config.php');
 
 global $CFG;
 
-if (empty($CFG->compet_test_driver_enabled) || !$CFG->debugdeveloper) {
-    throw new moodle_exception('error:competvet_test_driver_disabled', 'local_competvet');
+if (empty($CFG->compet_test_driver_mode) || !$CFG->debugdeveloper) {
+    throw new moodle_exception('error:compet_test_driver_mode', 'local_competvet');
 }
 require_once($CFG->dirroot . '/local/competvet/testdriver/competvet_util.php');
 $testdriver = new competvet_util();
@@ -35,13 +35,8 @@ $command = optional_param('command', '', PARAM_ALPHA);
 ini_set('max_execution_time', 0);
 ini_set('memory_limit', -1);
 switch ($command) {
-
     case 'init':
         $testdriver->init_test();
-        echo "Starting test.";
-        break;
-    case 'reset':
-        $testdriver->reset_test();
         echo "Starting test.";
         break;
     case 'deinit':

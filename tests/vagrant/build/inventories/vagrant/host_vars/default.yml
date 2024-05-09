@@ -35,9 +35,8 @@ mysql_python_package_debian: python3-mysqldb
 dbengine: mysql
 
 moodle_extra_conf:
-  - {name: "phpunit_prefix", value: "'_phpunit'"}
-  - {name: "phpunit_dbname", value: "'{{ moodle_database.dbname }}_phpunit'"}
-  - {name: "phpunit_dataroot", value: "'{{ moodle_sitedata.shared_data_folder }}/{{ moodle_sitedata.data_dir_name }}_phpunit'"}
+  - {name: "compet_test_driver_mode", value: "1"}
+  - {name: "debug", value: "strval(E_ALL | E_STRICT)"}
 
 
 mysql_databases:
@@ -74,4 +73,4 @@ moodle_webserver_user: "{{ (ansible_os_family == \"RedHat\") | ternary('apache',
 moodle_webserver_group: "{{ (ansible_os_family == \"RedHat\") | ternary('apache','www-data') }}"
 tools_path: "/srv/tools"
 
-moodle_cron_periodicity: "1"
+moodle_cron_periodicity: "*"

@@ -57,3 +57,4 @@ $string['observation:comment:commentno'] = 'Comment {no}';
 $string['observation:comment:add'] = 'Add comment';
 $string['observation:comment:deleteno'] = 'Delete comment {no}';
 $string['todo:updated'] = 'Todo updated';
+$string['error:compet_test_driver_mode'] = 'Competency test driver mode is not set';
