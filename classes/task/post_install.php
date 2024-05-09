@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - https://moodle.org/
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -13,17 +13,22 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+namespace local_competvet\task;
+
 use local_competvet\utils;
 
 /**
- * Execute local_competvet upgrade from the given old version.
+ * Ad-hoc task to perform post install tasks.
+ * We use this to add new tags to the situation collection that is not created when the plugin is installed (and if
+ * at this point \core_tag_area::reset_definitions_for_component is called, this is discarded after install or update
+ * so cannot be directly called in the update process.
  *
- * @package   local_competvet
+ * @package   mod_competvet
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-function xmldb_local_competvet_install() {
-    $postinstall = new local_competvet\task\post_install();
-    core\task\manager::queue_adhoc_task($postinstall);
-    return true;
+class post_install extends \core\task\adhoc_task {
+    public function execute() {
+        utils::setup_mobile_service(true);
+    }
 }

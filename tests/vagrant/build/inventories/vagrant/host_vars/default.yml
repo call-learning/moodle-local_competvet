@@ -73,3 +73,5 @@ moodle_src_path: "/srv/moodle/src"
 moodle_webserver_user: "{{ (ansible_os_family == \"RedHat\") | ternary('apache','www-data') }}"
 moodle_webserver_group: "{{ (ansible_os_family == \"RedHat\") | ternary('apache','www-data') }}"
 tools_path: "/srv/tools"
+
+moodle_cron_periodicity: "1"
