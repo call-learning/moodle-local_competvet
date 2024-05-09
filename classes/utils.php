@@ -75,7 +75,7 @@ class utils {
         global $DB;
         if ($enabled) {
             // Similar code as in adminlib.php (admin_setting_enablemobileservice).
-            set_config('enablewebservices', true);
+            set_config('enablewebservices', '1');
 
             // Enable at least REST server.
             $activeprotocols = empty($CFG->webserviceprotocols) ? [] : explode(',', $CFG->webserviceprotocols);
