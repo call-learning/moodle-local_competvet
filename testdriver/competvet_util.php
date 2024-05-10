@@ -19,7 +19,6 @@ global $CFG;
 require_once($CFG->libdir . '/testing/classes/util.php');
 require_once($CFG->libdir . '/testing/lib.php');
 
-
 // No NAMESPACE here because it confuses get_framework() in util.php.
 use Behat\Gherkin\Keywords\ArrayKeywords;
 use Behat\Gherkin\Lexer;
@@ -48,6 +47,7 @@ class competvet_util extends testing_util {
         global $CFG;
         $framework = self::get_framework();
         @mkdir($CFG->dataroot . '/' . $framework, 0777, true);
+        set_config('cron_enabled', 0);
         // Run all adhoc task.
         $now = time();
         while (($task = \core\task\manager::get_next_adhoc_task($now)) !== null) {
@@ -59,6 +59,7 @@ class competvet_util extends testing_util {
             }
         }
         self::reset_test();
+        set_config('cron_enabled', 1);
     }
 
     /**
@@ -75,6 +76,9 @@ class competvet_util extends testing_util {
         $steps = $parsedfeature->get_all_steps();
         foreach ($steps as $step) {
             $result = $step->execute() && $result;
+            if ($step->get_error()) {
+                $parsedfeature->add_error($step->get_error());
+            }
         }
         return $result;
     }
@@ -222,6 +226,8 @@ class competvet_util extends testing_util {
         cache_helper::purge_all();
         // Reset the cache API so that it recreates it's required directories as well.
         cache_factory::reset();
+        // Re-enable cron.
+        set_config('cron_enabled', 1);
     }
 
     /**

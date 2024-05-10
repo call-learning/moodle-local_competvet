@@ -25,15 +25,18 @@ require_once('../../../config.php');
 
 global $CFG;
 
-if (empty($CFG->compet_test_driver_mode) || !$CFG->debugdeveloper) {
-    throw new moodle_exception('error:compet_test_driver_mode', 'local_competvet');
-}
 require_once($CFG->dirroot . '/local/competvet/testdriver/competvet_util.php');
 $testdriver = new competvet_util();
 
 $command = optional_param('command', '', PARAM_ALPHA);
 ini_set('max_execution_time', 0);
 ini_set('memory_limit', -1);
+if (!in_array($command, ['run'])) {
+    if (empty($CFG->compet_test_driver_mode) || !$CFG->debugdeveloper) {
+        throw new moodle_exception('error:compet_test_driver_mode', 'local_competvet');
+    }
+}
+
 switch ($command) {
     case 'init':
         $testdriver->init_test();
@@ -50,6 +53,13 @@ switch ($command) {
         $content = file_get_contents($CFG->dirroot . '/local/competvet/tests/app_scenario/' . $content . '.feature');
         $parsedfeature = $testdriver->parse_feature($content);
         $result = $testdriver->execute($parsedfeature);
+        if (!$result) {
+            foreach ($parsedfeature->get_scenarios() as $scenario) {
+                foreach ($scenario->steps as $step) {
+                    echo html_writer::div("Step: " . $step->get_text() . $step->get_error());
+                }
+            }
+        }
         echo "Executing scenario. $result";
         break;
     default:

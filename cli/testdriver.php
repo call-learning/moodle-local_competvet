@@ -32,9 +32,11 @@ require_once($CFG->libdir . '/clilib.php');
 // Get the cli options.
 [$options, $unrecognised] = cli_get_params([
     'help' => false,
-    'command' => 'init',
+    'command' => 'run',
+    'scenario' => null,
 ], [
     'c' => 'command',
+    's' => 'scenario',
     'h' => 'help',
 ]);
 
@@ -56,8 +58,10 @@ if ($options['help']) {
     cli_writeln($usage);
     die();
 }
-if (empty($CFG->compet_test_driver_mode) || !$CFG->debugdeveloper) {
-    cli_error('error:compet_test_driver_mode', 'local_competvet');
+if (!in_array($options['command'], ['run'])) {
+    if (empty($CFG->compet_test_driver_mode) || !$CFG->debugdeveloper) {
+        throw new moodle_exception('error:compet_test_driver_mode', 'local_competvet');
+    }
 }
 require_once($CFG->dirroot . '/local/competvet/testdriver/competvet_util.php');
 $testdriver = new competvet_util();
@@ -69,6 +73,21 @@ switch ($options['command']) {
     case 'deinit':
         $testdriver->deinit();
         echo "Deinit test.";
+        break;
+    case 'run':
+        $testdriver->init();
+        $content = $options['scenario'] ?? 'scenario_1';
+        $content = file_get_contents($CFG->dirroot . '/local/competvet/tests/app_scenario/' . $content . '.feature');
+        $parsedfeature = $testdriver->parse_feature($content);
+        $result = $testdriver->execute($parsedfeature);
+        if (!$result) {
+            foreach ($parsedfeature->get_scenarios() as $scenario) {
+                foreach ($scenario->steps as $step) {
+                    cli_writeln("Step: " . $step->get_text() . $step->get_error());
+                }
+            }
+        }
+        echo "Executing scenario. $result";
         break;
     default:
         cli_writeln('Invalid command');
