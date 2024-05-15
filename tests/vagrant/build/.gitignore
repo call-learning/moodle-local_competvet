@@ -10,3 +10,4 @@ run_samples
 openrc.sh
 .vagrant
 *.box
+*.log
