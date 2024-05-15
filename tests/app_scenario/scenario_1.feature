@@ -31,8 +31,8 @@ Feature: Edit completion settings of an activity
       | G1    | student1 |
       | G2    | student2 |
     And the following "activities" exist:
-      | activity  | course | idnumber | intro | name    | shortname | completion | completionview |
-      | competvet | CVET1  | S1       | x     | MEDCHIR | SIT1      | 2          | 1              |
+      | activity  | course | idnumber | intro | name    | shortname | completion | completionview | situationtags |
+      | competvet | CVET1  | S1       | x     | MEDCHIR | SIT1      | 2          | 1              | y:1           |
     And the following "mod_competvet > plannings" exist:
       | situation | group | startdate        | enddate               | session  |
       | SIT1      | G1    | last Monday      | Monday next week      | SESSION1 |
