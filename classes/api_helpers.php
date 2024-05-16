@@ -101,7 +101,8 @@ class api_helpers {
     public static function get_criteria_structure() {
         return [
             'id' => new external_value(PARAM_INT, 'Observation criteria ID', VALUE_OPTIONAL),
-            'level' => new external_value(PARAM_INT, 'Criterion level', VALUE_OPTIONAL),
+            'level' => new external_value(PARAM_INT, 'Criterion level', VALUE_OPTIONAL, 50),
+            'isactive' => new external_value(PARAM_BOOL, 'Criterion active', VALUE_OPTIONAL, false),
             'subcriteria' => new external_multiple_structure(
                 new external_single_structure(
                     self::get_subcriteria_info_structure()

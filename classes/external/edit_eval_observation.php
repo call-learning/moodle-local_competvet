@@ -19,13 +19,13 @@ global $CFG;
 require_once($CFG->libdir . '/externallib.php');
 
 use context_system;
-use external_api;
 use external_description;
 use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
 use external_value;
 use local_competvet\api_helpers;
+use local_competvet\local\ordered_params_external_api;
 use mod_competvet\local\api\observations;
 
 /**
@@ -35,7 +35,7 @@ use mod_competvet\local\api\observations;
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class edit_eval_observation extends external_api {
+class edit_eval_observation extends ordered_params_external_api {
     /**
      * Returns description of method parameters
      *
@@ -51,14 +51,14 @@ class edit_eval_observation extends external_api {
      * @param int $observationid
      * @param array|null $context
      * @param array|null $comments
-     * @param array $criteria
+     * @param array|null $criteria
      * @return array
      */
     public static function execute(
         int $observationid,
         ?array $context = null,
-        ?array $comments = null,
-        ?array $criteria = null
+        ?array $comments = [],
+        ?array $criteria = []
     ): array {
         [
             'observationid' => $observationid,
@@ -73,7 +73,8 @@ class edit_eval_observation extends external_api {
                 'criteria' => $criteria,
             ]);
         self::validate_context(context_system::instance());
-        observations::edit_observation($observationid, (object) $context, $comments, $criteria);
+        $context = !empty($context) ? (object) $context : null;
+        observations::edit_observation($observationid, $context, $comments, $criteria);
         return [];
     }
 
@@ -108,31 +109,5 @@ class edit_eval_observation extends external_api {
                 ),
             ]
         );
-    }
-
-    /**
-     * Fix for when any root parameter is empty
-     *
-     * @param external_description $description
-     * @param $params
-     * @return array|bool|mixed
-     */
-    public static function validate_parameters(external_description $description, $params) {
-        $params = parent::validate_parameters($description, $params);
-        // Check if param has a key missing and add null to it.
-        if ($description::class === external_function_parameters::class) {
-            $orderedparams = [];
-            foreach ($description->keys as $key => $param) {
-                if (array_key_exists($key, $params)) {
-                    // If the key exists in $params, use its value
-                    $orderedparams[$key] = $params[$key];
-                } else {
-                    // If the key does not exist in $params and the param is single_value, use null if not use an empty array.
-                    $orderedparams[$key] = $param::class === external_multiple_structure::class ? [] : null;
-                }
-            }
-            $params = $orderedparams;
-        }
-        return $params;
     }
 }
