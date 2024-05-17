@@ -120,9 +120,9 @@ $baseurl =
         $possiblesites,
         255
     );
-$possibleusers = ['student01', 'observer01'];
+$possibleusers = ['student1', 'observer1'];
 $username = cli_input('Enter the username (' . join(", ", $possibleusers) . ') ?', $possibleusers[0], $possibleusers, 255);
-$password = cli_input('Enter the password', 'Password100%', null, 255);
+$password = cli_input('Enter the password', 'password', null, 255);
 
 cli_writeln("Authenticating...toward $baseurl with $username and $password\n");
 $authresponse = authenticate($baseurl, $username, $password);
@@ -222,6 +222,12 @@ if (count($situations) > 0) {
                 [
                     'id' => $firstcriteria['id'],
                     'level' => 100,
+                    'subcriteria' => [
+                        [
+                            'id' => $firstcriteria['subcriteria'][0]['id'],
+                            'comment' => 'My Comment',
+                        ],
+                    ],
                 ],
             ],
     ]);
