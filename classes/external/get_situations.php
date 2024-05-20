@@ -95,7 +95,7 @@ class get_situations extends external_api {
             [
                 'userid' => new external_value(PARAM_INT, 'id of the user (optional parameter)', VALUE_DEFAULT, 0),
                 'nofutureplanning' => new external_value(PARAM_BOOL,
-                    'If true, do not show the future planning for this user/situations', VALUE_DEFAULT, false),
+                    'If true, do not show the future planning for this user/situations', VALUE_DEFAULT, true),
             ]
         );
     }

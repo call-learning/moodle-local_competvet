@@ -18,6 +18,8 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/webservice/tests/helpers.php');
 require_once($CFG->dirroot . '/mod/competvet/tests/test_data_definition.php');
+
+use DateTime;
 use external_api;
 use externallib_advanced_testcase;
 use mod_competvet\tests\test_helpers;
@@ -32,10 +34,50 @@ use test_data_definition;
  */
 class get_situations_test extends externallib_advanced_testcase {
     use test_data_definition;
+
     /**
      * @var $users array
      */
     protected $users = [];
+
+    /**
+     * All for user provider with planning
+     *
+     * @return array[]
+     */
+    public static function all_for_user_provider_with_planning(): array {
+        global $CFG;
+        $results = [];
+        $startdate = (new DateTime('last Monday'))->getTimestamp();
+        include_once($CFG->dirroot . '/local/competvet/tests/fixtures/get_situations_results.php');
+        return [
+            'student1 situations' => [
+                'student1',
+                true,
+                $results['student1results'],
+            ],
+            'student2 situations' => [
+                'student2',
+                true,
+                $results['student2results'],
+            ],
+            'observer1 situations' => [
+                'observer1',
+                true,
+                $results['observer1results'],
+            ],
+            'observer2 situations' => [
+                'observer2',
+                false, // Show future planning.
+                $results['observer2results'],
+            ],
+            'teacher1 situations' => [
+                'teacher1',
+                true,
+                $results['teacher1results'],
+            ],
+        ];
+    }
 
     /**
      * As we have a test that does write into the DB, we need to setup and tear down each time
@@ -45,7 +87,8 @@ class get_situations_test extends externallib_advanced_testcase {
         $this->resetAfterTest();
         $generator = $this->getDataGenerator();
         $competvetgenerator = $generator->get_plugin_generator('mod_competvet');
-        $this->generates_definition($this->get_data_definition_set_1(), $generator, $competvetgenerator);
+        $startdate = new DateTime('last Monday');
+        $this->generates_definition($this->get_data_definition_set_1($startdate->getTimestamp()), $generator, $competvetgenerator);
     }
 
     /**
@@ -74,49 +117,16 @@ class get_situations_test extends externallib_advanced_testcase {
      * Test with existing user
      *
      * @params string $username
+     * @params bool $nofutureplanning
      * @params array $expected
      *
-     * @covers \local_competvet\external\user_profile
+     * @covers       \local_competvet\external\user_profile
      * @dataProvider all_for_user_provider_with_planning
      */
-    public function test_get_situations(string $username, array $expected) {
+    public function test_get_situations(string $username, bool $nofutureplanning, array $expected) {
         $this->setUser(\core_user::get_user_by_username($username));
-        $situations = $this->get_situations(null, true); // Ignore future situations.
+        $situations = $this->get_situations(null, $nofutureplanning); // Ignore future situations.
         test_helpers::remove_elements_for_assertions($situations, ['id', 'intro']);
         $this->assertEquals($expected, $situations);
-    }
-
-
-    /**
-     * All for user provider with planning
-     *
-     * @return array[]
-     */
-    public static function all_for_user_provider_with_planning(): array {
-        global $CFG;
-        $results = [];
-        include_once($CFG->dirroot . '/local/competvet/tests/fixtures/get_situations_no_future_test_results.php');
-        return [
-            'student1 situations' => [
-                'student1',
-                $results['student1results'],
-            ],
-            'student2 situations' => [
-                'student2',
-                $results['student2results'],
-            ],
-            'observer1 situations' => [
-                'observer1',
-                $results['observer1results'],
-            ],
-            'observer2 situations' => [
-                'observer2',
-                $results['observer2results'],
-            ],
-            'teacher1 situations' => [
-                'teacher1',
-                $results['teacher1results'],
-            ],
-        ];
     }
 }
