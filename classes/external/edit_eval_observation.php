@@ -73,7 +73,12 @@ class edit_eval_observation extends ordered_params_external_api {
                 'criteria' => $criteria,
             ]);
         self::validate_context(context_system::instance());
-        $context = !empty($context) ? (object) $context : null;
+        if (!empty($context)) {
+            $context = (object) $context;
+            $context = $context->comment;
+        } else {
+            $context = null;
+        }
         observations::edit_observation($observationid, $context, $comments, $criteria);
         return [];
     }

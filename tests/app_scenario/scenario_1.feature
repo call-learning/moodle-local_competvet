@@ -38,7 +38,7 @@ Feature: Edit completion settings of an activity
       | SIT1      | G1    | last Monday      | Monday next week      | SESSION1 |
       | SIT1      | G2    | Monday next week | Monday next fortnight | SESSION1 |
     And the following "mod_competvet > observations" exist:
-      | student  | observer  | planning                                                   | context              | comment                     | category         | status    |
+      | student  | observer  | planning                                                   | context              | comments                    | category         | status    |
       | student1 | observer1 | last Monday > Monday next week > SESSION1 > SIT1           | Context for this obs | Comment for this obs (obs1) | eval:observation | completed |
       | student1 | observer2 | last Monday > Monday next week > SESSION1 > SIT1           | Context for this obs | Comment for this obs (obs2) | eval:observation | completed |
       | student2 | observer1 | Monday next week > Monday next fortnight > SESSION1 > SIT1 | Context for this obs | Comment for this obs        | eval:observation | completed |

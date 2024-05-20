@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_competvet\local\persistent\observation_comment;
+
 define('CLI_SCRIPT', true);
 require(__DIR__ . '/../../../config.php');
 debugging() || defined('BEHAT_SITE_RUNNING') || die();
@@ -187,7 +189,7 @@ if (count($situations) > 0) {
     // Assuming $planningid is set.
     cli_writeln("Example - Create eval observation: local_competvet_create_eval_observation");
     $response = query_api_with_token($baseurl, $token, 'local_competvet_create_eval_observation', [
-        'category' => 1,
+        'category' => \mod_competvet\local\persistent\observation::CATEGORY_EVAL_OBSERVATION,
         'planningid' => $firsttwoplanningsid[0],
         'studentid' => $userid,
         'observerid' => $userid,
@@ -195,6 +197,7 @@ if (count($situations) > 0) {
         'comments' => [
             [
                 'comment' => 'test comment',
+                'type' => observation_comment::OBSERVATION_GENERAL_COMMENT,
             ],
         ],
     ]);
