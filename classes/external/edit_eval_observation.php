@@ -19,11 +19,11 @@ global $CFG;
 require_once($CFG->libdir . '/externallib.php');
 
 use context_system;
-use external_description;
 use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
 use external_value;
+use external_warnings;
 use local_competvet\api_helpers;
 use local_competvet\local\ordered_params_external_api;
 use mod_competvet\local\api\observations;
@@ -42,7 +42,11 @@ class edit_eval_observation extends ordered_params_external_api {
      * @return external_single_structure
      */
     public static function execute_returns(): external_single_structure {
-        return new external_single_structure([]);
+        return new external_single_structure(
+            [
+                'warnings' => new external_warnings()
+            ]
+        );
     }
 
     /**
@@ -72,6 +76,7 @@ class edit_eval_observation extends ordered_params_external_api {
                 'comments' => $comments,
                 'criteria' => $criteria,
             ]);
+        $warnings = [];
         self::validate_context(context_system::instance());
         if (!empty($context)) {
             $context = (object) $context;
@@ -79,8 +84,18 @@ class edit_eval_observation extends ordered_params_external_api {
         } else {
             $context = null;
         }
-        observations::edit_observation($observationid, $context, $comments, $criteria);
-        return [];
+        try {
+            observations::edit_observation($observationid, $context, $comments, $criteria);
+        } catch (\moodle_exception $e) {
+            $warnings[] = [
+                'item' => $observationid,
+                'warningcode' => $e->errorcode,
+                'message' => $e->getMessage(),
+            ];
+        }
+        return [
+            'warnings' => $warnings,
+        ];
     }
 
     /**

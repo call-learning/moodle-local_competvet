@@ -58,7 +58,7 @@ class get_situations_test extends externallib_advanced_testcase {
             ],
             'student2 situations' => [
                 'student2',
-                true,
+                false, // Show future sessions.
                 $results['student2results'],
             ],
             'observer1 situations' => [

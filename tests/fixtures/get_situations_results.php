@@ -57,7 +57,6 @@ $results['student1results'] = [
     [
         'plannings' =>
             [
-
                 [
                     'startdate' => (string) ($startdate),
                     'enddate' => (string) ($startdate + $oneweek),
@@ -92,6 +91,59 @@ $results['student2results'] = [
         'autoevalnum' => 1,
         'roles' => '["student"]',
     ],
+    [
+        'plannings' =>
+            [
+                [
+                    'startdate' => (string) ($startdate + $onemonth * 2 + $oneweek),
+                    'enddate' => (string) ($startdate + $onemonth * 2 + $oneweek * 2),
+                    'session' => '2023',
+                    'groupname' => 'group 8.2',
+                ],
+            ],
+        'tags' => '["y:3"]',
+        'shortname' => 'SIT3',
+        'name' => 'SIT3',
+
+        'evalnum' => 1,
+        'autoevalnum' => 1,
+        'roles' => '["student"]',
+    ],
+    [
+        'plannings' =>
+            [
+                [
+                    'startdate' => (string) ($startdate + $onemonth * 3),
+                    'enddate' => (string) ($startdate + $onemonth * 3 + $oneweek),
+                    'groupname' => 'group 8.1',
+                    'session' => '2023',
+                ],
+            ],
+        'tags' => '["y:1"]',
+        'shortname' => 'SIT4',
+        'name' => 'SIT4',
+        'evalnum' => 1,
+        'autoevalnum' => 1,
+        'roles' => '["student"]',
+    ],
+    [
+        'plannings' =>
+            [
+
+                [
+                    'startdate' => (string) ($startdate + $onemonth * 6),
+                    'enddate' => (string) ($startdate + $onemonth * 6 + $oneweek),
+                    'groupname' => 'group 8.1',
+                    'session' => '2023',
+                ],
+            ],
+        'tags' => '["y:1"]',
+        'shortname' => 'SIT7',
+        'name' => 'SIT7',
+        'evalnum' => 1,
+        'autoevalnum' => 1,
+        'roles' => '["student"]',
+    ],
 ];
 $results['observer1results'] = [
     [
@@ -102,12 +154,6 @@ $results['observer1results'] = [
                     'enddate' => (string) ($startdate + $oneweek),
                     'session' => '2023',
                     'groupname' => 'group 8.1',
-                ],
-                [
-                    'startdate' => (string) ($startdate + $oneweek),
-                    'enddate' => (string) ($startdate + $oneweek * 2),
-                    'session' => '2023',
-                    'groupname' => 'group 8.2',
                 ],
             ],
         'tags' => '["y:1"]',
@@ -297,12 +343,6 @@ $results['teacher1results'] = [
                     'enddate' => (string) ($startdate + $oneweek),
                     'session' => '2023',
                     'groupname' => 'group 8.1',
-                ],
-                [
-                    'startdate' => (string) ($startdate + $oneweek),
-                    'enddate' => (string) ($startdate + $oneweek * 2),
-                    'session' => '2023',
-                    'groupname' => 'group 8.2',
                 ],
             ],
         'tags' => '["y:1"]',

@@ -19,6 +19,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/webservice/tests/helpers.php');
 require_once($CFG->dirroot . '/mod/competvet/tests/test_data_definition.php');
+
 use core_user;
 use DateTime;
 use external_api;
@@ -40,6 +41,70 @@ class edit_eval_observation_test extends externallib_advanced_testcase {
     use test_data_definition;
 
     /**
+     * Data provider for test_edit_eval_observation
+     *
+     * @return array[]
+     */
+    public static function data_edit_observation_comment_for_user() {
+        return [
+            'observer1 edit comment' =>
+                [
+                    'category' => observation::CATEGORY_EVAL_OBSERVATION,
+                    'student' => 'student1',
+                    'observer' => 'observer1',
+                    'context' => 'A context',
+                    'comments' => [
+                        ['type' => observation_comment::OBSERVATION_COMMENT, 'comment' => 'A comment'],
+                        ['type' => observation_comment::OBSERVATION_PRIVATE_COMMENT, 'comment' => 'Another comment'],
+                    ],
+                    'criteria' => [
+                        ['id' => 'Q001', 'level' => 1],
+                        ['id' => 'Q002', 'comment' => 'Comment 1'],
+                        ['id' => 'Q003', 'comment' => 'Comment 2'],
+                    ],
+                    'editpayload' => [
+                        'currentuser' => 'observer1',
+                        'payload' => [
+                            'comments' =>
+                                [
+                                    ['type' => observation_comment::OBSERVATION_COMMENT, 'comment' => 'A new comment'],
+                                    ['type' => observation_comment::OBSERVATION_PRIVATE_COMMENT, 'comment' => 'Comment 1'],
+                                ],
+                        ],
+                    ],
+                ],
+            // TODO: check student cannot edit observer comments.
+            'student edit autoeval' =>
+                [
+                    'category' => observation::CATEGORY_EVAL_AUTOEVAL,
+                    'student' => 'student1',
+                    'observer' => 'observer1',
+                    'context' => 'A context',
+                    'comments' => [
+                        ['type' => observation_comment::AUTOEVAL_AMELIORATION, 'comment' => 'A comment'],
+                        ['type' => observation_comment::AUTOEVAL_MANQUE, 'comment' => 'A comment'],
+                        ['type' => observation_comment::AUTOEVAL_PROGRESS, 'comment' => 'A comment'],
+                    ],
+                    'criteria' => [
+                        ['id' => 'Q001', 'level' => 1],
+                        ['id' => 'Q002', 'comment' => 'Comment 1'],
+                        ['id' => 'Q003', 'comment' => 'Comment 2'],
+                    ],
+                    'editpayload' => [
+                        'currentuser' => 'student1',
+                        'payload' => [
+                            'comments' =>
+                                [
+                                    ['type' => observation_comment::AUTOEVAL_AMELIORATION, 'comment' => 'A comment'],
+                                    ['type' => observation_comment::AUTOEVAL_PROGRESS, 'comment' => 'A comment'],
+                                ],
+                        ],
+                    ],
+                ],
+        ];
+    }
+
+    /**
      * As we have a test that does write into the DB, we need to setup and tear down each time
      */
     public function setUp(): void {
@@ -59,17 +124,24 @@ class edit_eval_observation_test extends externallib_advanced_testcase {
      */
     public function test_observation_not_exist_test() {
         $this->setAdminUser();
-        $result = $this->edit_eval_observation(9999);
-        $this->assertEquals('invaliduserid', $result['warnings'][0]['warningcode']);
+        $result = $this->edit_eval_observation(['observationid' => 9999]);
+        $this->assertEquals('invalidobservationid', $result['warnings'][0]['warningcode']);
     }
 
     /**
      * Helper
      *
-     * @param mixed ...$params
+     * @param array $args
      * @return mixed
      */
-    protected function edit_eval_observation(...$params) {
+    protected function edit_eval_observation($args) {
+        $validate = [edit_eval_observation::class, 'validate_parameters'];
+        $params = call_user_func(
+            $validate,
+            edit_eval_observation::execute_parameters(),
+            $args
+        );
+        $params = array_values($params);
         $returnvalue = edit_eval_observation::execute(...$params);
         return external_api::clean_returnvalue(edit_eval_observation::execute_returns(), $returnvalue);
     }
@@ -77,15 +149,18 @@ class edit_eval_observation_test extends externallib_advanced_testcase {
     /**
      * Test with existing observation
      *
-     * @covers \local_competvet\external\edit_eval_observation
-     * @dataProvider data_get_all_with_planning_for_user
+     * @covers       \local_competvet\external\edit_eval_observation
+     * @dataProvider data_edit_observation_comment_for_user
      */
-    public function test_edit_eval_observation(int $category,
+    public function test_edit_comment_eval_observation(
+        int $category,
         string $student,
         string $observer,
         string $context,
         array $comments,
-        array $criteria) {
+        array $criteria,
+        array $editpayload
+    ) {
         $this->setAdminUser();
         $student = core_user::get_user_by_username($student);
         $observer = core_user::get_user_by_username($observer);
@@ -103,34 +178,20 @@ class edit_eval_observation_test extends externallib_advanced_testcase {
             'criteria' => $criteria,
 
         ]);
+        ['currentuser' => $currentuser, 'payload' => $payload] = $editpayload;
+        $currentuser = core_user::get_user_by_username($currentuser);
+        $this->setUser($currentuser);
         $this->edit_eval_observation(
-            $newobs->id,
-            ['comment' => 'A new context']
+            array_merge(
+                ['observationid' => $newobs->id],
+                $payload
+            )
         );
-        $this->assertEquals('A new context', observation_comment::get_record([
-            'observationid' => $newobs->id,
-            'type' => observation_comment::OBSERVATION_CONTEXT,
-        ])->get('comment'));
-    }
-
-    public static function data_get_all_with_planning_for_user() {
-        return [
-            'student1' =>
-                [
-                    'category' => observation::CATEGORY_EVAL_AUTOEVAL,
-                    'student' => 'student1',
-                    'observer' => 'observer1',
-                    'context' => 'A context',
-                    'comments' => [
-                        ['type' => observation_comment::OBSERVATION_COMMENT, 'comment' => 'A comment'],
-                        ['type' => observation_comment::OBSERVATION_GENERAL_COMMENT, 'comment' => 'Another comment'],
-                    ],
-                    'criteria' => [
-                        ['id' => 'Q001', 'level' => 1],
-                        ['id' => 'Q002', 'comment' => 'Comment 1'],
-                        ['id' => 'Q003', 'comment' => 'Comment 2'],
-                    ],
-                ],
-        ];
+        foreach ($payload['comments'] as $comment) {
+            $this->assertEquals($comment['comment'], observation_comment::get_record([
+                'observationid' => $newobs->id,
+                'type' => $comment['type'],
+            ])->get('comment'));
+        }
     }
 }

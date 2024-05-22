@@ -148,17 +148,24 @@ class get_application_mode_test extends externallib_advanced_testcase {
      */
     public function test_user_type_not_exist_test() {
         $this->setAdminUser();
-        $result = $this->get_application_mode(9999);
+        $result = $this->get_application_mode(['userid' => 9999]);
         $this->assertEquals('invaliduserid', $result['warnings'][0]['warningcode']);
     }
 
     /**
      * Helper
      *
-     * @param mixed ...$params
+     * @param array $args
      * @return mixed
      */
-    protected function get_application_mode(...$params) {
+    protected function get_application_mode($args) {
+        $validate = [get_application_mode::class, 'validate_parameters'];
+        $params = call_user_func(
+            $validate,
+            get_application_mode::execute_parameters(),
+            $args
+        );
+        $params = array_values($params);
         $returnvalue = get_application_mode::execute(...$params);
         return external_api::clean_returnvalue(get_application_mode::execute_returns(), $returnvalue);
     }
@@ -174,7 +181,7 @@ class get_application_mode_test extends externallib_advanced_testcase {
     public function test_type_with_enrolments_as_admin(array $definition, string $expected) {
         $this->setAdminUser();
         $userid = $this->setup_course_and_user_from_data($definition);
-        $this->assertEquals($expected, $this->get_application_mode($userid)['type']);
+        $this->assertEquals($expected, $this->get_application_mode(['userid' => $userid])['type']);
     }
 
     /**
@@ -229,6 +236,6 @@ class get_application_mode_test extends externallib_advanced_testcase {
         $userid = $this->setup_course_and_user_from_data($definition, $expected);
         $user = core_user::get_user($userid);
         $this->setUser($user);
-        $this->assertEquals($expected, $this->get_application_mode()['type']);
+        $this->assertEquals($expected, $this->get_application_mode([])['type']);
     }
 }

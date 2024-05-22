@@ -57,7 +57,7 @@ class api_helpers {
             'id' => new external_value(PARAM_INT, 'Comment ID', VALUE_OPTIONAL),
             'comment' => new external_value(PARAM_RAW, 'Comment text'),
             'commentlabel' => new external_value(PARAM_RAW, 'Comment label', VALUE_OPTIONAL),
-            'type' => new external_value(PARAM_INT, 'Comment type (autoeval, eval, certif...)', VALUE_OPTIONAL),
+            'type' => new external_value(PARAM_ALPHANUMEXT, 'Comment type (autoeval, eval, certif...)', VALUE_OPTIONAL),
             'userinfo' => new external_single_structure(self::get_user_info_structure(), 'User information', VALUE_OPTIONAL),
             'timecreated' => new external_value(PARAM_INT, 'Comment creation time', VALUE_OPTIONAL),
             'timemodified' => new external_value(PARAM_INT, 'Comment last modification time', VALUE_OPTIONAL),

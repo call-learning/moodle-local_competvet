@@ -197,7 +197,7 @@ if (count($situations) > 0) {
         'comments' => [
             [
                 'comment' => 'test comment',
-                'type' => observation_comment::OBSERVATION_GENERAL_COMMENT,
+                'type' => observation_comment::OBSERVATION_COMMENT,
             ],
         ],
     ]);

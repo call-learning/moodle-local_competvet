@@ -57,16 +57,23 @@ class user_info_test extends externallib_advanced_testcase {
     public function test_user_profile_not_exist_test() {
         $this->setAdminUser();
         $this->expectExceptionMessageMatches('/core_user\/invaliduserid/');
-        $this->get_user_profile(9999);
+        $this->get_user_profile(['userid' => 9999]);
     }
 
     /**
      * Helper
      *
-     * @param mixed ...$params
+     * @param array $args
      * @return mixed
      */
-    protected function get_user_profile(...$params) {
+    protected function get_user_profile(array $args) {
+        $validate = [user_info::class, 'validate_parameters'];
+        $params = call_user_func(
+            $validate,
+            user_info::execute_parameters(),
+            $args
+        );
+        $params = array_values($params);
         $returnvalue = user_info::execute(...$params);
         return external_api::clean_returnvalue(user_info::execute_returns(), $returnvalue);
     }
@@ -80,7 +87,7 @@ class user_info_test extends externallib_advanced_testcase {
     public function test_user_profile_existing_test() {
         $this->setAdminUser();
         $firstuser = end($this->users);
-        $user = $this->get_user_profile($firstuser->id);
+        $user = $this->get_user_profile(['userid' => $firstuser->id]);
         foreach ($user as $key => $value) {
             switch ($key) {
                 case 'userid':

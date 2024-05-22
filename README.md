@@ -729,11 +729,31 @@ The `local_competvet_edit_eval_observation` API function allows for modifying an
 **Usage Example with curl:**
 
 ```bash
-curl https://<Your URL>/webservice/rest/server.php   -d "wstoken=$TOKEN"   -d 'wsfunction=local_competvet_edit_eval_observation'   -d 'observationid=[observation_id]'   -d 'context[id]=[context_id]&context[comment]=Test comment'   -d 'criteria[0][id]=[criteria_id]&criteria[0][level]=100'   -d 'moodlewsrestformat=json' -k
+curl https://<Your URL>/webservice/rest/server.php   -d "wstoken=$TOKEN"   -d 'wsfunction=local_competvet_edit_eval_observation' \ 
+  -d 'observationid=[observation_id]'   -d 'context[comment]=Test comment'   \
+  -d 'criteria[0][id]=[criteria_id]&criteria[0][level]=100'   -d 'moodlewsrestformat=json' -k
 ```
 
 Replace `[observation_id]`, `[context_id]`, and `[criteria_id]` with the actual IDs and values relevant to the observation you wish to edit.
 
+There are different version of the payload that will just edit one type of item, like comment or criteria.
+
+For example to edit a private comment in an observation:
+
+```bash
+curl https://<Your URL>/webservice/rest/server.php   -d "wstoken=$TOKEN"   -d 'wsfunction=local_competvet_edit_eval_observation' \ 
+  -d 'observationid=[observation_id]'   -d 'comment[comment]=Test comment' -d 'comment[type]=4'   \
+  -d 'moodlewsrestformat=json' -k
+````
+
+For eval:
+* OBSERVATION_COMMENT = 2;
+* OBSERVATION_PRIVATE_COMMENT = 4;
+
+For autoeval:
+* AUTOEVAL_PROGRESS = 10;
+* AUTOEVAL_AMELIORATION = 11;
+* AUTOEVAL_MANQUE = 12;
 
 ---
 
