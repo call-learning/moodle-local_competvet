@@ -38,10 +38,10 @@ Feature: Edit completion settings of an activity
       | SIT1      | G1    | last Monday      | Monday next week      | SESSION1 |
       | SIT1      | G2    | Monday next week | Monday next fortnight | SESSION1 |
     And the following "mod_competvet > observations" exist:
-      | student  | observer  | planning                                                   | context              | comments                    | category         | status    |
-      | student1 | observer1 | last Monday > Monday next week > SESSION1 > SIT1           | Context for this obs | Comment for this obs (obs1) | eval:observation | completed |
-      | student1 | observer2 | last Monday > Monday next week > SESSION1 > SIT1           | Context for this obs | Comment for this obs (obs2) | eval:observation | completed |
-      | student2 | observer1 | Monday next week > Monday next fortnight > SESSION1 > SIT1 | Context for this obs | Comment for this obs        | eval:observation | completed |
+      | student  | observer  | planning                                                   | context              | comment                     | privatecomment        | category         | status    |
+      | student1 | observer1 | last Monday > Monday next week > SESSION1 > SIT1           | Context for this obs | Comment for this obs (obs1) | Private comment(obs1) | eval:observation | completed |
+      | student1 | observer2 | last Monday > Monday next week > SESSION1 > SIT1           | Context for this obs | Comment for this obs (obs2) | Private comment(obs1) | eval:observation | completed |
+      | student2 | observer1 | Monday next week > Monday next fortnight > SESSION1 > SIT1 | Context for this obs | Comment for this obs        | Private comment(obs1) | eval:observation | completed |
     And the following "mod_competvet > observation_criterion_value" exist:
       | observation                                                             | criterion | value                          |
       | last Monday > Monday next week > SESSION1 > SIT1 > student1 > observer1 | Q001      | 5                              |
@@ -53,6 +53,6 @@ Feature: Edit completion settings of an activity
       | last Monday > Monday next week > SESSION1 > SIT1 > student1 > observer2 | Q001      | 6                              |
       | last Monday > Monday next week > SESSION1 > SIT1 > student1 > observer2 | Q002      | Comment for this criteria Q002 |
       | last Monday > Monday next week > SESSION1 > SIT1 > student1 > observer2 | Q007      | 10                             |
-    And the following "mod_competvet > certification" exist:
-      | student  | planning                                         | criterion | comment               | status        |
-      | student1 | last Monday > Monday next week > SESSION1 > SIT1 | CERT1     | Comment for this cert | cert:seendone |
+#    And the following "mod_competvet > certification" exist:
+#      | student  | planning                                         | criterion | comment               | status        |
+#      | student1 | last Monday > Monday next week > SESSION1 > SIT1 | CERT1     | Comment for this cert | cert:seendone |

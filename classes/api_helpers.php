@@ -127,6 +127,7 @@ class api_helpers {
         return [
             'id' => new external_value(PARAM_INT, 'Observation subcriteria ID', VALUE_OPTIONAL),
             'comment' => new external_value(PARAM_RAW, 'Criterion comment', VALUE_OPTIONAL),
+            'isactive' => new external_value(PARAM_BOOL, 'Criterion active', VALUE_OPTIONAL, false),
             'criterioninfo' => new external_single_structure(
                 self::get_criteria_info_structure(),
                 'SubCriterion info',

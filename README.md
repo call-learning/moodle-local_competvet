@@ -754,7 +754,7 @@ For autoeval:
 * AUTOEVAL_PROGRESS = 10;
 * AUTOEVAL_AMELIORATION = 11;
 * AUTOEVAL_MANQUE = 12;
-
+* AUTOEVAL_OBSERVER_COMMENT = 13;
 ---
 
 ### Delete Evaluation Observation: `local_competvet_delete_eval_observation`
