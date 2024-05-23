@@ -21,6 +21,7 @@
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 use local_competvet\mobileview_helper;
 use mod_competvet\competvet;
 use mod_competvet\local\persistent\planning;
@@ -71,7 +72,7 @@ $user = core_user::get_user($studentid);
 echo $OUTPUT->heading(format_text($competvetname, FORMAT_HTML));
 echo $OUTPUT->user_picture($user, ['size' => 100, 'class' => 'd-inline-block']);
 echo $OUTPUT->heading(format_text($dates, FORMAT_HTML), 3, 'text-right');
-$widget = base::factory($USER->id, 'student_evaluations',  0, 'local_competvet', $backurl);
+$widget = base::factory($USER->id, 'student_mobile_evaluations',  0, 'local_competvet', $backurl);
 $widget->set_data($studentinfo, $views, $observations);
 $renderer = $PAGE->get_renderer('mod_competvet');
 echo $renderer->render($widget);

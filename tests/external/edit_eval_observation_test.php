@@ -84,6 +84,7 @@ class edit_eval_observation_test extends externallib_advanced_testcase {
                         ['type' => observation_comment::AUTOEVAL_AMELIORATION, 'comment' => 'A comment'],
                         ['type' => observation_comment::AUTOEVAL_MANQUE, 'comment' => 'A comment'],
                         ['type' => observation_comment::AUTOEVAL_PROGRESS, 'comment' => 'A comment'],
+                        ['type' => observation_comment::AUTOEVAL_OBSERVER_COMMENT, 'comment' => 'An observer comment'],
                     ],
                     'criteria' => [
                         ['id' => 'Q001', 'level' => 1],
