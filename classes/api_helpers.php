@@ -30,29 +30,11 @@ use external_value;
  */
 class api_helpers {
     /**
-     * Get planning info structure
-     *
-     * @return array
-     */
-    public static function get_planning_info_structure() {
-        return [
-            'id' => new external_value(PARAM_INT, 'Plan ID'),
-            'startdate' => new external_value(PARAM_INT, 'Plan start date'),
-            'enddate' => new external_value(PARAM_INT, 'Plan end date'),
-            'groupname' => new external_value(PARAM_TEXT, 'Group name'),
-            'groupid' => new external_value(PARAM_INT, 'Group id (Internal ID)'),
-            'session' => new external_value(PARAM_ALPHANUMEXT, 'Session name (unused now but might be later)'),
-            'situationid' => new external_value(PARAM_INT, 'Situation ID'),
-            'situationname' => new external_value(PARAM_TEXT, 'Situation name', VALUE_OPTIONAL),
-        ];
-    }
-
-    /**
      * Get comment structure
      *
      * @return array
      */
-    public static function get_comment_structure() {
+    public static function get_comment_structure(): array {
         return [
             'id' => new external_value(PARAM_INT, 'Comment ID', VALUE_OPTIONAL),
             'comment' => new external_value(PARAM_RAW, 'Comment text'),
@@ -69,7 +51,7 @@ class api_helpers {
      *
      * @return array
      */
-    public static function get_user_info_structure() {
+    public static function get_user_info_structure(): array {
         return [
             'id' => new \external_value(PARAM_INT, 'ID type of user'),
             'fullname' => new \external_value(PARAM_TEXT, 'User fullname', VALUE_OPTIONAL),
@@ -83,7 +65,7 @@ class api_helpers {
      *
      * @return array
      */
-    public static function get_context_structure() {
+    public static function get_context_structure(): array {
         return [
             'id' => new external_value(PARAM_INT, 'Comment ID', VALUE_OPTIONAL),
             'comment' => new external_value(PARAM_RAW, 'Comment text'),
@@ -98,7 +80,7 @@ class api_helpers {
      *
      * @return array
      */
-    public static function get_criteria_structure() {
+    public static function get_criteria_structure(): array {
         return [
             'id' => new external_value(PARAM_INT, 'Observation criteria ID', VALUE_OPTIONAL),
             'level' => new external_value(PARAM_INT, 'Criterion level', VALUE_OPTIONAL, 50),
@@ -123,7 +105,7 @@ class api_helpers {
      *
      * @return array
      */
-    public static function get_subcriteria_info_structure() {
+    public static function get_subcriteria_info_structure(): array {
         return [
             'id' => new external_value(PARAM_INT, 'Observation subcriteria ID', VALUE_OPTIONAL),
             'comment' => new external_value(PARAM_RAW, 'Criterion comment', VALUE_OPTIONAL),
@@ -141,7 +123,7 @@ class api_helpers {
      *
      * @return array
      */
-    public static function get_criteria_info_structure() {
+    public static function get_criteria_info_structure(): array {
         return [
             'id' => new external_value(PARAM_INT, 'Criterion ID'),
             'label' => new external_value(PARAM_TEXT, 'Criterion label', VALUE_OPTIONAL),
@@ -156,7 +138,7 @@ class api_helpers {
      *
      * @return array
      */
-    public static function get_observation_criteria_level_value_structure() {
+    public static function get_observation_criteria_level_value_structure(): array {
         return [
             'id' => new external_value(PARAM_INT, 'Criterion Instance (comment or level) ID', VALUE_OPTIONAL),
             'criterionid' => new external_value(PARAM_INT, 'Criterion ID', VALUE_OPTIONAL),
@@ -170,7 +152,7 @@ class api_helpers {
      *
      * @return array
      */
-    public static function get_observation_criteria_comment_structure() {
+    public static function get_observation_criteria_comment_structure(): array {
         return [
             'id' => new external_value(PARAM_INT, 'Criterion Instance (comment or level) ID', VALUE_OPTIONAL),
             'criterionid' => new external_value(PARAM_INT, 'Criterion ID', VALUE_OPTIONAL),
@@ -178,7 +160,7 @@ class api_helpers {
         ];
     }
 
-    public static function get_todo_info_structure() {
+    public static function get_todo_info_structure(): array {
         return [
             'id' => new external_value(PARAM_INT, 'TODO internal ID'),
             'user' => new external_single_structure(self::get_user_info_structure(), 'User information'),
@@ -189,5 +171,38 @@ class api_helpers {
             'action' => new external_value(PARAM_INT, 'TODO action to perform'),
             'data' => new external_value(PARAM_RAW, 'TODO data (JSON)'),
         ];
+    }
+
+    /**
+     * Get planning info structure
+     *
+     * @return array
+     */
+    public static function get_planning_info_structure(): array {
+        return [
+            'id' => new external_value(PARAM_INT, 'Plan ID'),
+            'startdate' => new external_value(PARAM_INT, 'Plan start date'),
+            'enddate' => new external_value(PARAM_INT, 'Plan end date'),
+            'groupname' => new external_value(PARAM_TEXT, 'Group name'),
+            'groupid' => new external_value(PARAM_INT, 'Group id (Internal ID)'),
+            'session' => new external_value(PARAM_ALPHANUMEXT, 'Session name (unused now but might be later)'),
+            'situationid' => new external_value(PARAM_INT, 'Situation ID'),
+            'situationname' => new external_value(PARAM_TEXT, 'Situation name', VALUE_OPTIONAL),
+        ];
+    }
+
+    public static function get_certif_info_structure(): array {
+        return
+            [
+                'id' => new external_value(PARAM_INT, 'Item ID'),
+                'label' => new external_value(PARAM_TEXT, 'Item name'),
+                'grade' => new external_value(PARAM_INT, 'Grade'),
+                'criterionid' => new external_value(PARAM_INT, 'Criterion ID'),
+                'status' => new external_value(PARAM_INT, 'Item status'),
+                'declid' => new external_value(PARAM_INT, 'Declaration ID'),
+                'validated' => new external_value(PARAM_INT, 'Validated'),
+                'notvalidated' => new external_value(PARAM_INT, 'Not validated'),
+                'notreached' => new external_value(PARAM_INT, 'Not reacher'),
+            ];
     }
 }
