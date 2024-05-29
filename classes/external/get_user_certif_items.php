@@ -93,7 +93,7 @@ class get_user_certif_items extends external_api {
             ],
         ];
         foreach ($certifications as $cert) {
-            if ($cert['status'] == cert_decl::STATUS_DECL_NOTSEEN) {
+            if ($cert['status'] == cert_decl::STATUS_STUDENT_NOTSEEN) {
                 $certsbystatus['notseen'][] = $cert;
             } else {
                 if ($cert['validated']) {

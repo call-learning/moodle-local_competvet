@@ -200,9 +200,10 @@ class api_helpers {
                 'criterionid' => new external_value(PARAM_INT, 'Criterion ID'),
                 'status' => new external_value(PARAM_INT, 'Item status'),
                 'declid' => new external_value(PARAM_INT, 'Declaration ID'),
-                'validated' => new external_value(PARAM_INT, 'Validated'),
-                'notvalidated' => new external_value(PARAM_INT, 'Not validated'),
-                'notreached' => new external_value(PARAM_INT, 'Not reacher'),
+                'declared' => new external_value(PARAM_BOOL, 'Declared'),
+                'validated' => new external_value(PARAM_BOOL, 'Validated'),
+                'notseen' => new external_value(PARAM_BOOL, 'Not seen'),
+                'notreached' => new external_value(PARAM_BOOL, 'Not reached'),
             ];
     }
 }
