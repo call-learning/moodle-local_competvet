@@ -35,25 +35,9 @@ $userid = optional_param('userid', $USER->id, PARAM_INT);
 $context = context_system::instance();
 $currenturl = new moodle_url('/local/competvet/mobileview/student/index.php', ['userid' => $userid]);
 $backurl = mobileview_helper::mobile_view_header($currenturl, new moodle_url('/local/competvet/mobileview/index.php'));
-
-['results' => $situations, 'debug' => $debugs[]] =
-    mobileview_helper::call_api(\local_competvet\external\get_situations::class, ['userid' => $userid, 'nofutureplanning' => true]);
-
-$situations = array_combine(array_column($situations, 'id'), $situations); // Situation id => situation.
-// Now extract all planning Ids so to fetch info them. We have an array planningid => situationid
-$planningidstosituationid = [];
-$allplanningsdefinitions = [];
-foreach ($situations as $situation) {
-        $allsituationplanningsid = array_column($situation['plannings'], 'id');
-        $planningidstosituationid = array_fill_keys($allsituationplanningsid, $situation['id']) + $planningidstosituationid;
-        $allplanningsdefinitions = array_merge($allplanningsdefinitions, $situation['plannings']);
-}
-
-$allplanningsdefinitions = array_combine(array_column($allplanningsdefinitions, 'id'), $allplanningsdefinitions);
 $debugs = [];
 ['results' => $planningstats, 'debug' => $debugs[]] =
-    mobileview_helper::call_api(\local_competvet\external\get_plannings_infos::class, ['userid' => $userid, 'plannings' =>
-        json_encode(array_keys($planningidstosituationid))]);
+    mobileview_helper::call_api(\local_competvet\external\get_plannings_infos::class, ['userid' => $userid]);
 
 echo $OUTPUT->header();
 $planningbycategory = array_reduce($planningstats, function ($carry, $item) {
@@ -66,9 +50,9 @@ foreach ($planningbycategory as $categorytext => $plannings) {
 
     print_collapsible_region_start('card', 'category' . sha1($categorytext), $categorytext, '', true);
     foreach ($plannings as $planning) {
-        $planningdef = $allplanningsdefinitions[$planning['id']];
-        $situation = $situations[$planningidstosituationid[$planning['id']]];
-        $competvet = competvet::get_from_situation_id($situation['id']);
+        $planningdef = $planning['info'];
+        $situationid = $planningdef['situationid'];
+        $competvet = competvet::get_from_situation_id($situationid);
 
         $dates = get_string('mobileview:planningdates', 'local_competvet', [
             'startdate' => planning::get_planning_date_string($planningdef['startdate']),
