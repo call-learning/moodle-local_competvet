@@ -194,16 +194,26 @@ class api_helpers {
     public static function get_certif_info_structure(): array {
         return
             [
-                'id' => new external_value(PARAM_INT, 'Item ID'),
+                'declid' => new external_value(PARAM_INT, 'Declaration ID'),
                 'label' => new external_value(PARAM_TEXT, 'Item name'),
                 'grade' => new external_value(PARAM_INT, 'Grade'),
                 'criterionid' => new external_value(PARAM_INT, 'Criterion ID'),
                 'status' => new external_value(PARAM_INT, 'Item status'),
-                'declid' => new external_value(PARAM_INT, 'Declaration ID'),
-                'declared' => new external_value(PARAM_BOOL, 'Declared'),
-                'validated' => new external_value(PARAM_BOOL, 'Validated'),
-                'notseen' => new external_value(PARAM_BOOL, 'Not seen'),
-                'notreached' => new external_value(PARAM_BOOL, 'Not reached'),
+                'isdeclared' => new external_value(PARAM_BOOL, 'Declared'),
+                'seendone' => new external_value(PARAM_BOOL, 'Seen and done (student)'),
+                'notseen' => new external_value(PARAM_BOOL, 'Not seen (student)'),
+                'observernotseen' => new external_value(PARAM_BOOL, 'Not seen (observer)'),
+                'confirmed' => new external_value(PARAM_BOOL, 'Confirmed by observer'),
+                'levelnotreached' => new external_value(PARAM_BOOL, 'Level Not reached (observer)'),
+            ];
+    }
+    public static function get_case_info_structure(): array {
+        return
+            [
+                'id' => new external_value(PARAM_INT, 'Case id ID'),
+                'date' => new external_value(PARAM_INT, 'Case date (timestamp)'),
+                'animal' => new external_value(PARAM_TEXT, 'Animal name'),
+                'label' => new external_value(PARAM_TEXT, 'Case label'),
             ];
     }
 }

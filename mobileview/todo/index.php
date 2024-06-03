@@ -45,7 +45,7 @@ $debugs = [];
 $widget = base::factory($USER->id, 'todos',  0, 'local_competvet');
 $widget->set_data($todos, [
     todo::ACTION_EVAL_OBSERVATION_ASKED =>
-        new moodle_url('/local/competvet/mobileview/common/eval/view.php', ['evalid' => 'OBSERVATIONID'])
+        new moodle_url('/local/competvet/mobileview/common/eval/view.php', ['obsid' => 'OBSERVATIONID'])
 ]);
 
 $renderer = $PAGE->get_renderer('mod_competvet');

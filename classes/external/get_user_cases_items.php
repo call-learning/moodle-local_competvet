@@ -26,8 +26,8 @@ use external_multiple_structure;
 use external_single_structure;
 use external_value;
 use local_competvet\api_helpers;
+use mod_competvet\local\api\cases;
 use mod_competvet\local\api\certifications;
-use mod_competvet\local\persistent\cert_decl;
 use mod_competvet\local\persistent\planning;
 
 /**
@@ -37,31 +37,18 @@ use mod_competvet\local\persistent\planning;
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class get_user_certif_items extends external_api {
+class get_user_cases_items extends external_api {
     /**
      * Returns description of method parameters
      *
-     * @return external_single_structure
+     * @return external_multiple_structure
      */
     public static function execute_returns() {
         return
-            new external_single_structure(
-                [
-                    'itemsbycategory' => new external_multiple_structure(
-                        new external_single_structure(
-                            [
-                                'category' => new external_value(PARAM_INT, 'Category ID'),
-                                'categorytext' => new external_value(PARAM_TEXT, 'Item category text'),
-                                'items' =>
-                                    new external_multiple_structure(
-                                        new external_single_structure(
-                                            api_helpers::get_certif_info_structure()
-                                        )
-                                    ),
-                            ]
-                        )
-                    ),
-                ]
+            new external_multiple_structure(
+                new external_single_structure(
+                    api_helpers::get_case_info_structure()
+                )
             );
     }
 
@@ -83,37 +70,8 @@ class get_user_certif_items extends external_api {
         if (!core_user::get_user($userid)) {
             throw new \moodle_exception('invaliduserid', 'local_competvet');
         }
-        $certifications = certifications::get_certifications($userid, $planningid);
-        $certsbystatus = [
-            'notseen' => [
-            ],
-            'waiting' => [
-            ],
-            'validated' => [
-            ],
-        ];
-        foreach ($certifications as $cert) {
-            if ($cert['status'] == cert_decl::STATUS_STUDENT_NOTSEEN) {
-                $certsbystatus['notseen'][] = $cert;
-            } else {
-                if ($cert['validated']) {
-                    $certsbystatus['validated'][] = $cert;
-                } else {
-                    $certsbystatus['waiting'][] = $cert;
-                }
-            }
-        }
-        $returnval = [
-            'itemsbycategory' => [],
-        ];
-        foreach ($certsbystatus as $status => $certs) {
-            $returnval['itemsbycategory'][] = [
-                'category' => $status,
-                'categorytext' => get_string('certstatus_' . $status, 'local_competvet'),
-                'items' => $certs,
-            ];
-        }
-        return $returnval;
+        $cases = cases::get_case_list($planningid, $userid);
+        return $cases;
     }
 
     /**

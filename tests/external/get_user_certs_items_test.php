@@ -25,7 +25,7 @@ use DateTime;
 use external_api;
 use externallib_advanced_testcase;
 use local_competvet\external\edit_eval_observation;
-use local_competvet\external\get_user_certif_items;
+use local_competvet\external\get_user_certs_items;
 use mod_competvet\local\api\plannings;
 use mod_competvet\local\persistent\observation;
 use mod_competvet\local\persistent\observation_comment;
@@ -34,13 +34,13 @@ use mod_competvet\local\persistent\situation;
 use test_data_definition;
 
 /**
- * Get user certifs items
+ * Get user certifications items
  *
  * @package     local_competvet
  * @copyright   2024 CALL Learning <contact@call-learning.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class get_user_certif_items_test extends externallib_advanced_testcase {
+class get_user_certs_items_test extends externallib_advanced_testcase {
     use test_data_definition;
 
     /**
@@ -88,21 +88,21 @@ class get_user_certif_items_test extends externallib_advanced_testcase {
      * @return mixed
      */
     protected function get_user_certif_items($args) {
-        $validate = [get_user_certif_items::class, 'validate_parameters'];
+        $validate = [get_user_certs_items::class, 'validate_parameters'];
         $params = call_user_func(
             $validate,
-            get_user_certif_items::execute_parameters(),
+            get_user_certs_items::execute_parameters(),
             $args
         );
         $params = array_values($params);
-        $returnvalue = get_user_certif_items::execute(...$params);
-        return external_api::clean_returnvalue(get_user_certif_items::execute_returns(), $returnvalue);
+        $returnvalue = get_user_certs_items::execute(...$params);
+        return external_api::clean_returnvalue(get_user_certs_items::execute_returns(), $returnvalue);
     }
 
     /**
      * Test with existing observation
      *
-     * @covers       \local_competvet\external\get_user_certif_items::execute
+     * @covers       \local_competvet\external\get_user_certs_items::execute
      */
     public function test_get_user_certif_items() {
         $this->setAdminUser();

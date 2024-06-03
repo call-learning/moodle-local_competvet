@@ -16,6 +16,8 @@
 namespace local_competvet\output\view;
 
 use mod_competvet\competvet;
+use mod_competvet\local\api\cases;
+use mod_competvet\local\api\certifications;
 use mod_competvet\local\api\observations;
 use mod_competvet\local\api\plannings;
 use mod_competvet\local\api\user_role;
@@ -40,6 +42,15 @@ class student_mobile_evaluations extends base {
     protected array $observations;
 
     /**
+     * @var array $certifications The certifications' information.
+     */
+    protected array $certifications;
+    /**
+     * @var array $cases The cases' information.
+     */
+    protected array $cases;
+
+    /**
      * @var array $planninginfo The planning information.
      */
     protected array $planninginfo;
@@ -61,65 +72,76 @@ class student_mobile_evaluations extends base {
      */
     public function export_for_template(renderer_base $output) {
         $data = parent::export_for_template($output);
-        $data['observations'] = [];
-        if ($this->currenttab == 'eval') {
-            $data['observations'] = array_values(
-                array_reduce($this->observations, function($carry, $item) use ($output) {
-                    $observer = $item['observerinfo'];
-                    $evaluationinfo = [
-                        'userpictureurl' => $observer['userpictureurl'],
-                        'fullname' => $observer['fullname'],
-                        'evaluationtime' => $item['time'],
-                        'viewurl' => (new moodle_url(
-                            $this->views['eval'],
-                            ['evalid' => $item['id']]
-                        ))->out(false),
-                    ];
-                    if (!isset($carry[$item['category']])) {
-                        $carry[$item['category']] = [
-                            'categorytext' => $item['categorytext'],
-                            'category' => $item['category'],
-                            'list' => [],
-                        ];
-                    }
-                    $carry[$item['category']]['list'][] = $evaluationinfo;
-                    return $carry;
-                },
-                    []
-                )
-            );
-        }
         $data['tabs'] = [];
+        $stringcontext = (object) [
+            'done' => 0,
+            'required' => 0,
+            'certdone' => 0,
+            'certopen' => 0,
+            'cases' => 0,
+        ];
         // Concatenate stats for autoeval and eval.
-
-        if (!empty($this->planninginfo['info'])) {
-            $planninginfostats = [
-                'eval' => [
-                    'nbdone' => 0,
-                    'nbrequired' => 0,
-                ],
+        foreach ($this->planninginfo['info'] as $userinfovalue) {
+            $infotype = $userinfovalue['type'];
+            if ($infotype == 'autoeval') {
+                continue;
+            }
+            if ($infotype == 'autoeval' || $infotype == 'eval') {
+                $stringcontext->done += $userinfovalue['nbdone'];
+                $stringcontext->required += $userinfovalue['nbrequired'];
+            }
+            if ($infotype == 'cert') {
+                $stringcontext->certdone = $userinfovalue['nbdone'];
+                $stringcontext->certopen = $userinfovalue['nbrequired'];
+            }
+            if ($infotype == 'list') {
+                $stringcontext->cases = $userinfovalue['nbdone'];
+            }
+            $tab = [
+                'id' => $userinfovalue['type'],
+                'url' => new moodle_url($this->baseurl, ['currenttab' => $infotype]),
+                'itemtype' => $userinfovalue['type'],
+                'label' => get_string('tab:' . $infotype, 'mod_competvet', $stringcontext),
+                'isactive' => $this->currenttab == $infotype,
             ];
-            foreach ($this->planninginfo['info'] as $value) {
-                $key = $value['type'];
-                if ($key == 'autoeval' || $key == 'eval') {
-                    $planninginfostats['eval']['type'] = 'eval';
-                    $planninginfostats['eval']['nbdone'] += $value['nbdone'];
-                    $planninginfostats['eval']['nbrequired'] += $value['nbrequired'];
-                } else {
-                    $planninginfostats[$key] = $value;
-                }
+            switch ($infotype) {
+                case 'eval':
+                    $tab['observations'] = array_values(
+                        array_reduce($this->observations, function($carry, $item) use ($output) {
+                            $observer = $item['observerinfo'];
+                            $evaluationinfo = [
+                                'userpictureurl' => $observer['userpictureurl'],
+                                'fullname' => $observer['fullname'],
+                                'evaluationtime' => $item['time'],
+                                'viewurl' => (new moodle_url(
+                                    $this->views['eval'],
+                                    ['obsid' => $item['id']]
+                                ))->out(false),
+                            ];
+                            if (!isset($carry[$item['category']])) {
+                                $carry[$item['category']] = [
+                                    'categorytext' => $item['categorytext'],
+                                    'category' => $item['category'],
+                                    'obslist' => [],
+                                ];
+                            }
+                            $carry[$item['category']]['obslist'][] = $evaluationinfo;
+                            return $carry;
+                        },
+                            [])
+                    );
+                    $tab['hasobservations'] = count($tab['observations']) > 0;
+                    break;
+                case 'cert':
+                    $tab['certifications'] = $this->certifications;
+                    $tab['hascertifications'] = count($tab['certifications']) > 0;
+                    break;
+                case 'list':
+                    $tab['cases'] = $this->cases;
+                    $tab['hascases'] = count($tab['cases']) > 0;
+                    break;
             }
-            foreach ($planninginfostats as $infotype => $userinfovalue) {
-                $tab = [
-                    'id' => $userinfovalue['type'],
-                    'url' => new moodle_url($this->baseurl, ['currenttab' => $infotype]),
-                    'label' => get_string('tab:' . $userinfovalue['type'], 'mod_competvet', (object) [
-                        'done' => $userinfovalue['nbdone'] ?? 0,
-                        'required' => $userinfovalue['nbrequired'] ?? 0,
-                    ]),
-                ];
-                $data['tabs'][] = $tab;
-            }
+            $data['tabs'][] = $tab;
         }
         // Find planning, module infos.
         $planning = \mod_competvet\local\persistent\planning::get_record(['id' => $this->planninginfo['planningid']]);
@@ -130,7 +152,6 @@ class student_mobile_evaluations extends base {
         $data['studentid'] = $this->planninginfo['id'];
         $userrole = user_role::get_top($this->currentuserid, $situation->get('id'));
         $data['isstudent'] = $userrole == 'student';
-
         return $data;
     }
 
@@ -155,6 +176,8 @@ class student_mobile_evaluations extends base {
             $userobservations = observations::get_user_observations($planningid, $studentid);
             $competvet = competvet::get_from_context($context);
             $planninginfo = plannings::get_planning_info_for_student($planningid, $studentid);
+            $usercertifications = certifications::get_certifications($planningid, $studentid);
+            $usercases = cases::get_case_list($planningid, $studentid);
             $data = [
                 $planninginfo,
                 [
@@ -172,12 +195,14 @@ class student_mobile_evaluations extends base {
                     ),
                 ],
                 $userobservations,
+                $usercertifications,
+                $usercases,
             ];
             $this->set_backurl(new moodle_url(
                 $this->baseurl,
                 ['pagetype' => 'planning', 'id' => $competvet->get_course_module_id(), 'planningid' => $planningid]
             ));
         }
-        [$this->planninginfo, $this->views, $this->observations] = $data;
+        [$this->planninginfo, $this->views, $this->observations, $this->certifications, $this->cases] = $data;
     }
 }

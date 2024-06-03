@@ -32,12 +32,12 @@ require(__DIR__ . '/../../../../../config.php');
 global $PAGE, $DB, $OUTPUT, $USER;
 
 require_login();
-$observationid = required_param('evalid', PARAM_INT);
+$observationid = required_param('obsid', PARAM_INT);
 $criteriaid = required_param('criterionid', PARAM_INT);
 
 $currenturl = new moodle_url(
     '/local/competvet/mobileview/observer/eval/view_subcriteria.php',
-    ['evalid' => $observationid, 'criteriaid' => $criteriaid]);
+    ['obsid' => $observationid, 'criteriaid' => $criteriaid]);
 
 if ($returnurl = optional_param('returnurl', null, PARAM_URL)) {
     $currenturl->param('returnurl', $returnurl);
@@ -81,7 +81,7 @@ echo $OUTPUT->heading(format_text($dates, FORMAT_HTML), 3, 'text-right');
 $widget = base::factory($userid, 'student_eval_subcriteria', 0, 'local_competvet', $backurl);
 $widget->set_data($criterion['subcriteria'], new moodle_url(
     '/local/competvet/mobileview/observer/eval/view_subcriteria.php',
-    ['evalid' => $observation->get('id')]
+    ['obsid' => $observation->get('id')]
 ));
 $renderer = $PAGE->get_renderer('mod_competvet');
 echo $renderer->render($widget);

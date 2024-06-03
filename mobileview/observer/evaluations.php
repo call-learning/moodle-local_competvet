@@ -23,6 +23,8 @@
  */
 
 use local_competvet\external\get_planning_infos_student;
+use local_competvet\external\get_user_cases_items;
+use local_competvet\external\get_user_certs_items;
 use local_competvet\external\get_user_eval_observations;
 use local_competvet\mobileview_helper;
 use local_competvet\output\local\mobileview\footer;
@@ -38,22 +40,42 @@ $planningid = required_param('planningid', PARAM_INT);
 $studentid = required_param('studentid', PARAM_INT);
 $currenttab = optional_param('currenttab', 'eval', PARAM_ALPHA);
 
-$currenturl = new moodle_url('/local/competvet/mobileview/observer/evaluations.php',
-    ['planningid' => $planningid, 'studentid' => $studentid]);
-$backurl = mobileview_helper::mobile_view_header($currenturl,
-    new moodle_url('/local/competvet/mobileview/observer/planning.php', ['planningid' => $planningid]));
+$currenturl = new moodle_url(
+    '/local/competvet/mobileview/observer/evaluations.php',
+    ['planningid' => $planningid, 'studentid' => $studentid]
+);
+$backurl = mobileview_helper::mobile_view_header(
+    $currenturl,
+    new moodle_url('/local/competvet/mobileview/observer/planning.php', ['planningid' => $planningid])
+);
 
 $planning = planning::get_record(['id' => $planningid]);
 $groupname = groups_get_group_name($planning->get('groupid'));
 
 $debugs = [];
 ['results' => $observations, 'debug' => $debugs[]] =
-    mobileview_helper::call_api(get_user_eval_observations::class,
-        ['planningid' => $planningid, 'userid' => $studentid]);
+    mobileview_helper::call_api(
+        get_user_eval_observations::class,
+        ['planningid' => $planningid, 'userid' => $studentid]
+    );
+
+['results' => $certifications, 'debug' => $debugs[]] =
+    mobileview_helper::call_api(
+        get_user_certs_items::class,
+        ['planningid' => $planningid, 'userid' => $studentid]
+    );
+
+['results' => $cases, 'debug' => $debugs[]] =
+    mobileview_helper::call_api(
+        get_user_cases_items::class,
+        ['planningid' => $planningid, 'userid' => $studentid]
+    );
 
 ['results' => $studentinfo, 'debug' => $debugs[]] =
-    mobileview_helper::call_api(get_planning_infos_student::class,
-        ['planningid' => $planningid, 'userid' => $studentid]);
+    mobileview_helper::call_api(
+        get_planning_infos_student::class,
+        ['planningid' => $planningid, 'userid' => $studentid]
+    );
 
 $userplanninginfo = $studentinfo['info'];
 if (!empty($userplanninginfo)) {
@@ -62,6 +84,8 @@ if (!empty($userplanninginfo)) {
 $views = [
     'eval' => new moodle_url('/local/competvet/mobileview/common/eval/view.php', ['returnurl' => $PAGE->url->out()]),
     'autoeval' => new moodle_url('/local/competvet/mobileview/common/autoeval/view.php', ['returnurl' => $PAGE->url->out()]),
+    'certif' => new moodle_url('/local/competvet/mobileview/common/certif/view.php', ['returnurl' => $PAGE->url->out()]),
+    'list' => new moodle_url('/local/competvet/mobileview/common/certif/list.php', ['returnurl' => $PAGE->url->out()]),
 ];
 /** @var core_renderer $OUTPUT */
 echo $OUTPUT->header();
@@ -78,7 +102,7 @@ echo $OUTPUT->heading(format_text($competvetname, FORMAT_HTML));
 echo $OUTPUT->user_picture($user, ['size' => 100, 'class' => 'd-inline-block']);
 echo $OUTPUT->heading(format_text($dates, FORMAT_HTML), 3, 'text-right');
 $widget = base::factory($USER->id, 'student_mobile_evaluations', 0, 'local_competvet', $backurl);
-$widget->set_data($studentinfo, $views, $observations);
+$widget->set_data($studentinfo, $views, $observations, $certifications, $cases);
 $renderer = $PAGE->get_renderer('mod_competvet');
 echo $renderer->render($widget);
 

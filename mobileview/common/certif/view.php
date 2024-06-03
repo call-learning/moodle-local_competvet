@@ -32,11 +32,11 @@ require(__DIR__ . '/../../../../../config.php');
 global $PAGE, $DB, $OUTPUT, $USER;
 
 require_login();
-$observationid = required_param('obsid', PARAM_INT);
+$declid = required_param('declid', PARAM_INT);
 
 $currenturl = new moodle_url(
-    '/local/competvet/mobileview/common/eval/view.php',
-    ['obsid' => $observationid]
+    '/local/competvet/mobileview/common/certif/view.php',
+    ['obsid' => $declid]
 );
 
 if ($returnurl = optional_param('returnurl', null, PARAM_URL)) {
@@ -54,8 +54,8 @@ $userid = $observation->get('studentid');
 $debugs = [];
 ['results' => $observationinfo, 'debug' => $debugs[]] =
     mobileview_helper::call_api(
-        \local_competvet\external\get_eval_observation_info::class,
-        ['observationid' => $observationid]
+        \local_competvet\external\get_user_certs_items::class,
+        ['observationid' => $observationid, 'userid' => $userid]
     );
 
 echo $OUTPUT->header();

@@ -64,7 +64,12 @@ export const init = async (modulename) => {
             });
             modal.show();
             modal.getRoot().on(ModalEvents.cancel, () => {
-                genericFormCreate({'id' : observation.observationid }, 'edit', modulename, createModalDebugFromEvent);
+                genericFormCreate(
+                    {'id': observation.observationid, 'returnurl': window.location.href},
+                    'edit',
+                    modulename,
+                    createModalDebugFromEvent
+                );
             });
         });
     });
