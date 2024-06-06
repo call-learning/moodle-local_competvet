@@ -1,0 +1,110 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_competvet/grading/components/certification-results
+
+    TODO describe template certification-results
+
+    Example context (json):
+    {
+    }
+}}
+{{^isdeclared}}
+    <div class="alert alert-info w-50 mx-auto " role="alert">
+        {{#str}}nocertifications, mod_competvet{{/str}}
+    </div>
+{{/isdeclared}}
+{{#isdeclared}}
+    <div class="certif">
+        <div class="container">
+            <div class="description mb-2 position-relative d-flex align-items-center">
+                <strong>{{label}}</strong>
+            </div>
+            <div class="collapse pl-5 ml-2 show" id="collapse{{declid}}">
+                <div class="container d-flex">
+                    <div>
+                        {{#feedback}}
+                            {{> mod_competvet/comment}}
+                        {{/feedback}}
+                    </div>
+                    <div class="mx-2">
+                        {{#seendone}}
+                            <i class="fa fa-check text-success" aria-hidden="true"></i>
+                            <span class="sr-only">{{#str}}seendone, competvet{{/str}}</span>
+                        {{/seendone}}
+                        {{#notseen}}
+                            <i class="fa fa-times text-danger" aria-hidden="true"></i>
+                            <span class="sr-only">{{#str}}notseen, competvet{{/str}}</span>
+                        {{/notseen}}
+                    </div>
+                </div>
+                <div>
+                    {{#validations}}
+                        <div class="container d-flex">
+                            <div>
+                                {{#feedback}}
+                                    {{> mod_competvet/comment}}
+                                {{/feedback}}
+                            </div>
+                            <div class="mx-2">
+                                {{#confirmed}}
+                                    <i class="fa fa-check text-success" aria-hidden="true"></i>
+                                    <span class="sr-only">{{#str}}valid:confirmed, competvet{{/str}}</span>
+                                {{/confirmed}}
+                                {{#observernotseen}}
+                                    <i class="fa fa-exclamation-triangle text-warning" aria-hidden="true"></i>
+                                    <span class="sr-only">{{#str}}valid:observernotseen, competvet{{/str}}</span>
+                                {{/observernotseen}}
+                                {{#levelnotreached}}
+                                    <i class="fa fa-times text-danger" aria-hidden="true"></i>
+                                    <span class="sr-only">{{#str}}valid:levelnotreached, competvet{{/str}}</span>
+                                {{/levelnotreached}}
+                            </div>
+                        </div>
+                    {{/validations}}
+                </div>
+                <div class="actions d-flex justify-content-end">
+                    {{#isstudent}}
+                        <button class="btn btn-sm btn-outline-secondary"
+                                data-action="cert-decl-student"
+                                data-id="{{criterionid}}"
+                                data-decl-id="{{declid}}"
+                                data-cm-id="{{cmid}}"
+                                data-studentid="{{studentid}}"
+                                data-planningid="{{planningid}}">
+                            {{#str}}declarelevel, competvet{{/str}}
+                        </button>
+                    {{/isstudent}}
+                    {{#isevaluator}}
+                        <button class="btn btn-sm btn-outline-secondary"
+                                data-action="cert-decl-evaluator"
+                                data-id="{{criterionid}}"
+                                data-decl-id="{{declid}}"
+                                data-cm-id="{{cmid}}"
+                                data-studentid="{{studentid}}"
+                                data-planningid="{{planningid}}">
+                            {{#str}}validate, competvet{{/str}}
+                        </button>
+                    {{/isevaluator}}
+                </div>
+            </div>
+        </div>
+        <div class="container justify-content-end">
+            {{#level}}<span class="font-weight-bold">{{level}}</span><span class="mx-2">/</span><span>{{total}}</span>{{/level}}
+        </div>
+    </div>
+{{/isdeclared}}

@@ -32,7 +32,7 @@ require(__DIR__ . '/../../../../../config.php');
 global $PAGE, $DB, $OUTPUT, $USER;
 
 require_login();
-$declid = required_param('declid', PARAM_INT);
+$declid = required_param('id', PARAM_INT);
 
 $currenturl = new moodle_url(
     '/local/competvet/mobileview/common/certif/view.php',
@@ -46,17 +46,17 @@ if ($returnurl = optional_param('returnurl', null, PARAM_URL)) {
 
 $backurl = mobileview_helper::mobile_view_header($currenturl, $returnurl ? new moodle_url($returnurl) : null);
 
-$observation = observation::get_record(['id' => $observationid]);
-$planning = planning::get_record(['id' => $observation->get('planningid')]);
-$groupname = groups_get_group_name($planning->get('groupid'));
-$userid = $observation->get('studentid');
-
 $debugs = [];
-['results' => $observationinfo, 'debug' => $debugs[]] =
+['results' => $certification, 'debug' => $debugs[]] =
     mobileview_helper::call_api(
-        \local_competvet\external\get_user_certs_items::class,
-        ['observationid' => $observationid, 'userid' => $userid]
+        \local_competvet\external\get_user_certs_item_info::class,
+        ['id' => $declid]
     );
+$certdecl = \mod_competvet\local\persistent\cert_decl::get_record(['id' => $declid]);
+
+$planning = planning::get_record(['id' => $certdecl->get('planningid')]);
+$groupname = groups_get_group_name($planning->get('groupid'));
+$userid = $certdecl->get('studentid');
 
 echo $OUTPUT->header();
 $competvet = competvet::get_from_situation_id($planning->get('situationid'));
@@ -71,11 +71,8 @@ $studentuser = core_user::get_user($userid);
 echo $OUTPUT->heading(format_text($competvetname, FORMAT_HTML));
 echo $OUTPUT->user_picture($studentuser, ['size' => 100, 'class' => 'd-inline-block']);
 echo $OUTPUT->heading(format_text($dates, FORMAT_HTML), 3, 'text-right');
-$widget = base::factory($userid, 'student_eval', 0, 'local_competvet', $backurl);
-$widget->set_data($observationinfo, new moodle_url(
-    '/local/competvet/mobileview/common/eval/view_subcriteria.php',
-    ['obsid' => $observation->get('id'), 'returnurl' => $currenturl->out()]
-));
+$widget = base::factory($userid, 'student_cert_view', 0, 'local_competvet', $backurl);
+$widget->set_data($certification);
 $renderer = $PAGE->get_renderer('mod_competvet');
 echo $renderer->render($widget);
 

@@ -24,6 +24,7 @@
     }
 }}
 <div class="observations-tab">
+{{#observations}}
         <div class="card">
             <div class="card-header" id="competvet-view-observations-cat-heading-{{category}}">
                 <h2 class="mb-0">
@@ -34,7 +35,7 @@
                 </h2>
             </div>
             <div id="competvet-view-observations-cat-{{category}}" class="collapse show" aria-labelledby="competvet-view-observations-cat-heading-{{category}}"
-                 data-parent="#observations-accordion">
+                 data-parent="#competvet-view-observations-cat-heading-{{category}}">
                 <div class="card-body">
                     {{#obslist}}
                         {{> mod_competvet/view/observation_card}}
@@ -44,13 +45,13 @@
             {{#isstudent}}
                 <div>
                     <button class="btn btn-outline-secondary my-3" data-cmid="{{cmid}}" data-planning-id="{{planningid}}" data-student-id="{{studentid}}"
-                            data-action="eval-observation-ask">{{#str}}observation:ask, mod_competvet{{/str}}</button>
+                            data-action="observation-ask">{{#str}}observation:ask, mod_competvet{{/str}}</button>
                 </div>
             {{/isstudent}}
             {{^isstudent}}
                 <div>
                     <button class="btn btn-outline-secondary my-3" data-cmid="{{cmid}}" data-planning-id="{{planningid}}" data-student-id="{{studentid}}"
-                            data-action="eval-observation-add">{{#str}}observation:add, mod_competvet{{/str}}</button>
+                            data-action="observation-add">{{#str}}observation:add, mod_competvet{{/str}}</button>
                 </div>
             {{/isstudent}}
 {{#js}}
@@ -63,6 +64,6 @@ require(['{{modulename}}/local/forms/eval_observation_add'], function(Form) {
 {{/js}}
 
         </div>
-
+{{/observations}}
 
 </div>

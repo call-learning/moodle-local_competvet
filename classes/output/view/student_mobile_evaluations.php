@@ -133,7 +133,21 @@ class student_mobile_evaluations extends base {
                     $tab['hasobservations'] = count($tab['observations']) > 0;
                     break;
                 case 'cert':
-                    $tab['certifications'] = $this->certifications;
+                    $viewcertsurl = $this->views['certif'];
+                    $certs = [];
+                    foreach($this->certifications as $cert) {
+                        $cert['items'] = array_map(function($item) use($viewcertsurl) {
+                            if (!empty($item['declid'])) {
+                                $item['viewurl'] = (new moodle_url(
+                                    $viewcertsurl,
+                                    ['id' => $item['declid']]
+                                ))->out(false);
+                            }
+                            return $item;
+                        }, $cert['items']);
+                        $certs[] = $cert;
+                    }
+                    $tab['certifications'] = $certs;
                     $tab['hascertifications'] = count($tab['certifications']) > 0;
                     break;
                 case 'list':

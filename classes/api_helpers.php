@@ -205,6 +205,28 @@ class api_helpers {
                 'observernotseen' => new external_value(PARAM_BOOL, 'Not seen (observer)'),
                 'confirmed' => new external_value(PARAM_BOOL, 'Confirmed by observer'),
                 'levelnotreached' => new external_value(PARAM_BOOL, 'Level Not reached (observer)'),
+                'feedback' => new external_single_structure([
+                    'picture' => new external_value(PARAM_TEXT, 'The picture'),
+                    'fullname' => new external_value(PARAM_TEXT, 'The fullname'),
+                    'comments' => new external_single_structure([
+                        'commenttext' => new external_value(PARAM_TEXT, 'The comment'),
+                    ], 'The comments', VALUE_OPTIONAL),
+                ], 'The feedback', VALUE_OPTIONAL),
+                'validations' => new external_multiple_structure(
+                    new external_single_structure([
+                        'id' => new external_value(PARAM_INT, 'The validation id'),
+                        'feedback' => new external_single_structure([
+                            'picture' => new external_value(PARAM_TEXT, 'The picture'),
+                            'fullname' => new external_value(PARAM_TEXT, 'The fullname'),
+                            'comments' => new external_single_structure([
+                                'commenttext' => new external_value(PARAM_TEXT, 'The comment'),
+                            ]),
+                        ], 'The feedback', VALUE_OPTIONAL),
+                        'status' => new external_value(PARAM_INT, 'The status'),
+                    ]),
+                    'The validations',
+                    VALUE_OPTIONAL
+                ),
             ];
     }
     public static function get_case_info_structure(): array {

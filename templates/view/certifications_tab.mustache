@@ -35,15 +35,48 @@
                 </h2>
             </div>
             <div id="competvet-view-certifications-cat-{{category}}" class="collapse show" aria-labelledby="competvet-view-certifications-cat-heading-{{category}}"
-                 data-parent="#certifications-accordion">
+                 data-parent="#competvet-view-certifications-cat-heading-{{category}}">
                 {{#items}}
-                    <div class="row">
-                        <div class="col-6">
-                            {{label}}
-                        </div>
-                    </div>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <span>{{label}}
+                                {{#levelnotreached}}(Warning){{/levelnotreached}}
+                                {{#confirmed}}(Confirmed){{/confirmed}}
+                                {{#viewurl}}<a href="{{viewurl}}">{{#str}}view{{/str}}</a>{{/viewurl}}
+                                {{^viewurl}}
+                                    {{#isstudent}}
+                                        <button class="btn btn-sm btn-outline-secondary"
+                                                data-action="cert-decl-student"
+                                                data-id="{{criterionid}}"
+                                                data-decl-id="{{declid}}"
+                                                data-cm-id="{{cmid}}"
+                                                data-studentid="{{studentid}}"
+                                                data-planningid="{{planningid}}">
+                                            {{#str}}declarelevel, competvet{{/str}}
+                                        </button>
+                                    {{/isstudent}}
+                                    {{#isevaluator}}
+                                        <button class="btn btn-sm btn-outline-secondary"
+                                                data-action="cert-decl-evaluator"
+                                                data-id="{{criterionid}}"
+                                                data-decl-id="{{declid}}"
+                                                data-cm-id="{{cmid}}"
+                                                data-studentid="{{studentid}}"
+                                                data-planningid="{{planningid}}">
+                                            {{#str}}validate, competvet{{/str}}
+                                        </button>
+                                    {{/isevaluator}}
+                                {{/viewurl}}
+                            </span>
+                        </li>
+                    </ul>
                 {{/items}}
             </div>
         </div>
     {{/certifications}}
+{{#js}}
+require(['{{modulename}}/local/forms/cert_decl'], function(Form) {
+    Form.init('{{modulename}}');
+});
+{{/js}}
 </div>
