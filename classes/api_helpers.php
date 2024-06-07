@@ -238,4 +238,29 @@ class api_helpers {
                 'label' => new external_value(PARAM_TEXT, 'Case label'),
             ];
     }
+
+    public static function get_case_item_info_structure() {
+        return [
+            'id' => new external_value(PARAM_INT, 'The case id'),
+            'timecreated' => new external_value(PARAM_INT, 'The time the case was created'),
+            'categories' => new external_multiple_structure(
+                new external_single_structure([
+                    'id' => new external_value(PARAM_INT, 'The category id'),
+                    'name' => new external_value(PARAM_TEXT, 'The category name'),
+                    'fields' => new external_multiple_structure(
+                        new external_single_structure([
+                            'id' => new external_value(PARAM_INT, 'The field id'),
+                            'idnumber' => new external_value(PARAM_TEXT, 'The field shortname'),
+                            'name' => new external_value(PARAM_TEXT, 'The field name'),
+                            'type' => new external_value(PARAM_TEXT, 'The field type'),
+                            'configdata' => new external_value(PARAM_RAW, 'The field configdata'),
+                            'description' => new external_value(PARAM_TEXT, 'The field description'),
+                            'value' => new external_value(PARAM_TEXT, 'The field value'),
+                            'displayvalue' => new external_value(PARAM_TEXT, 'The field display value'),
+                        ])
+                    ),
+                ])
+            ),
+        ];
+    }
 }

@@ -151,7 +151,15 @@ class student_mobile_evaluations extends base {
                     $tab['hascertifications'] = count($tab['certifications']) > 0;
                     break;
                 case 'list':
-                    $tab['cases'] = $this->cases;
+                    $viewcaseurl = $this->views['case'];
+                    $cases = array_map(function($item) use($viewcaseurl) {
+                        $item['viewurl'] = (new moodle_url(
+                            $viewcaseurl,
+                                ['id' => $item['id']]
+                            ))->out(false);
+                        return $item;
+                    }, $this->cases);
+                    $tab['cases'] = $cases;
                     $tab['hascases'] = count($tab['cases']) > 0;
                     break;
             }

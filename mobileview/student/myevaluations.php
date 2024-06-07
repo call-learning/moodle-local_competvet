@@ -76,6 +76,7 @@ $views = [
     'eval' => new moodle_url('/local/competvet/mobileview/common/eval/view.php', ['returnurl' => $PAGE->url->out()]),
     'autoeval' => new moodle_url('/local/competvet/mobileview/common/autoeval/view.php', ['returnurl' => $PAGE->url->out()]),
     'certif' => new moodle_url('/local/competvet/mobileview/common/certif/view.php', ['returnurl' => $PAGE->url->out()]),
+    'case' => new moodle_url('/local/competvet/mobileview/common/case/view.php', ['returnurl' => $PAGE->url->out()]),
 ];
 /** @var core_renderer $OUTPUT */
 echo $OUTPUT->header();

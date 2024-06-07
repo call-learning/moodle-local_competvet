@@ -27,9 +27,9 @@ defined('MOODLE_INTERNAL') || die();
 $plugin->version = 2024060600;      // The current module version (Date: YYYYMMDDXX).
 $plugin->requires = 2020061501;      // Requires this Moodle version (3.9.1).
 $plugin->maturity = MATURITY_RC;
-$plugin->release = '0.4.0'; // New API.
+$plugin->release = '0.5.0'; // New API.
 $plugin->component = 'local_competvet';// Full name of the plugin (used for diagnostics).
 $plugin->cron = 0;
 $plugin->dependencies = [
-    // 'mod_competvet' => ANY_VERSION,
+    'mod_competvet' => ANY_VERSION,
 ];

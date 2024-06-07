@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Display information about a given certif
+ * Display information about a given case
  *
  * @package   mod_competvet
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
@@ -32,11 +32,11 @@ require(__DIR__ . '/../../../../../config.php');
 global $PAGE, $DB, $OUTPUT, $USER;
 
 require_login();
-$declid = required_param('id', PARAM_INT);
+$caseid = required_param('id', PARAM_INT);
 
 $currenturl = new moodle_url(
-    '/local/competvet/mobileview/common/certif/view.php',
-    ['id' => $declid]
+    '/local/competvet/mobileview/common/case/view.php',
+    ['id' => $caseid]
 );
 
 if ($returnurl = optional_param('returnurl', null, PARAM_URL)) {
@@ -47,16 +47,16 @@ if ($returnurl = optional_param('returnurl', null, PARAM_URL)) {
 $backurl = mobileview_helper::mobile_view_header($currenturl, $returnurl ? new moodle_url($returnurl) : null);
 
 $debugs = [];
-['results' => $certification, 'debug' => $debugs[]] =
+['results' => $case, 'debug' => $debugs[]] =
     mobileview_helper::call_api(
-        \local_competvet\external\get_user_certs_item_info::class,
-        ['id' => $declid]
+        \local_competvet\external\get_user_cases_item_info::class,
+        ['id' => $caseid]
     );
-$certdecl = \mod_competvet\local\persistent\cert_decl::get_record(['id' => $declid]);
+$caseentry = \mod_competvet\local\persistent\case_entry::get_record(['id' => $caseid]);
 
-$planning = planning::get_record(['id' => $certdecl->get('planningid')]);
+$planning = planning::get_record(['id' => $caseentry->get('planningid')]);
 $groupname = groups_get_group_name($planning->get('groupid'));
-$userid = $certdecl->get('studentid');
+$userid = $caseentry->get('studentid');
 
 echo $OUTPUT->header();
 $competvet = competvet::get_from_situation_id($planning->get('situationid'));
@@ -71,8 +71,8 @@ $studentuser = core_user::get_user($userid);
 echo $OUTPUT->heading(format_text($competvetname, FORMAT_HTML));
 echo $OUTPUT->user_picture($studentuser, ['size' => 100, 'class' => 'd-inline-block']);
 echo $OUTPUT->heading(format_text($dates, FORMAT_HTML), 3, 'text-right');
-$widget = base::factory($userid, 'student_cert_view', 0, 'local_competvet', $backurl);
-$widget->set_data($certification);
+$widget = base::factory($userid, 'student_case_view', 0, 'local_competvet', $backurl);
+$widget->set_data($case);
 $renderer = $PAGE->get_renderer('mod_competvet');
 echo $renderer->render($widget);
 
