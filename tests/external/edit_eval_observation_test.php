@@ -111,7 +111,6 @@ class edit_eval_observation_test extends externallib_advanced_testcase {
     public function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
-        $this->resetAfterTest();
         $generator = $this->getDataGenerator();
         $competvetgenerator = $generator->get_plugin_generator('mod_competvet');
         $startdate = new DateTime('last Monday');

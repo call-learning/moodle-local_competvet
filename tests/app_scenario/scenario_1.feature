@@ -53,6 +53,6 @@ Feature: Edit completion settings of an activity
       | last Monday > Monday next week > SESSION1 > SIT1 > student1 > observer2 | Q001      | 6                              |
       | last Monday > Monday next week > SESSION1 > SIT1 > student1 > observer2 | Q002      | Comment for this criteria Q002 |
       | last Monday > Monday next week > SESSION1 > SIT1 > student1 > observer2 | Q007      | 10                             |
-#    And the following "mod_competvet > certification" exist:
-#      | student  | planning                                         | criterion | comment               | status        |
-#      | student1 | last Monday > Monday next week > SESSION1 > SIT1 | CERT1     | Comment for this cert | cert:seendone |
+    And the following "mod_competvet > certification" exist:
+      | student  | planning                                         | criterion | comment               | status        |
+      | student1 | last Monday > Monday next week > SESSION1 > SIT1 | CERT1     | Comment for this cert | cert:seendone |
