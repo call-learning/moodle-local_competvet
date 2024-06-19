@@ -126,7 +126,7 @@ class get_situations_test extends externallib_advanced_testcase {
     public function test_get_situations(string $username, bool $nofutureplanning, array $expected) {
         $this->setUser(\core_user::get_user_by_username($username));
         $situations = $this->get_situations(null, $nofutureplanning); // Ignore future situations.
-        test_helpers::remove_elements_for_assertions($situations, ['id', 'intro']);
+        test_helpers::remove_elements_for_assertions($situations, ['id', 'intro', 'translatedcategory']);
         $this->assertEquals($expected, $situations);
     }
 }
