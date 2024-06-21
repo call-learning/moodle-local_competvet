@@ -164,8 +164,10 @@ class api_helpers {
         return [
             'id' => new external_value(PARAM_INT, 'TODO internal ID'),
             'user' => new external_single_structure(self::get_user_info_structure(), 'User information'),
-            'targetuser' => new external_single_structure(self::get_user_info_structure(),
-                'Target User information'),
+            'targetuser' => new external_single_structure(
+                self::get_user_info_structure(),
+                'Target User information'
+            ),
             'planning' => new external_single_structure(self::get_planning_info_structure(), 'Planning information'),
             'status' => new external_value(PARAM_INT, 'TODO current Status'),
             'action' => new external_value(PARAM_INT, 'TODO action to perform'),
@@ -229,6 +231,7 @@ class api_helpers {
                 ),
             ];
     }
+
     public static function get_case_info_structure(): array {
         return
             [
@@ -248,19 +251,46 @@ class api_helpers {
                     'id' => new external_value(PARAM_INT, 'The category id'),
                     'name' => new external_value(PARAM_TEXT, 'The category name'),
                     'fields' => new external_multiple_structure(
-                        new external_single_structure([
-                            'id' => new external_value(PARAM_INT, 'The field id'),
-                            'idnumber' => new external_value(PARAM_TEXT, 'The field shortname'),
-                            'name' => new external_value(PARAM_TEXT, 'The field name'),
-                            'type' => new external_value(PARAM_TEXT, 'The field type'),
-                            'configdata' => new external_value(PARAM_RAW, 'The field configdata'),
-                            'description' => new external_value(PARAM_TEXT, 'The field description'),
-                            'value' => new external_value(PARAM_TEXT, 'The field value'),
-                            'displayvalue' => new external_value(PARAM_TEXT, 'The field display value'),
-                        ])
+                        self::get_case_field_info_structure()
                     ),
                 ])
             ),
         ];
+    }
+
+    public static function get_caselog_category_info_structure() {
+        return
+            new external_single_structure([
+                'id' => new external_value(PARAM_INT, 'The category id'),
+                'name' => new external_value(PARAM_TEXT, 'The category name'),
+                'fields' => new external_multiple_structure(
+                    new external_single_structure([
+                        'id' => new external_value(PARAM_INT, 'The field id'),
+                        'idnumber' => new external_value(PARAM_TEXT, 'The field shortname'),
+                        'name' => new external_value(PARAM_TEXT, 'The field name'),
+                        'type' => new external_value(PARAM_TEXT, 'The field type'),
+                        'configdata' => new external_value(PARAM_RAW, 'The field configdata'),
+                        'description' => new external_value(PARAM_TEXT, 'The field description'),
+                    ])
+                ),
+            ]);
+    }
+
+    /**
+     * Get caselog field structrure
+     *
+     * @return external_single_structure
+     */
+    public static function get_case_field_info_structure() {
+        return new external_single_structure([
+            'id' => new external_value(PARAM_INT, 'The field id'),
+            'idnumber' => new external_value(PARAM_TEXT, 'The field shortname'),
+            'name' => new external_value(PARAM_TEXT, 'The field name'),
+            'type' => new external_value(PARAM_TEXT, 'The field type'),
+            'configdata' => new external_value(PARAM_RAW, 'The field configdata'),
+            'description' => new external_value(PARAM_TEXT, 'The field description'),
+            'value' => new external_value(PARAM_TEXT, 'The field value', VALUE_OPTIONAL),
+            'displayvalue' => new external_value(PARAM_TEXT, 'The field display value', VALUE_OPTIONAL),
+        ]);
     }
 }

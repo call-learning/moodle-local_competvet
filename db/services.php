@@ -190,7 +190,7 @@ $functions = [
         'loginrequired' => true,
         'services' => [utils::COMPETVET_MOBILE_SERVICE],
     ],
-    'local_get_user_certs_item_info' => [
+    'local_competvet_get_user_certs_item_info' => [
         'classname' => \local_competvet\external\get_user_certs_item_info::class,
         'methodname' => 'execute',
         'description' => 'Get certification item information for a given id',
@@ -199,7 +199,7 @@ $functions = [
         'loginrequired' => true,
         'services' => [utils::COMPETVET_MOBILE_SERVICE],
     ],
-    'local_get_get_user_certs_items' => [
+    'local_competvet_get_get_user_certs_items' => [
         'classname' => \local_competvet\external\get_user_certs_items::class,
         'methodname' => 'execute',
         'description' => 'Get certification items for a given user in a planning',
@@ -208,7 +208,7 @@ $functions = [
         'loginrequired' => true,
         'services' => [utils::COMPETVET_MOBILE_SERVICE],
     ],
-    'local_get_set_certs_supervisors' => [
+    'local_competvet_get_set_certs_supervisors' => [
         'classname' => \local_competvet\external\set_certs_supervisors::class,
         'methodname' => 'execute',
         'description' => 'Set supervisors for a given certification item',
@@ -217,7 +217,7 @@ $functions = [
         'loginrequired' => true,
         'services' => [utils::COMPETVET_MOBILE_SERVICE],
     ],
-    'local_get_edit_certs_item' => [
+    'local_competvet_get_edit_certs_item' => [
         'classname' => \local_competvet\external\edit_certs_item::class,
         'methodname' => 'execute',
         'description' => 'Edit a given certification item',
@@ -226,7 +226,7 @@ $functions = [
         'loginrequired' => true,
         'services' => [utils::COMPETVET_MOBILE_SERVICE],
     ],
-    'local_get_delete_certs_item' => [
+    'local_competvet_get_delete_certs_item' => [
         'classname' => \local_competvet\external\delete_certs_item::class,
         'methodname' => 'execute',
         'description' => 'Delete a given certification item',
@@ -235,12 +235,30 @@ $functions = [
         'loginrequired' => true,
         'services' => [utils::COMPETVET_MOBILE_SERVICE],
     ],
-    'local_get_get_user_cases_items' => [
+    'local_competvet_get_get_user_cases_items' => [
         'classname' => \local_competvet\external\get_user_cases_items::class,
         'methodname' => 'execute',
         'description' => 'Get certif items for a user in a planning',
         'ajax' => true,
         'type' => 'read',
+        'loginrequired' => true,
+        'services' => [utils::COMPETVET_MOBILE_SERVICE],
+    ],
+    'local_competvet_get_caselog_structure' => [
+        'classname' => \local_competvet\external\get_caselog_structure::class,
+        'methodname' => 'execute',
+        'description' => 'Get caselog structure',
+        'ajax' => true,
+        'type' => 'read',
+        'loginrequired' => true,
+        'services' => [utils::COMPETVET_MOBILE_SERVICE],
+    ],
+    'local_competvet_create_caselog' => [
+        'classname' => \local_competvet\external\create_caselog::class,
+        'methodname' => 'execute',
+        'description' => 'Create caselog',
+        'ajax' => true,
+        'type' => 'write',
         'loginrequired' => true,
         'services' => [utils::COMPETVET_MOBILE_SERVICE],
     ],
