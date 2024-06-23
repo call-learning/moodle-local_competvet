@@ -23,16 +23,15 @@ use external_api;
 use external_function_parameters;
 use external_single_structure;
 use external_value;
-use external_warnings;
 use mod_competvet\local\api\certifications;
 
 /**
- * Edit certif item.
+ * Create certif item.
  *
  * @package   local_competvet
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class edit_certs_item extends external_api {
+class create_certs_decl extends external_api {
     /**
      * Returns description of method parameters
      *
@@ -40,18 +39,25 @@ class edit_certs_item extends external_api {
      */
     public static function execute_returns() {
         return new external_single_structure(
-            ['warnings' => new external_warnings()]
+            [
+                'id' => new external_value(PARAM_INT, 'Newly created certification declaration  ID'),
+            ]
         );
     }
 
     /**
-     * Edit certif item
+     * Create certif item
      *
-     * @param int $id
-     * @param string $data
+     * @param int $criterionid
+     * @param int $studentid
+     * @param int $planningid
+     * @param int $level
+     * @param string $comment
+     * @param int $status
      * @return array
      */
-    public static function execute(int $id, int $criterionid, int $level, string $comment, int $status): array {
+    public static function execute(int $criterionid, int $studentid, int $planningid, int $level, string $comment,
+        int $status): array {
         [
             'criterionid' => $criterionid,
             'level' => $level,
@@ -59,17 +65,15 @@ class edit_certs_item extends external_api {
             'status' => $status
         ] = self::validate_parameters(
             self::execute_parameters(),
-            ['id' => $id, 'criterionid' => $criterionid, 'level' => $level, 'comment' => $comment, 'status' => $status]
+            ['criterionid' => $criterionid, 'studentid' => $studentid, 'planningid' => $planningid, 'level' => $level,
+                'comment' => $comment, 'status' => $status]
         );
 
-        // Logic to edit the cert item using the certifications API.
-        $result = certifications::update_cert_declaration($id, $criterionid, $level, $comment, $status);
+        // Logic to create the cert item using the certifications API.
+        $declid = certifications::add_cert_declaration($criterionid, $studentid, $planningid, $level, $comment, intval(FORMAT_PLAIN),
+            $status);
 
-        $warnings = [];
-        if (!$result) {
-            $warnings[] = ['item' => $id, 'message' => 'Item not edited'];
-        }
-        return ['warnings' => $warnings];
+        return ['id' => $declid];
     }
 
     /**
@@ -80,8 +84,9 @@ class edit_certs_item extends external_api {
     public static function execute_parameters() {
         return new external_function_parameters(
             [
-                'id' => new external_value(PARAM_INT, 'Item ID'),
                 'criterionid' => new external_value(PARAM_INT, 'Criterion ID'),
+                'studentid' => new external_value(PARAM_INT, 'Student ID'),
+                'planningid' => new external_value(PARAM_INT, 'Planning ID'),
                 'level' => new external_value(PARAM_INT, 'Level'),
                 'comment' => new external_value(PARAM_TEXT, 'Comment'),
                 'status' => new external_value(PARAM_TEXT, 'Status'),

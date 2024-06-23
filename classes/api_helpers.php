@@ -200,19 +200,19 @@ class api_helpers {
                 'label' => new external_value(PARAM_TEXT, 'Item name'),
                 'grade' => new external_value(PARAM_INT, 'Grade'),
                 'criterionid' => new external_value(PARAM_INT, 'Criterion ID'),
-                'status' => new external_value(PARAM_INT, 'Item status'),
+                'status' => new external_value(PARAM_INT, 'The declaration status (this can be different from the global status)'),
                 'isdeclared' => new external_value(PARAM_BOOL, 'Declared'),
                 'seendone' => new external_value(PARAM_BOOL, 'Seen and done (student)'),
                 'notseen' => new external_value(PARAM_BOOL, 'Not seen (student)'),
                 'observernotseen' => new external_value(PARAM_BOOL, 'Not seen (observer)'),
                 'confirmed' => new external_value(PARAM_BOOL, 'Confirmed by observer'),
                 'levelnotreached' => new external_value(PARAM_BOOL, 'Level Not reached (observer)'),
+                'level' => new external_value(PARAM_INT, 'Declaration level', VALUE_OPTIONAL),
+                'comment' => new external_value(PARAM_TEXT, 'Declaration comment'),
                 'feedback' => new external_single_structure([
                     'picture' => new external_value(PARAM_TEXT, 'The picture'),
                     'fullname' => new external_value(PARAM_TEXT, 'The fullname'),
-                    'comments' => new external_single_structure([
-                        'commenttext' => new external_value(PARAM_TEXT, 'The comment'),
-                    ], 'The comments', VALUE_OPTIONAL),
+                    'comment' => new external_value(PARAM_TEXT, 'The comment'),
                 ], 'The feedback', VALUE_OPTIONAL),
                 'validations' => new external_multiple_structure(
                     new external_single_structure([
@@ -220,10 +220,9 @@ class api_helpers {
                         'feedback' => new external_single_structure([
                             'picture' => new external_value(PARAM_TEXT, 'The picture'),
                             'fullname' => new external_value(PARAM_TEXT, 'The fullname'),
-                            'comments' => new external_single_structure([
-                                'commenttext' => new external_value(PARAM_TEXT, 'The comment'),
-                            ]),
+                            'comment' => new external_value(PARAM_TEXT, 'The comment'),
                         ], 'The feedback', VALUE_OPTIONAL),
+                        'comment' => new external_value(PARAM_TEXT, 'Declaration comment'),
                         'status' => new external_value(PARAM_INT, 'The status'),
                     ]),
                     'The validations',

@@ -52,7 +52,7 @@ class cert_decl_student extends \mod_competvet\form\cert_decl_student {
             } else {
                 ['results' => $results, 'debug' => $debugs[]] =
                     mobileview_helper::call_api(
-                        \local_competvet\external\create_certs_item::class,
+                        \local_competvet\external\create_certs_decl::class,
                         ['planningid' => $data->planningid, 'criterionid' => $data->criterionid, 'studentid' => $data->studentid,
                             'level' => $data->level, 'comment' => $data->comment, 'status' => $data->status]
                     );
