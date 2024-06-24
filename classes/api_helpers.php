@@ -208,7 +208,7 @@ class api_helpers {
                 'confirmed' => new external_value(PARAM_BOOL, 'Confirmed by observer'),
                 'levelnotreached' => new external_value(PARAM_BOOL, 'Level Not reached (observer)'),
                 'level' => new external_value(PARAM_INT, 'Declaration level', VALUE_OPTIONAL),
-                'comment' => new external_value(PARAM_TEXT, 'Declaration comment'),
+                'comment' => new external_value(PARAM_TEXT, 'Declaration comment', VALUE_OPTIONAL),
                 'feedback' => new external_single_structure([
                     'picture' => new external_value(PARAM_TEXT, 'The picture'),
                     'fullname' => new external_value(PARAM_TEXT, 'The fullname'),
