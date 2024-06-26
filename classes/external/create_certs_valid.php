@@ -26,12 +26,12 @@ use external_value;
 use mod_competvet\local\api\certifications;
 
 /**
- * Create certif declaration item.
+ * Create certif validation item.
  *
  * @package   local_competvet
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class create_certs_decl extends external_api {
+class create_certs_valid extends external_api {
     /**
      * Returns description of method parameters
      *
@@ -40,7 +40,7 @@ class create_certs_decl extends external_api {
     public static function execute_returns() {
         return new external_single_structure(
             [
-                'id' => new external_value(PARAM_INT, 'Newly created certification declaration  ID'),
+                'id' => new external_value(PARAM_INT, 'Newly created certification validation ID'),
             ]
         );
     }
@@ -56,24 +56,27 @@ class create_certs_decl extends external_api {
      * @param int $status
      * @return array
      */
-    public static function execute(int $criterionid, int $studentid, int $planningid, int $level, string $comment,
-        int $status): array {
+    public static function execute(int $declid, int $supervisorid, string $comment, int $status): array {
         [
-            'criterionid' => $criterionid,
-            'level' => $level,
+            'declid' => $declid,
+            'supervisorid' => $supervisorid,
             'comment' => $comment,
             'status' => $status
         ] = self::validate_parameters(
             self::execute_parameters(),
-            ['criterionid' => $criterionid, 'studentid' => $studentid, 'planningid' => $planningid, 'level' => $level,
-                'comment' => $comment, 'status' => $status]
+            [
+                'declid' => $declid,
+                'supervisorid' => $supervisorid,
+                'comment' => $comment,
+                'status' => $status,
+            ]
         );
 
         // Logic to create the cert item using the certifications API.
-        $declid = certifications::add_cert_declaration($criterionid, $studentid, $planningid, $level, $comment, intval(FORMAT_PLAIN),
-            $status);
+        $validationid =
+            certifications::validate_cert_declaration($declid, $supervisorid, $status, $comment, intval(FORMAT_PLAIN));
 
-        return ['id' => $declid];
+        return ['id' => $validationid];
     }
 
     /**
@@ -84,12 +87,10 @@ class create_certs_decl extends external_api {
     public static function execute_parameters() {
         return new external_function_parameters(
             [
-                'criterionid' => new external_value(PARAM_INT, 'Criterion ID'),
-                'studentid' => new external_value(PARAM_INT, 'Student ID'),
-                'planningid' => new external_value(PARAM_INT, 'Planning ID'),
-                'level' => new external_value(PARAM_INT, 'Level'),
+                'declid' => new external_value(PARAM_INT, 'Criterion ID'),
+                'supervisorid' => new external_value(PARAM_INT, 'Observer/Supervisor ID'),
                 'comment' => new external_value(PARAM_TEXT, 'Comment'),
-                'status' => new external_value(PARAM_TEXT, 'Status'),
+                'status' => new external_value(PARAM_INT, 'Status'),
             ]
         );
     }
