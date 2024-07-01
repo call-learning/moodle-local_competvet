@@ -205,8 +205,9 @@ class api_helpers {
                 'seendone' => new external_value(PARAM_BOOL, 'Seen and done (student)'),
                 'notseen' => new external_value(PARAM_BOOL, 'Not seen (student)'),
                 'observernotseen' => new external_value(PARAM_BOOL, 'Not seen (observer)'),
-                'confirmed' => new external_value(PARAM_BOOL, 'Confirmed by observer'),
+                'confirmed' => new external_value(PARAM_BOOL, 'Confirmed by an observer'),
                 'levelnotreached' => new external_value(PARAM_BOOL, 'Level Not reached (observer)'),
+                'hasvalidations' => new external_value(PARAM_BOOL, 'Has validations'),
                 'level' => new external_value(PARAM_INT, 'Declaration level', VALUE_OPTIONAL),
                 'comment' => new external_value(PARAM_TEXT, 'Declaration comment', VALUE_OPTIONAL),
                 'feedback' => new external_single_structure([
@@ -216,6 +217,9 @@ class api_helpers {
                     'comment' => new external_value(PARAM_TEXT, 'The comment'),
                     'timestamp' => new external_value(PARAM_INT, 'Creation timestamp'),
                 ], 'The feedback', VALUE_OPTIONAL),
+                'supervisors' => new external_multiple_structure(
+                    new external_single_structure(self::get_user_info_structure(), 'User information'
+                )),
                 'validations' => new external_multiple_structure(
                     new external_single_structure([
                         'id' => new external_value(PARAM_INT, 'The validation id'),

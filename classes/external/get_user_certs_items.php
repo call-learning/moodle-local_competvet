@@ -27,6 +27,7 @@ use external_single_structure;
 use external_value;
 use local_competvet\api_helpers;
 use mod_competvet\local\api\certifications;
+use mod_competvet\local\api\user_role;
 use mod_competvet\local\persistent\planning;
 
 /**
@@ -72,19 +73,29 @@ class get_user_certs_items extends external_api {
             self::validate_parameters(self::execute_parameters(), ['planningid' => $planningid, 'userid' => $userid]);
         self::validate_context(context_system::instance());
         $warnings = [];
-        if (!planning::record_exists($planningid)) {
+        $planning = planning::get_record(['id' => $planningid]);
+        if (empty($planning)) {
             throw new \moodle_exception('invalidplanningid', 'local_competvet');
         }
         if (!core_user::get_user($userid)) {
             throw new \moodle_exception('invaliduserid', 'local_competvet');
         }
+        // Depending on user role we will show or hide some certifications and labels will be different.
+        $role = user_role::get_top_for_all_situations($userid);
+        $role = ($role == 'student' || $role == 'unknown') ? 'student' : 'observer';
         $certifications = certifications::get_certifications_by_status($planningid, $userid);
         $returnval = [];
 
         foreach ($certifications as $status => $certs) {
+            if (!isset(certifications::GLOBAL_CERT_STATUS_TYPES_PER_ROLE[$role])) {
+                continue;
+            }
+            if (!isset(certifications::GLOBAL_CERT_STATUS_TYPES_PER_ROLE[$role][$status])) {
+                continue;
+            }
             $returnval[] = [
                 'category' => $status,
-                'categorytext' => get_string(certifications::GLOBAL_CERT_STATUS_TYPES[$status], 'mod_competvet'),
+                'categorytext' => get_string(certifications::GLOBAL_CERT_STATUS_TYPES_PER_ROLE[$role][$status], 'mod_competvet'),
                 'items' => $certs,
             ];
         }

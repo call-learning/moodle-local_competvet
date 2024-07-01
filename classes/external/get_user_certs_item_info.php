@@ -28,6 +28,7 @@ use external_value;
 use local_competvet\api_helpers;
 use mod_competvet\local\api\certifications;
 use mod_competvet\local\persistent\planning;
+use mod_competvet\utils;
 
 /**
  * Get certif items for a declaration id.
@@ -62,6 +63,13 @@ class get_user_certs_item_info extends external_api {
         self::validate_context(context_system::instance());
         // TODO validate we can access this declaration.
         $certification = certifications::get_certification($id, true);
+        $certification['supervisors'] = [];
+        if ($certification['declid']) {
+            $supervisors = certifications::get_declaration_supervisors($certification['declid']);
+            foreach ($supervisors as $supid) {
+                $certification['supervisors'][] = utils::get_user_info($supid);
+            }
+        }
         return $certification;
     }
 
@@ -77,5 +85,4 @@ class get_user_certs_item_info extends external_api {
             ]
         );
     }
-
 }
