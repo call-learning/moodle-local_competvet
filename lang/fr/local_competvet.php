@@ -15,21 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details.
+ * Your localised string for the plugin
  *
  * @package   local_competvet
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->version = 2024060610;      // The current module version (Date: YYYYMMDDXX).
-$plugin->requires = 2020061501;      // Requires this Moodle version (3.9.1).
-$plugin->maturity = MATURITY_RC;
-$plugin->release = '0.5.0'; // New API.
-$plugin->component = 'local_competvet';// Full name of the plugin (used for diagnostics).
-$plugin->cron = 0;
-$plugin->dependencies = [
-    'mod_competvet' => ANY_VERSION,
-];

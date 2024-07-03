@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * You may localized strings in your plugin
+ * Your localised string for the plugin
  *
  * @package   local_competvet
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>

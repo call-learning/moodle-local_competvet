@@ -190,10 +190,10 @@ $functions = [
         'loginrequired' => true,
         'services' => [utils::COMPETVET_MOBILE_SERVICE],
     ],
-    'local_competvet_get_user_certs_item_info' => [
-        'classname' => \local_competvet\external\get_user_certs_item_info::class,
+    'local_competvet_get_certs_item_info' => [
+        'classname' => \local_competvet\external\get_certs_item_info::class,
         'methodname' => 'execute',
-        'description' => 'Get certification item information for a given id',
+        'description' => 'Get certification item information for a given declaration id',
         'ajax' => true,
         'type' => 'read',
         'loginrequired' => true,

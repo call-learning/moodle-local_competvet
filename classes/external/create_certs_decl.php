@@ -24,6 +24,7 @@ use external_function_parameters;
 use external_single_structure;
 use external_value;
 use mod_competvet\local\api\certifications;
+use mod_competvet\local\api\todos;
 
 /**
  * Create certif declaration item.
@@ -79,7 +80,6 @@ class create_certs_decl extends external_api {
                 certifications::declaration_supervisors_update($declid, array_map(fn($supervisor) => $supervisor['id'], $supervisors));
             }
         }
-
         return ['id' => $declid];
     }
 

@@ -197,6 +197,8 @@ class api_helpers {
         return
             [
                 'declid' => new external_value(PARAM_INT, 'Declaration ID'),
+                'planningid' => new external_value(PARAM_INT, 'The certification planning id'),
+                'studentid' => new external_value(PARAM_INT, 'The student id'),
                 'label' => new external_value(PARAM_TEXT, 'Item name'),
                 'grade' => new external_value(PARAM_INT, 'Grade'),
                 'criterionid' => new external_value(PARAM_INT, 'Criterion ID'),

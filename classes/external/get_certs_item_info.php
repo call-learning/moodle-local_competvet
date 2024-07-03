@@ -37,7 +37,7 @@ use mod_competvet\utils;
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class get_user_certs_item_info extends external_api {
+class get_certs_item_info extends external_api {
     /**
      * Returns description of method parameters
      *
