@@ -75,11 +75,11 @@ switch ($options['command']) {
         echo "Deinit test.";
         break;
     case 'run':
-        $testdriver->init();
+        $testsscenariorunner = new \mod_competvet\tests\test_scenario();
         $content = $options['scenario'] ?? 'scenario_1';
         $content = file_get_contents($CFG->dirroot . '/local/competvet/tests/app_scenario/' . $content . '.feature');
-        $parsedfeature = $testdriver->parse_feature($content);
-        $result = $testdriver->execute($parsedfeature);
+        $parsedfeature = $testsscenariorunner->parse_feature($content);
+        $result = $testsscenariorunner->execute($parsedfeature);
         if (!$result) {
             foreach ($parsedfeature->get_scenarios() as $scenario) {
                 foreach ($scenario->steps as $step) {

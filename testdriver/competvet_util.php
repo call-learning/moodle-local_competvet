@@ -206,8 +206,12 @@ class competvet_util extends testing_util {
      * Reset the database for good.
      */
     public function deinit() {
+        set_config('cron_enabled', 0);
         self::reset_database();
         $framework = self::get_framework();
+        if (empty($framework) || empty(trim(self::get_dataroot(), '/'))) {
+            return;
+        }
         $path = self::get_dataroot() . '/' . $framework . '/';
         if (!empty(trim($path, '/')) && file_exists($path)) {
             $handle = opendir($path);
@@ -228,148 +232,5 @@ class competvet_util extends testing_util {
         cache_factory::reset();
         // Re-enable cron.
         set_config('cron_enabled', 1);
-    }
-
-    /**
-     * Initi all composer, behat libraries and load the valid steps.
-     */
-    public function init() {
-        $this->include_composer_libraries();
-        $this->include_behat_libraries();
-        $this->load_generator();
-    }
-
-    /**
-     * Include composer autload.
-     */
-    public function include_composer_libraries() {
-        global $CFG;
-        if (!file_exists($CFG->dirroot . '/vendor/autoload.php')) {
-            throw new \moodle_exception('Missing composer.');
-        }
-        require_once($CFG->dirroot . '/vendor/autoload.php');
-        return true;
-    }
-
-    /**
-     * Include all necessary behat libraries.
-     */
-    public function include_behat_libraries() {
-        global $CFG;
-        if (!class_exists('Behat\Gherkin\Lexer')) {
-            throw new \moodle_exception('Missing behat classes.');
-        }
-        // Behat utilities.
-        require_once($CFG->libdir . '/behat/classes/util.php');
-        require_once($CFG->libdir . '/behat/classes/behat_command.php');
-        require_once($CFG->libdir . '/behat/behat_base.php');
-        require_once("{$CFG->libdir}/tests/behat/behat_data_generators.php");
-        return true;
-    }
-
-    /**
-     * Load all generators.
-     */
-    private function load_generator() {
-        $this->behatgenerator = new behat_data_generators();
-        $this->validsteps = $this->scan_generator($this->behatgenerator);
-    }
-
-    /**
-     * Scan a generator to get all valid steps.
-     *
-     * @param behat_data_generators $generator the generator to scan.
-     * @return array the valid steps.
-     */
-    private function scan_generator(behat_data_generators $generator): array {
-        $result = [];
-        $class = new ReflectionClass($generator);
-        $methods = $class->getMethods(ReflectionMethod::IS_PUBLIC);
-        foreach ($methods as $method) {
-            $given = $this->get_method_given($method);
-            if ($given) {
-                $result[$given] = $method->getName();
-            }
-        }
-        return $result;
-    }
-
-    /**
-     * Get the given expression tag of a method.
-     *
-     * @param ReflectionMethod $method the method to get the given expression tag.
-     * @return string|null the given expression tag or null if not found.
-     */
-    private function get_method_given(ReflectionMethod $method): ?string {
-        $doccomment = $method->getDocComment();
-        $doccomment = str_replace("\r\n", "\n", $doccomment);
-        $doccomment = str_replace("\r", "\n", $doccomment);
-        $doccomment = explode("\n", $doccomment);
-        foreach ($doccomment as $line) {
-            $matches = [];
-            if (preg_match('/.*\@(given|when|then)\s+(.+)$/i', $line, $matches)) {
-                return $matches[2];
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Parse a feature file.
-     *
-     * @param string $content the feature file content.
-     * @return parsedfeature
-     */
-    public function parse_feature(string $content): parsedfeature {
-        $result = new parsedfeature();
-
-        $parser = $this->get_parser();
-        $feature = $parser->parse($content);
-
-        // No need for background in testing scenarios because scenarios can only contain generators.
-        // In the future the background can be used to define clean up steps (when clean up methods
-        // are implemented).
-        if ($feature->hasScenarios()) {
-            $scenarios = $feature->getScenarios();
-            foreach ($scenarios as $scenario) {
-                if ($scenario->getNodeType() == 'Outline') {
-                    $result->add_scenario($scenario->getNodeType(), $scenario->getTitle());
-                    $result->add_error(get_string('testscenario_outline', 'tool_generator'));
-                    continue;
-                }
-                $result->add_scenario($scenario->getNodeType(), $scenario->getTitle());
-                $steps = $scenario->getSteps();
-                foreach ($steps as $step) {
-                    $result->add_step(new steprunner($this->behatgenerator, $this->validsteps, $step));
-                }
-            }
-        }
-        return $result;
-    }
-
-    /**
-     * Get the parser.
-     *
-     * @return Parser
-     */
-    private function get_parser(): Parser {
-        $keywords = new ArrayKeywords([
-            'en' => [
-                'feature' => 'Feature',
-                // If in the future we have clean up steps, background will be renamed to "Clean up".
-                'background' => 'Background',
-                'scenario' => 'Scenario',
-                'scenario_outline' => 'Scenario Outline|Scenario Template',
-                'examples' => 'Examples|Scenarios',
-                'given' => 'Given',
-                'when' => 'When',
-                'then' => 'Then',
-                'and' => 'And',
-                'but' => 'But',
-            ],
-        ]);
-        $lexer = new Lexer($keywords);
-        $parser = new Parser($lexer);
-        return $parser;
     }
 }
