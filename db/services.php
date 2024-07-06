@@ -289,6 +289,15 @@ $functions = [
         'loginrequired' => true,
         'services' => [utils::COMPETVET_MOBILE_SERVICE],
     ],
+    'local_competvet_search_items' => [
+        'classname' => \local_competvet\external\search_items::class,
+        'methodname' => 'execute',
+        'description' => 'Search for items in the application',
+        'ajax' => true,
+        'type' => 'read',
+        'loginrequired' => true,
+        'services' => [utils::COMPETVET_MOBILE_SERVICE],
+    ],
 ];
 
 $services = utils::get_mobile_services_definition($functions);

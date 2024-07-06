@@ -302,4 +302,18 @@ class api_helpers {
             'displayvalue' => new external_value(PARAM_TEXT, 'The field display value', VALUE_OPTIONAL),
         ]);
     }
+
+    /**
+     * Get search results structure
+     *
+     * @return array
+     */
+    public static function search_results() {
+        return [
+            'description' => new external_value(PARAM_TEXT, 'The item name'),
+            'identifier' => new external_value(PARAM_TEXT, 'The item name'),
+            'type' => new external_value(PARAM_TEXT, 'The item type'),
+            'itemid' => new external_value(PARAM_INT, 'The item URL'),
+        ];
+    }
 }

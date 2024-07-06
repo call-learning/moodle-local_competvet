@@ -22,47 +22,48 @@ use context_system;
 use core_user;
 use external_api;
 use external_function_parameters;
+use external_multiple_structure;
 use external_single_structure;
 use external_value;
 use external_warnings;
+use local_competvet\api_helpers;
 use mod_competvet\local\api\cases;
 use mod_competvet\local\api\certifications;
+use mod_competvet\local\api\search;
 
 /**
- * Delete certification declaration and related items.
+ * Search for situations and related items
  *
  * @package   local_competvet
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class delete_certs_item extends external_api {
+class search_items extends external_api {
     /**
      * Returns description of method parameters
      *
-     * @return external_single_structure
+     * @return external_multiple_structure
      */
     public static function execute_returns() {
-        return new external_single_structure(
-            ['warnings' => new external_warnings()]
+        return new external_multiple_structure(
+            new external_single_structure(
+                api_helpers::search_results(),
+            ),
         );
     }
 
     /**
      * Delete the certification declaration and related items.
      *
-     * @param int $declid
+     * @param string $query
      * @return array
      */
-    public static function execute(int $declid): array {
-        ['declid' => $declid] =
-            self::validate_parameters(self::execute_parameters(), ['declid' => $declid]);
+    public static function execute(string $query): array {
+        ['query' => $query] =
+            self::validate_parameters(self::execute_parameters(), ['query' => $query]);
         self::validate_context(context_system::instance());
-        if (!\mod_competvet\local\persistent\cert_decl::record_exists($declid)) {
-            throw new \moodle_exception('invalidplanningid', 'local_competvet');
-        }
-        $cases = certifications::delete_cert_declaration($declid);
-        $warnings = [];
-        return ['warnings' => $warnings];
+        $results = search::search_query($query);
+        return $results ?? [];
     }
 
     /**
@@ -73,7 +74,7 @@ class delete_certs_item extends external_api {
     public static function execute_parameters() {
         return new external_function_parameters(
             [
-                'declid' => new external_value(PARAM_INT, 'id of the declaration'),
+                'query' => new external_value(PARAM_ALPHANUMEXT, 'The item to query for'),
             ]
         );
     }
