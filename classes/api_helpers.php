@@ -107,8 +107,8 @@ class api_helpers {
      */
     public static function get_subcriteria_info_structure(): array {
         return [
-            'id' => new external_value(PARAM_INT, 'Observation subcriteria ID', VALUE_OPTIONAL),
-            'comment' => new external_value(PARAM_RAW, 'Criterion comment', VALUE_OPTIONAL),
+            'id' => new external_value(PARAM_INT, 'Observation subcriteria ID'),
+            'comment' => new external_value(PARAM_RAW, 'Criterion comment'),
             'isactive' => new external_value(PARAM_BOOL, 'Criterion active', VALUE_OPTIONAL, false),
             'criterioninfo' => new external_single_structure(
                 self::get_criteria_info_structure(),
@@ -126,7 +126,7 @@ class api_helpers {
     public static function get_criteria_info_structure(): array {
         return [
             'id' => new external_value(PARAM_INT, 'Criterion ID'),
-            'label' => new external_value(PARAM_TEXT, 'Criterion label', VALUE_OPTIONAL),
+            'label' => new external_value(PARAM_TEXT, 'Criterion label'),
             'idnumber' => new external_value(PARAM_TEXT, 'Criterion idnumber', VALUE_OPTIONAL),
             'sort' => new external_value(PARAM_INT, 'Criterion sort', VALUE_OPTIONAL),
             'parentid' => new external_value(PARAM_INT, 'Criterion parentid', VALUE_OPTIONAL),
