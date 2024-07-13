@@ -59,7 +59,7 @@ class create_certs_decl extends external_api {
      * @return array
      */
     public static function execute(int $criterionid, int $studentid, int $planningid, int $level, string $comment,
-        int $status, ?array $supervisors): array {
+        int $status, ?array $supervisors = null): array {
         [
             'criterionid' => $criterionid,
             'level' => $level,
