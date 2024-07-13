@@ -22,6 +22,7 @@ use external_api;
 use external_description;
 use external_function_parameters;
 use external_multiple_structure;
+use external_single_structure;
 
 /**
  * External API with ordered parameters
@@ -40,26 +41,27 @@ class ordered_params_external_api extends external_api {
      */
     public static function validate_parameters(external_description $description, $params) {
         // Check if param has a key missing and add null to it.
-        if ($description::class === external_function_parameters::class) {
+        if ($description instanceof external_function_parameters) {
             $orderedparams = [];
             foreach ($description->keys as $key => $param) {
                 if (array_key_exists($key, $params)) {
                     // If the key exists in $params, use its value.
                     $orderedparams[$key] = $params[$key];
                 } else {
-                    if ($param::class === external_multiple_structure::class) {
+                    if ($param instanceof external_multiple_structure) {
                         // If the key does not exist in $params and the param is single_value, use null.
                         $orderedparams[$key] = [];
                     }
-                    if ($param::class === \external_single_structure::class) {
-                        // If the key does not exist in $params and the param is single_value, use null.
-                        $orderedparams[$key] = null;
+                    if ($param instanceof external_single_structure) {
+                        // If the key does not exist in $params and the param is single_value, use null but still should
+                        // seen as an array.
+                        $orderedparams[$key] = (array) null;
                     }
                 }
             }
             $params = $orderedparams;
         }
-        if ($description::class === \external_single_structure::class && $description->default == null && $params == null) {
+        if ($description instanceof external_single_structure && $description->default == null && $params == null) {
             return null;
         }
         $params = parent::validate_parameters($description, $params);

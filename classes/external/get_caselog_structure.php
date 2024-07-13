@@ -21,7 +21,7 @@ require_once($CFG->libdir . '/externallib.php');
 use context_system;
 use external_api;
 use external_function_parameters;
-use external_single_structure;
+use external_multiple_structure;
 use local_competvet\api_helpers;
 use mod_competvet\local\api\cases;
 
@@ -40,7 +40,7 @@ class get_caselog_structure extends external_api {
      */
     public static function execute_returns() {
         return
-            new \external_multiple_structure(
+            new external_multiple_structure(
                     api_helpers::get_caselog_category_info_structure()
             );
     }

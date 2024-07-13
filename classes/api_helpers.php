@@ -68,7 +68,7 @@ class api_helpers {
     public static function get_context_structure(): array {
         return [
             'id' => new external_value(PARAM_INT, 'Comment ID', VALUE_OPTIONAL),
-            'comment' => new external_value(PARAM_RAW, 'Comment text'),
+            'comment' => new external_value(PARAM_RAW, 'Comment text', VALUE_OPTIONAL),
             'userinfo' => new external_single_structure(self::get_user_info_structure(), 'User information', VALUE_OPTIONAL),
             'timecreated' => new external_value(PARAM_INT, 'Comment creation time', VALUE_OPTIONAL),
             'timemodified' => new external_value(PARAM_INT, 'Comment last modification time', VALUE_OPTIONAL),
@@ -108,7 +108,7 @@ class api_helpers {
     public static function get_subcriteria_info_structure(): array {
         return [
             'id' => new external_value(PARAM_INT, 'Observation subcriteria ID'),
-            'comment' => new external_value(PARAM_RAW, 'Criterion comment'),
+            'comment' => new external_value(PARAM_RAW, 'Criterion comment', VALUE_OPTIONAL),
             'isactive' => new external_value(PARAM_BOOL, 'Criterion active', VALUE_OPTIONAL, false),
             'criterioninfo' => new external_single_structure(
                 self::get_criteria_info_structure(),

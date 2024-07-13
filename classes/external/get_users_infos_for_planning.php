@@ -81,7 +81,7 @@ class get_users_infos_for_planning extends external_api {
      * @param int $planningid
      * @return array
      */
-    public static function execute(int $planningid = null): array {
+    public static function execute(int $planningid): array {
         ['planningid' => $planningid] =
             self::validate_parameters(self::execute_parameters(), ['planningid' => $planningid]);
         self::validate_context(context_system::instance());
