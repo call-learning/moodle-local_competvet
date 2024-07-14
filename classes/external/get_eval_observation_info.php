@@ -47,12 +47,16 @@ class get_eval_observation_info extends external_api {
                 'category' => new external_value(PARAM_INT, 'Observation category (AUTOEVAL or EVAL'),
                 'context' =>
                     new external_single_structure(
-                        api_helpers::get_context_structure()
+                        api_helpers::get_context_structure(),
+                        VALUE_OPTIONAL,
+                        null
                     ),
                 'comments' => new external_multiple_structure(
                     new external_single_structure(
                         api_helpers::get_comment_structure()
-                    )
+                    ),
+                    VALUE_OPTIONAL,
+                    []
                 ),
                 'criteria' => new external_multiple_structure(
                     new external_single_structure(
