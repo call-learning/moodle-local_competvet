@@ -23,7 +23,7 @@
  */
 require_once('../../../config.php');
 
-global $CFG;
+global $CFG, $PAGE;
 
 require_once($CFG->dirroot . '/local/competvet/testdriver/competvet_util.php');
 $testdriver = new competvet_util();
@@ -31,11 +31,16 @@ $testdriver = new competvet_util();
 $command = optional_param('command', '', PARAM_ALPHA);
 ini_set('max_execution_time', 0);
 ini_set('memory_limit', -1);
-if (!in_array($command, ['run'])) {
-    if (empty($CFG->compet_test_driver_mode) || !$CFG->debugdeveloper) {
-        throw new moodle_exception('error:compet_test_driver_mode', 'local_competvet');
-    }
+if (empty($CFG->compet_test_driver_mode)) {
+    throw new moodle_exception('error:compet_test_driver_mode', 'local_competvet');
 }
+if (!$CFG->debugdeveloper) {
+    throw new moodle_exception('error:compet_test_driver_debug', 'local_competvet');
+}
+if (!in_array($command, ['run', 'init', 'deinit'])) {
+    throw new moodle_exception('error:invalid_command', 'local_competvet');
+}
+$PAGE->set_context(context_system::instance());
 
 switch ($command) {
     case 'init':
