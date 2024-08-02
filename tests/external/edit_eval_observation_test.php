@@ -17,13 +17,11 @@ namespace local_competvet\external;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/webservice/tests/helpers.php');
 require_once($CFG->dirroot . '/mod/competvet/tests/test_data_definition.php');
 
 use core_user;
 use DateTime;
 use external_api;
-use externallib_advanced_testcase;
 use mod_competvet\local\api\plannings;
 use mod_competvet\local\persistent\observation;
 use mod_competvet\local\persistent\observation_comment;
@@ -37,7 +35,7 @@ use test_data_definition;
  * @copyright   2023 CALL Learning <contact@call-learning.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class edit_eval_observation_test extends externallib_advanced_testcase {
+class edit_eval_observation_test extends \advanced_testcase {
     use test_data_definition;
 
     /**
@@ -121,6 +119,7 @@ class edit_eval_observation_test extends externallib_advanced_testcase {
      * Test with existing observation.
      *
      * @covers \local_competvet\external\user_type::execute
+     * @runInSeparateProcess
      */
     public function test_observation_not_exist_test() {
         $this->setAdminUser();
@@ -151,6 +150,7 @@ class edit_eval_observation_test extends externallib_advanced_testcase {
      *
      * @covers       \local_competvet\external\edit_eval_observation
      * @dataProvider data_edit_observation_comment_for_user
+     * @runInSeparateProcess
      */
     public function test_edit_comment_eval_observation(
         int $category,

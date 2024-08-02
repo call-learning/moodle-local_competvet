@@ -197,7 +197,7 @@ class student_mobile_evaluations extends base {
             $studentid = required_param('studentid', PARAM_INT);
             $userobservations = observations::get_user_observations($planningid, $studentid);
             $competvet = competvet::get_from_context($context);
-            $planninginfo = plannings::get_planning_info_for_student($planningid, $studentid);
+            $planninginfo = plannings::get_planning_stats_for_student($planningid, $studentid);
             $usercertifications = certifications::get_certifications($planningid, $studentid);
             $usercases = cases::get_case_list($planningid, $studentid);
             $data = [

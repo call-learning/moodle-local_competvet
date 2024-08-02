@@ -55,7 +55,7 @@ class get_planning_infos_student extends external_api {
         ['planningid' => $planningid, 'userid' => $userid] =
             self::validate_parameters(self::execute_parameters(), ['planningid' => $planningid, 'userid' => $userid]);
         self::validate_context(context_system::instance());
-        $planninginfos = plannings::get_planning_info_for_student($planningid, $userid);
+        $planninginfos = plannings::get_planning_stats_for_student($planningid, $userid);
         return $planninginfos;
     }
 

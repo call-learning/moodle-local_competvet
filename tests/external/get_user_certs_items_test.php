@@ -24,11 +24,8 @@ use core_user;
 use DateTime;
 use external_api;
 use externallib_advanced_testcase;
-use local_competvet\external\edit_eval_observation;
 use local_competvet\external\get_user_certs_items;
 use mod_competvet\local\api\plannings;
-use mod_competvet\local\persistent\observation;
-use mod_competvet\local\persistent\observation_comment;
 use mod_competvet\local\persistent\planning;
 use mod_competvet\local\persistent\situation;
 use test_data_definition;
@@ -60,6 +57,7 @@ class get_user_certs_items_test extends externallib_advanced_testcase {
      * Test with user does not exists.
      *
      * @covers \local_competvet\external\user_type::execute
+     * @runInSeparateProcess
      */
     public function test_user_not_exist_test() {
         $this->setAdminUser();
@@ -73,6 +71,7 @@ class get_user_certs_items_test extends externallib_advanced_testcase {
      * Test with planning does not exists.
      *
      * @covers \local_competvet\external\user_type::execute
+     * @runInSeparateProcess
      */
     public function test_planning_not_exist_test() {
         $this->setAdminUser();
@@ -103,6 +102,7 @@ class get_user_certs_items_test extends externallib_advanced_testcase {
      * Test with existing observation
      *
      * @covers       \local_competvet\external\get_user_certs_items::execute
+     * @runInSeparateProcess
      */
     public function test_get_user_certif_items() {
         $this->setAdminUser();

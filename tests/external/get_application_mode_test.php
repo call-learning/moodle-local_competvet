@@ -14,15 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace local_competvet\external;
-defined('MOODLE_INTERNAL') || die();
-
-global $CFG;
-require_once($CFG->dirroot . '/webservice/tests/helpers.php');
-
 use context_module;
 use core_user;
 use external_api;
-use externallib_advanced_testcase;
 use mod_competvet\competvet;
 use mod_competvet\local\persistent\planning;
 
@@ -33,7 +27,7 @@ use mod_competvet\local\persistent\planning;
  * @copyright   2023 CALL Learning <contact@call-learning.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class get_application_mode_test extends externallib_advanced_testcase {
+class get_application_mode_test extends \advanced_testcase {
     /**
      * @var $users array
      */
@@ -145,6 +139,7 @@ class get_application_mode_test extends externallib_advanced_testcase {
      * Test with non-existing user.
      *
      * @covers \local_competvet\external\user_type::execute
+     * @runInSeparateProcess
      */
     public function test_user_type_not_exist_test() {
         $this->setAdminUser();
@@ -177,6 +172,7 @@ class get_application_mode_test extends externallib_advanced_testcase {
      * @param string $expected
      * @covers       \local_competvet\external\user_type::execute
      * @dataProvider enrolment_data_provider
+     * @runInSeparateProcess
      */
     public function test_type_with_enrolments_as_admin(array $definition, string $expected) {
         $this->setAdminUser();
@@ -231,6 +227,7 @@ class get_application_mode_test extends externallib_advanced_testcase {
      * @param string $expected
      * @covers       \local_competvet\external\user_type::execute
      * @dataProvider enrolment_data_provider
+     * @runInSeparateProcess
      */
     public function test_type_with_current_user(array $definition, string $expected) {
         $userid = $this->setup_course_and_user_from_data($definition, $expected);

@@ -14,13 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace local_competvet\external;
-defined('MOODLE_INTERNAL') || die();
-
-use advanced_testcase;
-
-global $CFG;
-
-require_once($CFG->libdir . '/externallib.php');
 
 /**
  * Auth tests
@@ -29,11 +22,12 @@ require_once($CFG->libdir . '/externallib.php');
  * @copyright   2023 CALL Learning <contact@call-learning.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class idplist_test extends advanced_testcase {
+class idplist_test extends \advanced_testcase {
     /**
      * Test an API function
      *
      * @covers \local_competvet\external\idplist
+     * @runInSeparateProcess
      */
     public function test_auth_without_idps() {
         $this->assertEmpty(\local_competvet\external\idplist::execute());
@@ -43,6 +37,7 @@ class idplist_test extends advanced_testcase {
      * Test an API function
      *
      * @covers \local_competvet\external\idplist
+     * @runInSeparateProcess
      */
     public function test_auth_with_idp() {
         $this->resetAfterTest();

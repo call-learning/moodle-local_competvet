@@ -16,12 +16,10 @@
 namespace local_competvet\external;
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/webservice/tests/helpers.php');
 require_once($CFG->dirroot . '/mod/competvet/tests/test_data_definition.php');
 
 use DateTime;
 use external_api;
-use externallib_advanced_testcase;
 use mod_competvet\tests\test_helpers;
 use test_data_definition;
 
@@ -32,7 +30,7 @@ use test_data_definition;
  * @copyright   2023 CALL Learning <contact@call-learning.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class get_situations_test extends externallib_advanced_testcase {
+class get_situations_test extends \advanced_testcase {
     use test_data_definition;
 
     /**
@@ -95,7 +93,7 @@ class get_situations_test extends externallib_advanced_testcase {
      * Test with non existing user.
      *
      * @covers \local_competvet\external\user_profile
-     *
+     * @runInSeparateProcess
      */
     public function test_user_not_logged_in() {
         $this->expectExceptionMessageMatches('/You are not logged in/');
@@ -122,6 +120,7 @@ class get_situations_test extends externallib_advanced_testcase {
      *
      * @covers       \local_competvet\external\user_profile
      * @dataProvider all_for_user_provider_with_planning
+     * @runInSeparateProcess
      */
     public function test_get_situations(string $username, bool $nofutureplanning, array $expected) {
         $this->setUser(\core_user::get_user_by_username($username));

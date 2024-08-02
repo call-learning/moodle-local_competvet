@@ -323,20 +323,21 @@ class api_helpers {
      * @return external_single_structure
      */
     public static function get_planning_info_stats_structure() {
-        new external_single_structure(
+        return new external_single_structure(
             [
                 'id' => new external_value(PARAM_INT, 'Student ID'),
                 'planningid' => new external_value(PARAM_INT, 'Planning ID'),
                 'situationid' => new external_value(PARAM_INT, 'Situation ID'),
-                'info' => new external_multiple_structure(
+                'stats' => new external_multiple_structure(
                     new external_single_structure([
-                            'type' => new external_value(
-                                PARAM_TEXT,
-                                'Type of evaluation (eval, autoeval, certif, list)'
-                            ),
-                            'nbdone' => new external_value(PARAM_INT, 'Nb of observation done'),
-                            'nbrequired' => new external_value(PARAM_INT, 'Nb of observation required'),
-                        ])
+                        'type' => new external_value(
+                            PARAM_TEXT,
+                            'Type of evaluation (eval, autoeval, certif, list)'
+                        ),
+                        'nbdone' => new external_value(PARAM_INT, 'Nb of observation done'),
+                        'nbrequired' => new external_value(PARAM_INT, 'Nb of observation required'),
+                        'pass' => new external_value(PARAM_BOOL, 'Pass or not', VALUE_OPTIONAL),
+                    ])
                 ),
             ]
         );

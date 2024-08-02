@@ -14,12 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace local_competvet\external;
-defined('MOODLE_INTERNAL') || die();
-global $CFG;
-require_once($CFG->dirroot . '/webservice/tests/helpers.php');
-
 use external_api;
-use externallib_advanced_testcase;
 
 /**
  * User info tests
@@ -28,7 +23,7 @@ use externallib_advanced_testcase;
  * @copyright   2023 CALL Learning <contact@call-learning.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class user_info_test extends externallib_advanced_testcase {
+class user_info_test extends \advanced_testcase {
     /**
      * @var $users array
      */
@@ -52,7 +47,7 @@ class user_info_test extends externallib_advanced_testcase {
      * Test with non existing user.
      *
      * @covers \local_competvet\external\user_info
-     *
+     * @runInSeparateProcess
      */
     public function test_user_profile_not_exist_test() {
         $this->setAdminUser();
@@ -67,22 +62,22 @@ class user_info_test extends externallib_advanced_testcase {
      * @return mixed
      */
     protected function get_user_profile(array $args) {
-        $validate = [user_info::class, 'validate_parameters'];
+        $validate = [\local_competvet\external\user_info::class, 'validate_parameters'];
         $params = call_user_func(
             $validate,
-            user_info::execute_parameters(),
+            \local_competvet\external\user_info::execute_parameters(),
             $args
         );
         $params = array_values($params);
-        $returnvalue = user_info::execute(...$params);
-        return external_api::clean_returnvalue(user_info::execute_returns(), $returnvalue);
+        $returnvalue = \local_competvet\external\user_info::execute(...$params);
+        return external_api::clean_returnvalue(\local_competvet\external\user_info::execute_returns(), $returnvalue);
     }
 
     /**
      * Test with existing user
      *
      * @covers \local_competvet\external\user_info
-     *
+     * @runInSeparateProcess
      */
     public function test_user_profile_existing_test() {
         $this->setAdminUser();
