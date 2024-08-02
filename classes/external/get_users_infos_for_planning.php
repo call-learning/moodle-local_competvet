@@ -50,18 +50,7 @@ class get_users_infos_for_planning extends external_api {
                             'userinfo' => new external_single_structure(
                                 api_helpers::get_user_info_structure()
                             ),
-                            'planninginfo' => new external_multiple_structure(
-                                new external_single_structure(
-                                    [
-                                        'type' => new external_value(
-                                            PARAM_TEXT,
-                                            'Type of evaluation (eval, autoeval, certif, list)'
-                                        ),
-                                        'nbdone' => new external_value(PARAM_INT, 'Nb of observation done'),
-                                        'nbrequired' => new external_value(PARAM_INT, 'Nb of observation required'),
-                                    ]
-                                )
-                            ),
+                            'planninginfo' => api_helpers::get_planning_info_stats_structure(),
                         ])
                     ),
                     'observers' => new external_multiple_structure(

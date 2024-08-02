@@ -24,6 +24,7 @@ use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
 use external_value;
+use local_competvet\api_helpers;
 use mod_competvet\local\api\plannings;
 
 /**
@@ -40,22 +41,7 @@ class get_planning_infos_student extends external_api {
      * @return external_single_structure
      */
     public static function execute_returns(): external_single_structure {
-        return
-            new external_single_structure(
-                [
-                    'id' => new external_value(PARAM_INT, 'Student ID'),
-                    'planningid' => new external_value(PARAM_INT, 'Planning ID'),
-                    'info' => new external_multiple_structure(
-                        new external_single_structure(
-                            [
-                                'type' => new external_value(PARAM_TEXT, 'Type of evaluation (eval, autoeval, certif, list)'),
-                                'nbdone' => new external_value(PARAM_INT, 'Nb of observation done'),
-                                'nbrequired' => new external_value(PARAM_INT, 'Nb of observation required'),
-                            ]
-                        )
-                    ),
-                ]
-            );
+        return api_helpers::get_planning_info_stats_structure();
     }
 
     /**
@@ -82,8 +68,10 @@ class get_planning_infos_student extends external_api {
         return new external_function_parameters(
             [
                 'planningid' => new external_value(PARAM_INT, 'id of the planning'),
-                'userid' => new external_value(PARAM_INT,
-                    'id of the user we want stats for, or all users for this planning if not.'),
+                'userid' => new external_value(
+                    PARAM_INT,
+                    'id of the user we want stats for, or all users for this planning if not.'
+                ),
             ]
         );
     }

@@ -220,8 +220,8 @@ class api_helpers {
                     'timestamp' => new external_value(PARAM_INT, 'Creation timestamp'),
                 ], 'The feedback', VALUE_OPTIONAL),
                 'supervisors' => new external_multiple_structure(
-                    new external_single_structure(self::get_user_info_structure(), 'User information'
-                )),
+                    new external_single_structure(self::get_user_info_structure(), 'User information')
+                ),
                 'validations' => new external_multiple_structure(
                     new external_single_structure([
                         'id' => new external_value(PARAM_INT, 'The validation id'),
@@ -267,6 +267,24 @@ class api_helpers {
         ];
     }
 
+    /**
+     * Get caselog field structrure
+     *
+     * @return external_single_structure
+     */
+    public static function get_case_field_info_structure() {
+        return new external_single_structure([
+            'id' => new external_value(PARAM_INT, 'The field id'),
+            'idnumber' => new external_value(PARAM_TEXT, 'The field shortname'),
+            'name' => new external_value(PARAM_TEXT, 'The field name'),
+            'type' => new external_value(PARAM_TEXT, 'The field type'),
+            'configdata' => new external_value(PARAM_RAW, 'The field configdata'),
+            'description' => new external_value(PARAM_TEXT, 'The field description'),
+            'value' => new external_value(PARAM_TEXT, 'The field value', VALUE_OPTIONAL),
+            'displayvalue' => new external_value(PARAM_TEXT, 'The field display value', VALUE_OPTIONAL),
+        ]);
+    }
+
     public static function get_caselog_category_info_structure() {
         return
             new external_single_structure([
@@ -286,24 +304,6 @@ class api_helpers {
     }
 
     /**
-     * Get caselog field structrure
-     *
-     * @return external_single_structure
-     */
-    public static function get_case_field_info_structure() {
-        return new external_single_structure([
-            'id' => new external_value(PARAM_INT, 'The field id'),
-            'idnumber' => new external_value(PARAM_TEXT, 'The field shortname'),
-            'name' => new external_value(PARAM_TEXT, 'The field name'),
-            'type' => new external_value(PARAM_TEXT, 'The field type'),
-            'configdata' => new external_value(PARAM_RAW, 'The field configdata'),
-            'description' => new external_value(PARAM_TEXT, 'The field description'),
-            'value' => new external_value(PARAM_TEXT, 'The field value', VALUE_OPTIONAL),
-            'displayvalue' => new external_value(PARAM_TEXT, 'The field display value', VALUE_OPTIONAL),
-        ]);
-    }
-
-    /**
      * Get search results structure
      *
      * @return array
@@ -315,5 +315,30 @@ class api_helpers {
             'type' => new external_value(PARAM_TEXT, 'The item type'),
             'itemid' => new external_value(PARAM_INT, 'The item URL'),
         ];
+    }
+
+    /**
+     * Get planning info stats structure
+     *
+     * @return external_single_structure
+     */
+    public static function get_planning_info_stats_structure() {
+        new external_single_structure(
+            [
+                'id' => new external_value(PARAM_INT, 'Student ID'),
+                'planningid' => new external_value(PARAM_INT, 'Planning ID'),
+                'situationid' => new external_value(PARAM_INT, 'Situation ID'),
+                'info' => new external_multiple_structure(
+                    new external_single_structure([
+                            'type' => new external_value(
+                                PARAM_TEXT,
+                                'Type of evaluation (eval, autoeval, certif, list)'
+                            ),
+                            'nbdone' => new external_value(PARAM_INT, 'Nb of observation done'),
+                            'nbrequired' => new external_value(PARAM_INT, 'Nb of observation required'),
+                        ])
+                ),
+            ]
+        );
     }
 }
