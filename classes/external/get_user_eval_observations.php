@@ -51,6 +51,8 @@ class get_user_eval_observations extends external_api {
                     'time' => new external_value(PARAM_INT, 'Time of the evaluation'),
                     'category' => new external_value(PARAM_INT, 'Category of the evaluation (autoeval = 1, eval = 2)'),
                     'categorytext' => new external_value(PARAM_TEXT, 'Category textual information'),
+                    'canedit' => new external_value(PARAM_BOOL, 'Can edit'),
+                    'candelete' => new external_value(PARAM_BOOL, 'Can delete'),
                 ]
             )
         );
