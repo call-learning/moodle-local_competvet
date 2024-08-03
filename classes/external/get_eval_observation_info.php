@@ -65,6 +65,8 @@ class get_eval_observation_info extends external_api {
                 ),
                 'canedit' => new external_value(PARAM_BOOL, 'Can edit'),
                 'candelete' => new external_value(PARAM_BOOL, 'Can delete'),
+                'situationid' => new external_value(PARAM_INT, 'Situation ID'),
+                'planningid' => new external_value(PARAM_INT, 'Planning ID'),
             ]
         );
     }
