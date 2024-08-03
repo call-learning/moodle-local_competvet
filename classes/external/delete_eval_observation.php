@@ -18,14 +18,12 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->libdir . '/externallib.php');
 
-use context_system;
 use external_api;
+use external_description;
 use external_function_parameters;
-use external_multiple_structure;
 use external_single_structure;
 use external_value;
-use local_competvet\api_helpers;
-use mod_competvet\local\api\observations;
+use mod_competvet\external\delete_observation;
 
 /**
  * Delete a given eval observation.
@@ -36,12 +34,12 @@ use mod_competvet\local\api\observations;
  */
 class delete_eval_observation extends external_api {
     /**
-     * Returns description of method parameters
+     * Returns description of method return value
      *
-     * @return external_single_structure
+     * @return external_description
      */
-    public static function execute_returns(): external_single_structure {
-        return new external_single_structure([]);
+    public static function execute_returns(): ?external_description {
+        return null;
     }
 
     /**
@@ -57,10 +55,7 @@ class delete_eval_observation extends external_api {
             self::validate_parameters(self::execute_parameters(), [
                 'id' => $observationid,
             ]);
-        self::validate_context(context_system::instance());
-        // TODO validate role.
-        observations::delete_observation($observationid);
-        return [];
+        return delete_observation::execute($observationid);
     }
 
     /**
