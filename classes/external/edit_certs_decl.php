@@ -56,7 +56,7 @@ class edit_certs_decl extends external_api {
      */
     public static function execute(int $id, int $level, string $comment, int $status, ?array $supervisors): array {
         [
-            'criterionid' => $criterionid,
+            'id' => $id,
             'level' => $level,
             'comment' => $comment,
             'status' => $status,
