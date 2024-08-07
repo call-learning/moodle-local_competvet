@@ -46,7 +46,7 @@ class cert_decl_student extends \mod_competvet\form\cert_decl_student {
                     mobileview_helper::call_api(
                         \local_competvet\external\edit_certs_item::class,
                         ['planningid' => $data->declid, 'level' => $data->level, 'comment' => $data->comment,
-                            'status' => $data->status]
+                            'status' => $data->status, ]
                     );
 
             } else {
@@ -54,7 +54,7 @@ class cert_decl_student extends \mod_competvet\form\cert_decl_student {
                     mobileview_helper::call_api(
                         \local_competvet\external\create_certs_decl::class,
                         ['planningid' => $data->planningid, 'criterionid' => $data->criterionid, 'studentid' => $data->studentid,
-                            'level' => $data->level, 'comment' => $data->comment, 'status' => $data->status]
+                            'level' => $data->level, 'comment' => $data->comment, 'status' => $data->status, ]
                     );
                 $data->declid = $results['id'];
             }

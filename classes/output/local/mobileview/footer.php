@@ -56,7 +56,7 @@ class footer implements \renderable, \templatable {
                 'label' => get_string('mobileview:tab:todo', 'local_competvet'),
                 'baseurl' => new \moodle_url('/local/competvet/mobileview/todo/index.php'),
                 'name' => 'todo',
-            ]
+            ],
         ];
         foreach ($definition as &$tab) {
             if ($tab['name'] == $this->selectedtab) {

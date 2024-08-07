@@ -86,7 +86,7 @@ class create_caselog extends external_api {
 
         $fieldassociative = [];
         foreach($fields as $field) {
-            $casefield = case_field::get_record(['idnumber'=>$field['idnumber']]);
+            $casefield = case_field::get_record(['idnumber' => $field['idnumber']]);
             if (!$casefield) {
                 continue;
             }

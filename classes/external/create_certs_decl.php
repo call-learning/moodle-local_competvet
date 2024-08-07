@@ -69,7 +69,7 @@ class create_certs_decl extends external_api {
         ] = self::validate_parameters(
             self::execute_parameters(),
             ['criterionid' => $criterionid, 'studentid' => $studentid, 'planningid' => $planningid, 'level' => $level,
-                'comment' => $comment, 'status' => $status, 'supervisors' => $supervisors]
+                'comment' => $comment, 'status' => $status, 'supervisors' => $supervisors, ]
         );
 
         // Logic to create the cert item using the certifications API.

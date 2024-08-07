@@ -44,7 +44,7 @@ class edit_eval_observation extends ordered_params_external_api {
     public static function execute_returns(): external_single_structure {
         return new external_single_structure(
             [
-                'warnings' => new external_warnings()
+                'warnings' => new external_warnings(),
             ]
         );
     }

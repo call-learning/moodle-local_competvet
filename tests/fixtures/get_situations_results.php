@@ -70,7 +70,7 @@ $results['student1results'] = [
         'evalnum' => 1,
         'autoevalnum' => 1,
         'roles' => '["student"]',
-    ]
+    ],
 ];
 $results['student2results'] = [
     [

@@ -258,13 +258,13 @@ class api_helpers {
             'category' => new external_value(PARAM_INT, 'Observation category (AUTOEVAL or EVAL'),
             'context' =>
                 new external_single_structure(
-                    api_helpers::get_context_structure(),
+                    self::get_context_structure(),
                     'Context information',
                     VALUE_OPTIONAL
                 ),
             'comments' => new external_multiple_structure(
                 new external_single_structure(
-                    api_helpers::get_comment_structure()
+                    self::get_comment_structure()
                 ),
                 'Comments',
                 VALUE_OPTIONAL,
@@ -272,14 +272,14 @@ class api_helpers {
             ),
             'criteria' => new external_multiple_structure(
                 new external_single_structure(
-                    api_helpers::get_criteria_structure()
+                    self::get_criteria_structure()
                 ),
                 'Criteria',
                 VALUE_OPTIONAL,
                 []
             ),
-            'observerinfo' => new external_single_structure(api_helpers::get_user_info_structure()),
-            'studentinfo' => new external_single_structure(api_helpers::get_user_info_structure()),
+            'observerinfo' => new external_single_structure(self::get_user_info_structure()),
+            'studentinfo' => new external_single_structure(self::get_user_info_structure()),
             'canedit' => new external_value(PARAM_BOOL, 'Can edit'),
             'candelete' => new external_value(PARAM_BOOL, 'Can delete'),
             'situationid' => new external_value(PARAM_INT, 'Situation ID'),
