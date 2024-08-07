@@ -50,7 +50,9 @@ class get_users_infos_for_planning extends external_api {
                             'userinfo' => new external_single_structure(
                                 api_helpers::get_user_info_structure()
                             ),
-                            'planninginfo' => api_helpers::get_planning_info_stats_structure(),
+                            'planninginfo' => new external_single_structure(
+                                api_helpers::get_planning_info_stats_structure()
+                            ),
                         ])
                     ),
                     'observers' => new external_multiple_structure(

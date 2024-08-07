@@ -30,110 +30,6 @@ use external_value;
  */
 class api_helpers {
     /**
-     * Get comment structure
-     *
-     * @return array
-     */
-    public static function get_comment_structure(): array {
-        return [
-            'id' => new external_value(PARAM_INT, 'Comment ID', VALUE_OPTIONAL),
-            'comment' => new external_value(PARAM_RAW, 'Comment text'),
-            'commentlabel' => new external_value(PARAM_RAW, 'Comment label', VALUE_OPTIONAL),
-            'type' => new external_value(PARAM_ALPHANUMEXT, 'Comment type (autoeval, eval, certif...)', VALUE_OPTIONAL),
-            'userinfo' => new external_single_structure(self::get_user_info_structure(), 'User information', VALUE_OPTIONAL),
-            'timecreated' => new external_value(PARAM_INT, 'Comment creation time', VALUE_OPTIONAL),
-            'timemodified' => new external_value(PARAM_INT, 'Comment last modification time', VALUE_OPTIONAL),
-        ];
-    }
-
-    /**
-     * Get user info structure
-     *
-     * @return array
-     */
-    public static function get_user_info_structure(): array {
-        return [
-            'id' => new \external_value(PARAM_INT, 'ID type of user'),
-            'fullname' => new \external_value(PARAM_TEXT, 'User fullname', VALUE_OPTIONAL),
-            'userpictureurl' => new \external_value(PARAM_URL, 'User picture (avatar) URL', VALUE_OPTIONAL),
-            'role' => new \external_value(PARAM_TEXT, 'User role', VALUE_OPTIONAL),
-        ];
-    }
-
-    /**
-     * Get context structure
-     *
-     * @return array
-     */
-    public static function get_context_structure(): array {
-        return [
-            'id' => new external_value(PARAM_INT, 'Comment ID', VALUE_OPTIONAL),
-            'comment' => new external_value(PARAM_RAW, 'Comment text', VALUE_OPTIONAL),
-            'userinfo' => new external_single_structure(self::get_user_info_structure(), 'User information', VALUE_OPTIONAL),
-            'timecreated' => new external_value(PARAM_INT, 'Comment creation time', VALUE_OPTIONAL),
-            'timemodified' => new external_value(PARAM_INT, 'Comment last modification time', VALUE_OPTIONAL),
-        ];
-    }
-
-    /**
-     * Get criteria structure
-     *
-     * @return array
-     */
-    public static function get_criteria_structure(): array {
-        return [
-            'id' => new external_value(PARAM_INT, 'Observation criteria ID', VALUE_OPTIONAL),
-            'level' => new external_value(PARAM_INT, 'Criterion level', VALUE_OPTIONAL, 50),
-            'isactive' => new external_value(PARAM_BOOL, 'Criterion active', VALUE_OPTIONAL, false),
-            'subcriteria' => new external_multiple_structure(
-                new external_single_structure(
-                    self::get_subcriteria_info_structure()
-                ),
-                'Subcriteria',
-                VALUE_OPTIONAL
-            ),
-            'criterioninfo' => new external_single_structure(
-                self::get_criteria_info_structure(),
-                'Criterion info',
-                VALUE_OPTIONAL
-            ),
-        ];
-    }
-
-    /**
-     * Get criteria info structure
-     *
-     * @return array
-     */
-    public static function get_subcriteria_info_structure(): array {
-        return [
-            'id' => new external_value(PARAM_INT, 'Observation subcriteria ID'),
-            'comment' => new external_value(PARAM_RAW, 'Criterion comment', VALUE_OPTIONAL),
-            'isactive' => new external_value(PARAM_BOOL, 'Criterion active', VALUE_OPTIONAL, false),
-            'criterioninfo' => new external_single_structure(
-                self::get_criteria_info_structure(),
-                'SubCriterion info',
-                VALUE_OPTIONAL
-            ),
-        ];
-    }
-
-    /**
-     * Get criteria info structure
-     *
-     * @return array
-     */
-    public static function get_criteria_info_structure(): array {
-        return [
-            'id' => new external_value(PARAM_INT, 'Criterion ID'),
-            'label' => new external_value(PARAM_TEXT, 'Criterion label'),
-            'idnumber' => new external_value(PARAM_TEXT, 'Criterion idnumber', VALUE_OPTIONAL),
-            'sort' => new external_value(PARAM_INT, 'Criterion sort', VALUE_OPTIONAL),
-            'parentid' => new external_value(PARAM_INT, 'Criterion parentid', VALUE_OPTIONAL),
-        ];
-    }
-
-    /**
      * Get criteria info structure
      *
      * @return array
@@ -172,6 +68,20 @@ class api_helpers {
             'status' => new external_value(PARAM_INT, 'TODO current Status'),
             'action' => new external_value(PARAM_INT, 'TODO action to perform'),
             'data' => new external_value(PARAM_RAW, 'TODO data (JSON)'),
+        ];
+    }
+
+    /**
+     * Get user info structure
+     *
+     * @return array
+     */
+    public static function get_user_info_structure(): array {
+        return [
+            'id' => new \external_value(PARAM_INT, 'ID type of user'),
+            'fullname' => new \external_value(PARAM_TEXT, 'User fullname', VALUE_OPTIONAL),
+            'userpictureurl' => new \external_value(PARAM_URL, 'User picture (avatar) URL', VALUE_OPTIONAL),
+            'role' => new \external_value(PARAM_TEXT, 'User role', VALUE_OPTIONAL),
         ];
     }
 
@@ -260,7 +170,9 @@ class api_helpers {
                     'id' => new external_value(PARAM_INT, 'The category id'),
                     'name' => new external_value(PARAM_TEXT, 'The category name'),
                     'fields' => new external_multiple_structure(
-                        self::get_case_field_info_structure()
+                        new external_single_structure(
+                            self::get_case_field_info_structure()
+                        )
                     ),
                 ])
             ),
@@ -272,8 +184,8 @@ class api_helpers {
      *
      * @return external_single_structure
      */
-    public static function get_case_field_info_structure() {
-        return new external_single_structure([
+    public static function get_case_field_info_structure(): array {
+        return [
             'id' => new external_value(PARAM_INT, 'The field id'),
             'idnumber' => new external_value(PARAM_TEXT, 'The field shortname'),
             'name' => new external_value(PARAM_TEXT, 'The field name'),
@@ -282,25 +194,24 @@ class api_helpers {
             'description' => new external_value(PARAM_TEXT, 'The field description'),
             'value' => new external_value(PARAM_TEXT, 'The field value', VALUE_OPTIONAL),
             'displayvalue' => new external_value(PARAM_TEXT, 'The field display value', VALUE_OPTIONAL),
-        ]);
+        ];
     }
 
-    public static function get_caselog_category_info_structure() {
-        return
-            new external_single_structure([
-                'id' => new external_value(PARAM_INT, 'The category id'),
-                'name' => new external_value(PARAM_TEXT, 'The category name'),
-                'fields' => new external_multiple_structure(
-                    new external_single_structure([
-                        'id' => new external_value(PARAM_INT, 'The field id'),
-                        'idnumber' => new external_value(PARAM_TEXT, 'The field shortname'),
-                        'name' => new external_value(PARAM_TEXT, 'The field name'),
-                        'type' => new external_value(PARAM_TEXT, 'The field type'),
-                        'configdata' => new external_value(PARAM_RAW, 'The field configdata'),
-                        'description' => new external_value(PARAM_TEXT, 'The field description'),
-                    ])
-                ),
-            ]);
+    public static function get_caselog_category_info_structure(): array {
+        return [
+            'id' => new external_value(PARAM_INT, 'The category id'),
+            'name' => new external_value(PARAM_TEXT, 'The category name'),
+            'fields' => new external_multiple_structure(
+                new external_single_structure([
+                    'id' => new external_value(PARAM_INT, 'The field id'),
+                    'idnumber' => new external_value(PARAM_TEXT, 'The field shortname'),
+                    'name' => new external_value(PARAM_TEXT, 'The field name'),
+                    'type' => new external_value(PARAM_TEXT, 'The field type'),
+                    'configdata' => new external_value(PARAM_RAW, 'The field configdata'),
+                    'description' => new external_value(PARAM_TEXT, 'The field description'),
+                ])
+            ),
+        ];
     }
 
     /**
@@ -308,7 +219,7 @@ class api_helpers {
      *
      * @return array
      */
-    public static function search_results() {
+    public static function search_results(): array {
         return [
             'description' => new external_value(PARAM_TEXT, 'The item name'),
             'identifier' => new external_value(PARAM_TEXT, 'The item name'),
@@ -322,24 +233,148 @@ class api_helpers {
      *
      * @return external_single_structure
      */
-    public static function get_planning_info_stats_structure() {
-        return new external_single_structure(
-            [
-                'id' => new external_value(PARAM_INT, 'Student ID'),
-                'planningid' => new external_value(PARAM_INT, 'Planning ID'),
-                'situationid' => new external_value(PARAM_INT, 'Situation ID'),
-                'stats' => new external_multiple_structure(
-                    new external_single_structure([
-                        'type' => new external_value(
-                            PARAM_TEXT,
-                            'Type of evaluation (eval, autoeval, certif, list)'
-                        ),
-                        'nbdone' => new external_value(PARAM_INT, 'Nb of observation done'),
-                        'nbrequired' => new external_value(PARAM_INT, 'Nb of observation required'),
-                        'pass' => new external_value(PARAM_BOOL, 'Pass or not', VALUE_OPTIONAL),
-                    ])
+    public static function get_planning_info_stats_structure(): array {
+        return [
+            'id' => new external_value(PARAM_INT, 'Student ID'),
+            'planningid' => new external_value(PARAM_INT, 'Planning ID'),
+            'situationid' => new external_value(PARAM_INT, 'Situation ID'),
+            'stats' => new external_multiple_structure(
+                new external_single_structure([
+                    'type' => new external_value(
+                        PARAM_TEXT,
+                        'Type of evaluation (eval, autoeval, certif, list)'
+                    ),
+                    'nbdone' => new external_value(PARAM_INT, 'Nb of observation done'),
+                    'nbrequired' => new external_value(PARAM_INT, 'Nb of observation required'),
+                    'pass' => new external_value(PARAM_BOOL, 'Pass or not', VALUE_OPTIONAL),
+                ])
+            ),
+        ];
+    }
+
+    public static function get_observation_info_structure(): array {
+        return [
+            'id' => new external_value(PARAM_INT, 'Observation ID'),
+            'category' => new external_value(PARAM_INT, 'Observation category (AUTOEVAL or EVAL'),
+            'context' =>
+                new external_single_structure(
+                    api_helpers::get_context_structure(),
+                    'Context information',
+                    VALUE_OPTIONAL
                 ),
-            ]
-        );
+            'comments' => new external_multiple_structure(
+                new external_single_structure(
+                    api_helpers::get_comment_structure()
+                ),
+                'Comments',
+                VALUE_OPTIONAL,
+                []
+            ),
+            'criteria' => new external_multiple_structure(
+                new external_single_structure(
+                    api_helpers::get_criteria_structure()
+                ),
+                'Criteria',
+                VALUE_OPTIONAL,
+                []
+            ),
+            'observerinfo' => new external_single_structure(api_helpers::get_user_info_structure()),
+            'studentinfo' => new external_single_structure(api_helpers::get_user_info_structure()),
+            'canedit' => new external_value(PARAM_BOOL, 'Can edit'),
+            'candelete' => new external_value(PARAM_BOOL, 'Can delete'),
+            'situationid' => new external_value(PARAM_INT, 'Situation ID'),
+            'planningid' => new external_value(PARAM_INT, 'Planning ID'),
+            'status' => new external_value(PARAM_INT, 'Status'),
+        ];
+    }
+
+    /**
+     * Get context structure
+     *
+     * @return array
+     */
+    public static function get_context_structure(): array {
+        return [
+            'id' => new external_value(PARAM_INT, 'Comment ID', VALUE_OPTIONAL),
+            'comment' => new external_value(PARAM_RAW, 'Comment text', VALUE_OPTIONAL),
+            'userinfo' => new external_single_structure(self::get_user_info_structure(), 'User information', VALUE_OPTIONAL),
+            'timecreated' => new external_value(PARAM_INT, 'Comment creation time', VALUE_OPTIONAL),
+            'timemodified' => new external_value(PARAM_INT, 'Comment last modification time', VALUE_OPTIONAL),
+        ];
+    }
+
+    /**
+     * Get comment structure
+     *
+     * @return array
+     */
+    public static function get_comment_structure(): array {
+        return [
+            'id' => new external_value(PARAM_INT, 'Comment ID', VALUE_OPTIONAL),
+            'comment' => new external_value(PARAM_RAW, 'Comment text'),
+            'commentlabel' => new external_value(PARAM_RAW, 'Comment label', VALUE_OPTIONAL),
+            'type' => new external_value(PARAM_ALPHANUMEXT, 'Comment type (autoeval, eval, certif...)', VALUE_OPTIONAL),
+            'userinfo' => new external_single_structure(self::get_user_info_structure(), 'User information', VALUE_OPTIONAL),
+            'timecreated' => new external_value(PARAM_INT, 'Comment creation time', VALUE_OPTIONAL),
+            'timemodified' => new external_value(PARAM_INT, 'Comment last modification time', VALUE_OPTIONAL),
+        ];
+    }
+
+    /**
+     * Get criteria structure
+     *
+     * @return array
+     */
+    public static function get_criteria_structure(): array {
+        return [
+            'id' => new external_value(PARAM_INT, 'Observation criteria ID', VALUE_OPTIONAL),
+            'level' => new external_value(PARAM_INT, 'Criterion level', VALUE_OPTIONAL, 50),
+            'isactive' => new external_value(PARAM_BOOL, 'Criterion active', VALUE_OPTIONAL, false),
+            'subcriteria' => new external_multiple_structure(
+                new external_single_structure(
+                    self::get_subcriteria_info_structure()
+                ),
+                'Subcriteria',
+                VALUE_OPTIONAL
+            ),
+            'criterioninfo' => new external_single_structure(
+                self::get_criteria_info_structure(),
+                'Criterion info',
+                VALUE_OPTIONAL
+            ),
+        ];
+    }
+
+    /**
+     * Get criteria info structure
+     *
+     * @return array
+     */
+    public static function get_subcriteria_info_structure(): array {
+        return [
+            'id' => new external_value(PARAM_INT, 'Observation subcriteria ID'),
+            'comment' => new external_value(PARAM_RAW, 'Criterion comment', VALUE_OPTIONAL),
+            'isactive' => new external_value(PARAM_BOOL, 'Criterion active', VALUE_OPTIONAL, false),
+            'criterioninfo' => new external_single_structure(
+                self::get_criteria_info_structure(),
+                'SubCriterion info',
+                VALUE_OPTIONAL
+            ),
+        ];
+    }
+
+    /**
+     * Get criteria info structure
+     *
+     * @return array
+     */
+    public static function get_criteria_info_structure(): array {
+        return [
+            'id' => new external_value(PARAM_INT, 'Criterion ID'),
+            'label' => new external_value(PARAM_TEXT, 'Criterion label'),
+            'idnumber' => new external_value(PARAM_TEXT, 'Criterion idnumber', VALUE_OPTIONAL),
+            'sort' => new external_value(PARAM_INT, 'Criterion sort', VALUE_OPTIONAL),
+            'parentid' => new external_value(PARAM_INT, 'Criterion parentid', VALUE_OPTIONAL),
+        ];
     }
 }

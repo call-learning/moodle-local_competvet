@@ -41,7 +41,9 @@ class get_caselog_structure extends external_api {
     public static function execute_returns() {
         return
             new external_multiple_structure(
+                new external_single_structure(
                     api_helpers::get_caselog_category_info_structure()
+                )
             );
     }
 

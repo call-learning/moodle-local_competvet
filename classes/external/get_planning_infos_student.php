@@ -41,7 +41,9 @@ class get_planning_infos_student extends external_api {
      * @return external_single_structure
      */
     public static function execute_returns(): external_single_structure {
-        return api_helpers::get_planning_info_stats_structure();
+        return new external_single_structure(
+            api_helpers::get_planning_info_stats_structure()
+        );
     }
 
     /**

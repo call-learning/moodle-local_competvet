@@ -42,32 +42,7 @@ class get_eval_observation_info extends external_api {
      */
     public static function execute_returns(): external_single_structure {
         return new external_single_structure(
-            [
-                'id' => new external_value(PARAM_INT, 'Observation ID'),
-                'category' => new external_value(PARAM_INT, 'Observation category (AUTOEVAL or EVAL'),
-                'context' =>
-                    new external_single_structure(
-                        api_helpers::get_context_structure(),
-                        VALUE_OPTIONAL,
-                        null
-                    ),
-                'comments' => new external_multiple_structure(
-                    new external_single_structure(
-                        api_helpers::get_comment_structure()
-                    ),
-                    VALUE_OPTIONAL,
-                    []
-                ),
-                'criteria' => new external_multiple_structure(
-                    new external_single_structure(
-                        api_helpers::get_criteria_structure()
-                    )
-                ),
-                'canedit' => new external_value(PARAM_BOOL, 'Can edit'),
-                'candelete' => new external_value(PARAM_BOOL, 'Can delete'),
-                'situationid' => new external_value(PARAM_INT, 'Situation ID'),
-                'planningid' => new external_value(PARAM_INT, 'Planning ID'),
-            ]
+            api_helpers::get_observation_info_structure()
         );
     }
 
