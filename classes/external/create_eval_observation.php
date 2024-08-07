@@ -93,8 +93,15 @@ class create_eval_observation extends external_api {
             $observerid = $USER->id;
         }
         $observationid =
-            observations::create_observation($category, $planningid, $studentid, $observerid,
-                $context, $comments, $criteria);
+            observations::create_observation(
+                $category,
+                $planningid,
+                $studentid,
+                $observerid,
+                $context,
+                $comments,
+                $criteria
+            );
         return ['observationid' => $observationid];
     }
 

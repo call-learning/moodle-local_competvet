@@ -22,6 +22,7 @@ use context_system;
 use external_api;
 use external_function_parameters;
 use external_multiple_structure;
+use external_single_structure;
 use local_competvet\api_helpers;
 use mod_competvet\local\api\cases;
 
@@ -67,5 +68,4 @@ class get_caselog_structure extends external_api {
     public static function execute_parameters() {
         return new external_function_parameters([]);
     }
-
 }

@@ -27,7 +27,6 @@ use external_single_structure;
 use external_value;
 use local_competvet\api_helpers;
 use mod_competvet\local\api\cases;
-use mod_competvet\local\api\certifications;
 use mod_competvet\local\persistent\planning;
 
 /**
