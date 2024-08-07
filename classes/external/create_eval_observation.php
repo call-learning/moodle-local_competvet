@@ -107,7 +107,7 @@ class create_eval_observation extends external_api {
         return new external_function_parameters(
             [
                 'category' => new external_value(PARAM_INT, 'Observation category (AUTOEVAL or EVAL'),
-                'planningid' => new external_value(PARAM_INT, 'id of the student'),
+                'planningid' => new external_value(PARAM_INT, 'id of the planning'),
                 'studentid' => new external_value(PARAM_INT, 'id of the student'),
                 'observerid' => new external_value(PARAM_INT, 'id of the student', VALUE_OPTIONAL, 0),
                 'context' => new external_value(PARAM_TEXT, 'context', VALUE_OPTIONAL, null),
