@@ -112,8 +112,6 @@ class get_user_certs_items_test extends externallib_advanced_testcase {
         $planning = array_shift($plannings);
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_competvet');
         $certifs = $this->get_user_certif_items(['userid' => $student->id, 'planningid' => $planning['id']]);
-        $this->assertEquals([
-
-        ], $certifs);
+        $this->assertEquals([], $certifs);
     }
 }

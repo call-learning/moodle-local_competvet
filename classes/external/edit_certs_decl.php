@@ -55,6 +55,7 @@ class edit_certs_decl extends external_api {
      * @return array
      */
     public static function execute(int $id, int $level, string $comment, int $status, ?array $supervisors): array {
+        global $USER;
         [
             'id' => $id,
             'level' => $level,
@@ -65,10 +66,10 @@ class edit_certs_decl extends external_api {
             self::execute_parameters(),
             ['id' => $id, 'level' => $level, 'comment' => $comment, 'status' => $status, 'supervisors' => $supervisors]
         );
-
         // Logic to edit the cert item using the certifications API.
         $result = certifications::update_cert_declaration($id, $level, $comment, FORMAT_PLAIN, $status);
-        certifications::declaration_supervisors_update($id, array_map(fn($supervisor) => $supervisor['id'], $supervisors));
+        certifications::declaration_supervisors_update($id, array_map(fn($supervisor) => $supervisor['id'], $supervisors),
+            $USER->id);
         $warnings = [];
         if (!$result) {
             $warnings[] = ['item' => $id, 'message' => 'Item not edited'];

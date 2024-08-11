@@ -18,50 +18,61 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->libdir . '/externallib.php');
 
+use context_system;
+use context_user;
 use external_api;
 use external_function_parameters;
+use external_multiple_structure;
 use external_single_structure;
 use external_value;
-use mod_competvet\competvet;
+use local_competvet\api_helpers;
 use mod_competvet\local\api\todos;
-use mod_competvet\local\persistent\planning;
-use mod_competvet\local\persistent\situation;
+use mod_competvet\local\persistent\todo;
 
 /**
- * Ask for a given eval observation.
+ * Act on a todo.
  *
  * @package   local_competvet
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class ask_eval_observation extends external_api {
+class todo_action extends external_api {
     /**
-     * Returns description of method return value
+     * Returns description of method parameters
      *
-     * @return external_single_structure
+     * @return external_multiple_structure
      */
-    public static function execute_returns(): external_single_structure {
-        return \mod_competvet\external\ask_eval_observation::execute_returns();
+    public static function execute_returns() {
+        return new external_multiple_structure(
+            new external_single_structure([])
+        );
     }
 
     /**
-     * Execute and return observation list
+     * Return the list of todos for this user (or current user if not specified).
      *
-     * @param int $observationid - Observation instance id
-     * @return array|array[]
-     * @throws \invalid_parameter_exception
+     * @param int $id
+     * @return array
      */
-    public static function execute(string $context, int $planningid, int $observerid, int $studentid): array {
-        return \mod_competvet\external\ask_eval_observation::execute($context, $planningid, $observerid, $studentid);
+    public static function execute(int $id, int $status = todo::STATUS_DONE): array {
+        global $USER;
+        ['id' => $todoid] =
+            self::validate_parameters(self::execute_parameters(), ['id' => $id]);
+        self::validate_context(context_system::instance());
+        $result = todos::act_on_todo($id);
+        return $result;
     }
-
 
     /**
      * Returns description of method parameters
      *
      * @return external_function_parameters
      */
-    public static function execute_parameters(): external_function_parameters {
-        return \mod_competvet\external\ask_eval_observation::execute_parameters();
+    public static function execute_parameters() {
+        return new external_function_parameters(
+            [
+                'id' => new external_value(PARAM_INT, 'id of the todo'),
+            ]
+        );
     }
 }

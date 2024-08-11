@@ -55,8 +55,7 @@ class update_todo_status extends external_api {
      * @return array
      */
     public static function execute(int $id, int $status = todo::STATUS_DONE): array {
-        global $USER;
-        ['id' => $userid, 'status' => $status] =
+        ['id' => $id, 'status' => $status] =
             self::validate_parameters(self::execute_parameters(), ['id' => $id, 'status' => $status]);
         self::validate_context(context_system::instance());
         todos::update_todo_status($id, $status);

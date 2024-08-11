@@ -53,13 +53,14 @@ class set_certs_supervisors extends external_api {
      * @return array
      */
     public static function execute(int $declid, array $supervisors): array {
+        global $USER;
         ['declid' => $declid, 'supervisors' => $supervisors] =
             self::validate_parameters(self::execute_parameters(), ['declid' => $declid, 'supervisors' => $supervisors]);
 
         $warnings = [];
 
         // Logic to set the cert supervisors using the certifications API.
-        $currentsupervisorids = certifications::set_declaration_supervisors($declid, $supervisors);
+        $currentsupervisorids = certifications::set_declaration_supervisors($declid, $supervisors, $USER->id);
         if ($notset = array_diff($supervisors, $currentsupervisorids)) {
             $warnings[] = [
                 'item' => $declid,

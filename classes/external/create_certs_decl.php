@@ -77,7 +77,7 @@ class create_certs_decl extends external_api {
             $status);
         if ($declid) {
             if ($supervisors) {
-                certifications::declaration_supervisors_update($declid, array_map(fn($supervisor) => $supervisor['id'], $supervisors));
+                certifications::declaration_supervisors_update($declid, array_map(fn($supervisor) => $supervisor['id'], $supervisors), $studentid);
             }
         }
         return ['id' => $declid];
