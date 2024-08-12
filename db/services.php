@@ -172,10 +172,19 @@ $functions = [
         'loginrequired' => true,
         'services' => [utils::COMPETVET_MOBILE_SERVICE],
     ],
-    'local_competvet_update_todo_status' => [
-        'classname' => \local_competvet\external\update_todo_status::class,
+    'local_competvet_delete_todo' => [
+        'classname' => \local_competvet\external\delete_todo::class,
         'methodname' => 'execute',
-        'description' => 'Update TODO status (done, refused, cancelled, pending)',
+        'description' => 'Delete a given todo item by changing its status to deleted',
+        'ajax' => true,
+        'type' => 'write',
+        'loginrequired' => true,
+        'services' => [utils::COMPETVET_MOBILE_SERVICE],
+    ],
+    'local_competvet_action_todo' => [
+        'classname' => \local_competvet\external\action_todo::class,
+        'methodname' => 'execute',
+        'description' => 'Do an action on a todo item',
         'ajax' => true,
         'type' => 'write',
         'loginrequired' => true,

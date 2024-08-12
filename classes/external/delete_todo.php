@@ -19,47 +19,43 @@ global $CFG;
 require_once($CFG->libdir . '/externallib.php');
 
 use context_system;
-use context_user;
 use external_api;
 use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
 use external_value;
-use local_competvet\api_helpers;
 use mod_competvet\local\api\todos;
 use mod_competvet\local\persistent\todo;
 
 /**
- * Get current user's todo list.
+ * Delete a todo.
  *
  * @package   local_competvet
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class update_todo_status extends external_api {
+class delete_todo extends external_api {
     /**
      * Returns description of method parameters
      *
-     * @return external_multiple_structure
+     * @return null
      */
     public static function execute_returns() {
-        return new external_multiple_structure(
-            new external_single_structure([])
-        );
+        return null;
     }
 
     /**
-     * Return the list of todos for this user (or current user if not specified).
+     * Set the status of a todo to deleted.
      *
      * @param int $id
      * @return array
      */
-    public static function execute(int $id, int $status = todo::STATUS_DONE): array {
-        ['id' => $id, 'status' => $status] =
-            self::validate_parameters(self::execute_parameters(), ['id' => $id, 'status' => $status]);
+    public static function execute(int $id) {
+        ['id' => $id] =
+            self::validate_parameters(self::execute_parameters(), ['id' => $id]);
         self::validate_context(context_system::instance());
-        todos::update_todo_status($id, $status);
-        return [];
+        todos::update_todo_status($id, todo::STATUS_DELETED);
+        return null;
     }
 
     /**
@@ -71,7 +67,6 @@ class update_todo_status extends external_api {
         return new external_function_parameters(
             [
                 'id' => new external_value(PARAM_INT, 'id of the todo'),
-                'status' => new external_value(PARAM_INT, 'Status of the todo', VALUE_DEFAULT, todo::STATUS_DONE),
             ]
         );
     }

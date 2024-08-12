@@ -19,15 +19,11 @@ global $CFG;
 require_once($CFG->libdir . '/externallib.php');
 
 use context_system;
-use context_user;
 use external_api;
 use external_function_parameters;
-use external_multiple_structure;
 use external_single_structure;
 use external_value;
-use local_competvet\api_helpers;
 use mod_competvet\local\api\todos;
-use mod_competvet\local\persistent\todo;
 
 /**
  * Act on a todo.
@@ -36,31 +32,34 @@ use mod_competvet\local\persistent\todo;
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class todo_action extends external_api {
+class action_todo extends external_api {
     /**
      * Returns description of method parameters
      *
-     * @return external_multiple_structure
+     * @return external_single_structure
      */
     public static function execute_returns() {
-        return new external_multiple_structure(
-            new external_single_structure([])
-        );
+        return new external_single_structure(
+                [
+                    'id' => new external_value(PARAM_INT, 'id of the todo'),
+                    'status' => new external_value(PARAM_INT, 'status of the todo'),
+                    'message' => new external_value(PARAM_TEXT, 'message of the todo', VALUE_OPTIONAL, ''),
+                    'nextaction' => new external_value(PARAM_ALPHANUMEXT, 'next action of the todo'),
+                    'data' => new external_value(PARAM_RAW, 'data of the todo', VALUE_OPTIONAL, ''),
+                ]
+            );
     }
 
     /**
      * Return the list of todos for this user (or current user if not specified).
      *
-     * @param int $id
+     * @param int $todoid
      * @return array
      */
-    public static function execute(int $id, int $status = todo::STATUS_DONE): array {
-        global $USER;
-        ['id' => $todoid] =
-            self::validate_parameters(self::execute_parameters(), ['id' => $id]);
+    public static function execute(int $todoid): array {
+        ['id' => $todoid] = self::validate_parameters(self::execute_parameters(), ['id' => $todoid]);
         self::validate_context(context_system::instance());
-        $result = todos::act_on_todo($id);
-        return $result;
+        return todos::act_on_todo($todoid);
     }
 
     /**
@@ -69,10 +68,6 @@ class todo_action extends external_api {
      * @return external_function_parameters
      */
     public static function execute_parameters() {
-        return new external_function_parameters(
-            [
-                'id' => new external_value(PARAM_INT, 'id of the todo'),
-            ]
-        );
+        return new external_function_parameters(['id' => new external_value(PARAM_INT, 'id of the todo')]);
     }
 }
