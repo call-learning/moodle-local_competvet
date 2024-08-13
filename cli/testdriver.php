@@ -63,6 +63,19 @@ if (!in_array($options['command'], ['run'])) {
         throw new moodle_exception('error:compet_test_driver_mode', 'local_competvet');
     }
 }
+// The command will install composer if not present. Usually composer libraries are
+// installed when behat or phpunit are installed, but we do not want to force users
+// to create all phpunit or behat databases tables just to run a test scenario locally.
+if (!file_exists($CFG->dirroot . '/vendor/autoload.php')) {
+    // Force OPcache reset if used, we do not want any stale caches
+    // when preparing test environment.
+    if (function_exists('opcache_reset')) {
+        opcache_reset();
+    }
+    // Install and update composer and dependencies as required.
+    testing_update_composer_dependencies(true, true);
+}
+
 require_once($CFG->dirroot . '/local/competvet/testdriver/competvet_util.php');
 $testdriver = new competvet_util();
 switch ($options['command']) {
