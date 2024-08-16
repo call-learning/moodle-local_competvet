@@ -158,6 +158,8 @@ class api_helpers {
                 'date' => new external_value(PARAM_INT, 'Case date (timestamp)'),
                 'animal' => new external_value(PARAM_TEXT, 'Animal name'),
                 'label' => new external_value(PARAM_TEXT, 'Case label'),
+                'canedit' => new external_value(PARAM_BOOL, 'Can the user edit this case'),
+                'candelete' => new external_value(PARAM_BOOL, 'Can the user delete this case'),
             ];
     }
 
@@ -165,6 +167,8 @@ class api_helpers {
         return [
             'id' => new external_value(PARAM_INT, 'The case id'),
             'timecreated' => new external_value(PARAM_INT, 'The time the case was created'),
+            'canedit' => new external_value(PARAM_BOOL, 'Can the user edit this case'),
+            'candelete' => new external_value(PARAM_BOOL, 'Can the user delete this case'),
             'categories' => new external_multiple_structure(
                 new external_single_structure([
                     'id' => new external_value(PARAM_INT, 'The category id'),
