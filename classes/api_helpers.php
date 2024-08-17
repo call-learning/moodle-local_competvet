@@ -289,6 +289,7 @@ class api_helpers {
             'situationid' => new external_value(PARAM_INT, 'Situation ID'),
             'planningid' => new external_value(PARAM_INT, 'Planning ID'),
             'status' => new external_value(PARAM_INT, 'Status'),
+            'timemodified' => new external_value(PARAM_INT, 'Last modification time'),
         ];
     }
 

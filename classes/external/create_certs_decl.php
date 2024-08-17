@@ -59,7 +59,7 @@ class create_certs_decl extends external_api {
      * @return array
      */
     public static function execute(int $criterionid, int $studentid, int $planningid, int $level, string $comment,
-        int $status, ?array $supervisors = null): array {
+        int $status, ?array $supervisors = []): array {
         [
             'criterionid' => $criterionid,
             'level' => $level,
@@ -95,7 +95,7 @@ class create_certs_decl extends external_api {
                 'studentid' => new external_value(PARAM_INT, 'Student ID'),
                 'planningid' => new external_value(PARAM_INT, 'Planning ID'),
                 'level' => new external_value(PARAM_INT, 'Level'),
-                'comment' => new external_value(PARAM_TEXT, 'Comment'),
+                'comment' => new external_value(PARAM_TEXT, 'Comment', VALUE_OPTIONAL, ''),
                 'status' => new external_value(PARAM_TEXT, 'Status'),
                 'supervisors' => new \external_multiple_structure(
                     new \external_single_structure(
@@ -104,7 +104,8 @@ class create_certs_decl extends external_api {
                         ]
                     ),
                     'The supervisors',
-                    VALUE_OPTIONAL
+                    VALUE_OPTIONAL,
+                    []
                 ),
             ]
         );
