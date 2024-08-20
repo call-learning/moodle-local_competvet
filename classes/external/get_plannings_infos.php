@@ -27,7 +27,6 @@ use external_single_structure;
 use external_value;
 use local_competvet\api_helpers;
 use mod_competvet\local\api\plannings;
-use mod_competvet\local\api\situations;
 use mod_competvet\local\persistent\situation;
 
 /**
@@ -63,11 +62,11 @@ class get_plannings_infos extends external_api {
     /**
      * Return the list of situations the user is registered in
      *
-     * @param string|null $plannings
      * @param int|null $userid
+     * @param array|null $plannings
      * @return array
      */
-    public static function execute(?string $plannings = '', ?int $userid = null): array {
+    public static function execute(?int $userid = null, ?array $plannings = []): array {
         global $USER;
         ['plannings' => $plannings, 'userid' => $userid] =
             self::validate_parameters(self::execute_parameters(), ['plannings' => $plannings, 'userid' => $userid]);
@@ -76,15 +75,13 @@ class get_plannings_infos extends external_api {
             $userid = $USER->id;
         }
         self::validate_context(context_user::instance($userid));
-        if (empty(trim($plannings))) {
+        if (empty($plannings)) {
             $situationsid = situation::get_all_situations_id_for($userid);
             $plannings = [];
             foreach ($situationsid as $situationid) {
                 $allplannings = plannings::get_plannings_for_situation_id($situationid, $userid, true);
                 $plannings = array_merge($plannings, array_column($allplannings, 'id'));
             }
-        } else {
-            $plannings = json_decode($plannings);
         }
         $stats = [];
         if ($plannings) {
@@ -101,13 +98,13 @@ class get_plannings_infos extends external_api {
     public static function execute_parameters() {
         return new external_function_parameters(
             [
-                'plannings' => new external_value(
-                    PARAM_RAW,
-                    'List of planning id to gather information from',
-                    VALUE_DEFAULT,
-                    ''
-                ),
                 'userid' => new external_value(PARAM_INT, 'id of the user (optional parameter)', VALUE_DEFAULT, 0),
+                'plannings' => new external_multiple_structure(
+                    new external_value(PARAM_INT, 'Planning ID'),
+                    'List of planning IDs (optional parameter)',
+                    VALUE_OPTIONAL,
+                    []
+                ),
             ]
         );
     }
