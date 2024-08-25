@@ -110,8 +110,7 @@ class get_user_certs_items_test extends externallib_advanced_testcase {
         $situation = situation::get_record(['shortname' => 'SIT1']);
         $plannings = plannings::get_plannings_for_situation_id($situation->get('id'), $student->id);
         $planning = array_shift($plannings);
-        $generator = $this->getDataGenerator()->get_plugin_generator('mod_competvet');
         $certifs = $this->get_user_certif_items(['userid' => $student->id, 'planningid' => $planning['id']]);
-        $this->assertEquals([], $certifs);
+        $this->assertEquals([0, 1, 2, 3], array_map(fn($cert) => $cert['category'], $certifs));
     }
 }
