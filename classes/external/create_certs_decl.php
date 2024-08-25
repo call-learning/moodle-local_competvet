@@ -1,5 +1,6 @@
 <?php
 // This file is part of Moodle - http://moodle.org/
+//
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -24,7 +25,6 @@ use external_function_parameters;
 use external_single_structure;
 use external_value;
 use mod_competvet\local\api\certifications;
-use mod_competvet\local\api\todos;
 
 /**
  * Create certif declaration item.
@@ -68,16 +68,20 @@ class create_certs_decl extends external_api {
             'supervisors' => $supervisors,
         ] = self::validate_parameters(
             self::execute_parameters(),
-            ['criterionid' => $criterionid, 'studentid' => $studentid, 'planningid' => $planningid, 'level' => $level,
-                'comment' => $comment, 'status' => $status, 'supervisors' => $supervisors, ]
+            [
+                'criterionid' => $criterionid, 'studentid' => $studentid, 'planningid' => $planningid, 'level' => $level,
+                'comment' => $comment, 'status' => $status, 'supervisors' => $supervisors,
+            ]
         );
 
         // Logic to create the cert item using the certifications API.
-        $declid = certifications::add_cert_declaration($criterionid, $studentid, $planningid, $level, $comment, intval(FORMAT_PLAIN),
-            $status);
+        $declid =
+            certifications::add_cert_declaration($criterionid, $studentid, $planningid, $level, $comment, intval(FORMAT_PLAIN),
+                $status);
         if ($declid) {
             if ($supervisors) {
-                certifications::declaration_supervisors_update($declid, array_map(fn($supervisor) => $supervisor['id'], $supervisors), $studentid);
+                certifications::declaration_supervisors_update($declid,
+                    array_map(fn($supervisor) => $supervisor['id'], $supervisors), $studentid);
             }
         }
         return ['id' => $declid];

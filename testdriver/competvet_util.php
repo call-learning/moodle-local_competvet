@@ -172,8 +172,8 @@ class competvet_util extends testing_util {
      */
     public static function get_global_backup($name) {
         if ($name === 'DB') {
-            // no cloning of database object,
-            // we just need the original reference, not original state
+            // No cloning of database object,
+            // we just need the original reference, not original state.
             return self::$globals['DB'];
         }
         if (isset(self::$globals[$name])) {

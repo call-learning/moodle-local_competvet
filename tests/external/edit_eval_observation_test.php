@@ -43,7 +43,7 @@ class edit_eval_observation_test extends \advanced_testcase {
      *
      * @return array[]
      */
-    public static function data_edit_observation_comment_for_user() {
+    public static function data_edit_observation_comment_for_user(): array {
         return [
             'observer1 edit comment' =>
                 [

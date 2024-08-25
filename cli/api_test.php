@@ -75,9 +75,9 @@ function authenticate($baseurl, $username, $password) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // May be required if SSL certificate verification is not needed
-    curl_setopt($ch, CURLOPT_HEADER, false); // No need to include header in output
-    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']); // Set Content-Type
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // May be required if SSL certificate verification is not needed.
+    curl_setopt($ch, CURLOPT_HEADER, false); // No need to include header in output.
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']); // Set Content-Type.
 
     $response = curl_exec($ch);
     if ($response === false) {
@@ -101,8 +101,8 @@ function query_api_with_token($baseurl, $token, $functionname, $parameters) {
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postdata, '', '&'));
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // May be required if SSL certificate verification is not needed.
-    curl_setopt($ch, CURLOPT_HEADER, false); // No need to include header in output
-    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']); // Set Content-Type
+    curl_setopt($ch, CURLOPT_HEADER, false); // No need to include header in output.
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']); // Set Content-Type.
     $response = curl_exec($ch);
     if ($response === false) {
         echo 'Curl error: ' . curl_error($ch);

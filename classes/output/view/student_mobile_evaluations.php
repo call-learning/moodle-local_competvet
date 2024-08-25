@@ -135,8 +135,8 @@ class student_mobile_evaluations extends base {
                 case 'cert':
                     $viewcertsurl = $this->views['certif'];
                     $certs = [];
-                    foreach($this->certifications as $cert) {
-                        $cert['items'] = array_map(function($item) use($viewcertsurl) {
+                    foreach ($this->certifications as $cert) {
+                        $cert['items'] = array_map(function($item) use ($viewcertsurl) {
                             if (!empty($item['declid'])) {
                                 $item['viewurl'] = (new moodle_url(
                                     $viewcertsurl,
@@ -152,11 +152,11 @@ class student_mobile_evaluations extends base {
                     break;
                 case 'list':
                     $viewcaseurl = $this->views['case'];
-                    $cases = array_map(function($item) use($viewcaseurl) {
+                    $cases = array_map(function($item) use ($viewcaseurl) {
                         $item['viewurl'] = (new moodle_url(
                             $viewcaseurl,
-                                ['id' => $item['id']]
-                            ))->out(false);
+                            ['id' => $item['id']]
+                        ))->out(false);
                         return $item;
                     }, $this->cases);
                     $tab['cases'] = $cases;
