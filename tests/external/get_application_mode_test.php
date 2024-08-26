@@ -118,6 +118,27 @@ class get_application_mode_test extends \advanced_testcase {
                 ],
                 'expected' => 'unknown',
             ],
+            'teacher or no role but observer' => [
+                'definition' => [
+                    'course 1' => [
+                        'roles' => ['observer'],
+                        'activities' => ['SIT1' => null, 'SIT2' => null, 'SIT3' => null],
+                    ],
+                    'course 2' => [
+                        'roles' => [],
+                        'activities' => ['SIT4' => null],
+                    ],
+                    'course 3' => [
+                        'roles' => ['teacher'],
+                        'activities' => ['SIT5' => 'observer', 'SIT6' => null, 'SIT7' => null],
+                    ],
+                    'course 4' => [
+                        'roles' => ['manager'],
+                        'activities' => ['SIT8' => null],
+                    ],
+                ],
+                'expected' => 'observer',
+            ],
         ];
     }
 

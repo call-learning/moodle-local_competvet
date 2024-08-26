@@ -336,58 +336,71 @@ $results['observer2results'] = [
         'roles' => '["observer"]',
     ],
 ];
-$results['teacher1results'] = [
+$results['teacher1results'] = []; // Teacher should not see the situations on the mobile application.
+
+$results['observerandteacherresults'] = [
     [
         'plannings' =>
             [
+
                 [
-                    'startdate' => (string) planning::round_start_date($startdate),
-                    'enddate' => (string) planning::round_end_date(($startdate + $oneweek)),
+                    'startdate' => (string) planning::round_start_date(($startdate + $onemonth * 6)),
+                    'enddate' => (string) planning::round_end_date(($startdate + $onemonth * 6 + $oneweek)),
                     'session' => '2023',
                     'groupname' => 'group 8.1',
                 ],
             ],
         'category' => 'Y1',
-        'shortname' => 'SIT1',
-        'name' => 'SIT1',
+        'shortname' => 'SIT7',
+        'name' => 'SIT7',
         'evalnum' => 1,
         'autoevalnum' => 1,
-        'roles' => '["unknown"]',
+        'roles' => '["observer"]',
     ],
     [
         'plannings' =>
             [
 
                 [
-                    'startdate' => (string) planning::round_start_date(($startdate)),
-                    'enddate' => (string) planning::round_end_date(($startdate + $oneweek * 2)),
+                    'startdate' => (string) planning::round_start_date(($startdate + $onemonth * 7)),
+                    'enddate' => (string) planning::round_end_date(($startdate + $onemonth * 7 + $oneweek)),
+                    'groupname' => 'group 8.3',
                     'session' => '2023',
-                    'groupname' => 'group 8.1',
+                ],
+                [
+                    'startdate' => (string) planning::round_start_date(($startdate + $onemonth * 12)), // Future time.
+                    'enddate' => (string) planning::round_end_date(($startdate + $onemonth * 12 + $oneweek)),
+                    'session' => '2030',
+                    'groupname' => 'group 8.3',
                 ],
             ],
         'category' => 'Y2',
-        'shortname' => 'SIT2',
-        'name' => 'SIT2',
-
+        'shortname' => 'SIT8',
+        'name' => 'SIT8',
         'evalnum' => 1,
         'autoevalnum' => 1,
-        'roles' => '["unknown"]',
+        'roles' => '["observer"]',
     ],
     [
-        'plannings' =>
+        'plannings' => [
             [
-                [
-                    'startdate' => (string) planning::round_start_date(($startdate)),
-                    'enddate' => (string) planning::round_end_date(($startdate + $oneweek)),
-                    'session' => '2023',
-                    'groupname' => 'group 8.1',
-                ],
+                'startdate' => (string) planning::round_start_date(($startdate + $onemonth * 8)),
+                'enddate' => (string) planning::round_end_date(($startdate + $onemonth * 8 + $oneweek)),
+                'groupname' => 'group 8.4',
+                'session' => '2023',
             ],
+            [
+                'startdate' => (string) planning::round_start_date(($startdate + $onemonth * 12)), // Future time.
+                'enddate' => (string) planning::round_end_date(($startdate + $onemonth * 12 + $oneweek)),
+                'groupname' => 'group 8.4',
+                'session' => '2030',
+            ],
+        ],
         'category' => 'Y3',
-        'shortname' => 'SIT3',
-        'name' => 'SIT3',
+        'shortname' => 'SIT9',
+        'name' => 'SIT9',
         'evalnum' => 1,
         'autoevalnum' => 1,
-        'roles' => '["unknown"]',
+        'roles' => '["observer"]',
     ],
 ];

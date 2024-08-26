@@ -74,6 +74,11 @@ class get_situations_test extends \advanced_testcase {
                 true,
                 $results['teacher1results'],
             ],
+            'observer and teacher situations' => [
+                'observerandteacher',
+                false,
+                $results['observerandteacherresults'],
+            ],
         ];
     }
 
