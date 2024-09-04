@@ -81,10 +81,12 @@ $testdriver = new competvet_util();
 switch ($options['command']) {
     case 'init':
         $testdriver->init_test();
+        $testdriver->break_api(false);
         echo "Init test.";
         break;
     case 'deinit':
         $testdriver->deinit();
+        $testdriver->break_api(false);
         echo "Deinit test.";
         break;
     case 'run':
@@ -101,6 +103,14 @@ switch ($options['command']) {
             }
         }
         echo "Executing scenario. $result";
+        break;
+    case 'breakapi':
+        $testdriver->break_api();
+        echo "Breaking API.";
+        break;
+    case 'fixapi':
+        $testdriver->break_api(false);
+        echo "Fixing API.";
         break;
     default:
         cli_writeln('Invalid command');

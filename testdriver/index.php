@@ -37,7 +37,7 @@ if (empty($CFG->compet_test_driver_mode)) {
 if (!$CFG->debugdeveloper) {
     throw new moodle_exception('error:compet_test_driver_debug', 'local_competvet');
 }
-if (!in_array($command, ['run', 'init', 'deinit'])) {
+if (!in_array($command, ['run', 'init', 'deinit', 'breakapi', 'fixapi'])) {
     throw new moodle_exception('error:invalid_command', 'local_competvet');
 }
 $PAGE->set_context(context_system::instance());
@@ -46,9 +46,11 @@ switch ($command) {
     case 'init':
         $testdriver->init_test();
         echo "Starting test.";
+        $testdriver->break_api(false);
         break;
     case 'deinit':
         $testdriver->deinit();
+        $testdriver->break_api(false);
         echo "Stopping test.";
         break;
     case 'run':
@@ -66,6 +68,14 @@ switch ($command) {
             }
         }
         echo "Executing scenario. $result";
+        break;
+    case 'breakapi':
+        $testdriver->break_api();
+        echo "Breaking API.";
+        break;
+    case 'fixapi':
+        $testdriver->break_api(false);
+        echo "Fixing API.";
         break;
     default:
         echo 'Invalid command';

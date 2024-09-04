@@ -233,4 +233,17 @@ class competvet_util extends testing_util {
         // Re-enable cron.
         set_config('cron_enabled', 1);
     }
+
+    public function break_api(bool $break = true) {
+        set_config('api_broken', $break, 'local_competvet');
+    }
+
+    public static function is_api_broken(): bool {
+        global $CFG;
+        $preconditions = !empty($CFG->compet_test_driver_mode) && $CFG->debugdeveloper;
+        if (!$preconditions) {
+            return false;
+        }
+        return get_config('local_competvet', 'api_broken') ?? false;
+    }
 }
