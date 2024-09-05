@@ -108,6 +108,12 @@ class get_application_mode extends external_api {
             // We do not throw an exception here because we want to return the mode anyway.
             // This is because the user can be a student and an observer at the same time.
             $mode = 'unknown';
+            $warnings[] = [
+                'item' => 'userid',
+                'itemid' => $userid,
+                'warningcode' => $e->errorcode,
+                'message' => $e->getMessage(),
+            ];
         }
         return (object) ['type' => $mode, 'warnings' => $warnings];
     }

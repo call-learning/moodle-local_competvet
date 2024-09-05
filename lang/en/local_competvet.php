@@ -25,6 +25,7 @@ $string['pluginname'] = 'CompetVet Local Plugin';
 $string['appservicename'] = 'CompetVet Mobile Service';
 $string['competvet:mobileaccess'] = 'Access CompetVet Mobile Service';
 $string['competvet:mobileaccess_help'] = 'Access CompetVet Mobile Service';
+$string['generalerror'] = 'An error occurred';
 $string['invalidroleforuser'] = 'Invalid role for user {$a->userid}, check with you administrator to see if the roles
  assigned in different situation are consistent (for example it is not possible to be both observer and student)';
 $string['mobileview:situations']  = 'Situations';
