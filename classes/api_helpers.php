@@ -82,6 +82,8 @@ class api_helpers {
             'fullname' => new \external_value(PARAM_TEXT, 'User fullname', VALUE_OPTIONAL),
             'userpictureurl' => new \external_value(PARAM_URL, 'User picture (avatar) URL', VALUE_OPTIONAL),
             'role' => new \external_value(PARAM_TEXT, 'User role', VALUE_OPTIONAL),
+            'firstname' => new \external_value(PARAM_TEXT, 'User firstname', VALUE_OPTIONAL),
+            'lastname' => new \external_value(PARAM_TEXT, 'User lastname', VALUE_OPTIONAL),
         ];
     }
 
