@@ -172,6 +172,15 @@ $functions = [
         'loginrequired' => true,
         'services' => [utils::COMPETVET_MOBILE_SERVICE],
     ],
+    'local_competvet_get_todos_for_target_user' => [
+        'classname' => \local_competvet\external\get_todos_target_user::class,
+        'methodname' => 'execute',
+        'description' => 'Get the TODO list targetting a specific user',
+        'ajax' => true,
+        'type' => 'read',
+        'loginrequired' => true,
+        'services' => [utils::COMPETVET_MOBILE_SERVICE],
+    ],
     'local_competvet_delete_todo' => [
         'classname' => \local_competvet\external\delete_todo::class,
         'methodname' => 'execute',
