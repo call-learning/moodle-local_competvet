@@ -68,6 +68,8 @@ class api_helpers {
             'status' => new external_value(PARAM_INT, 'TODO current Status'),
             'action' => new external_value(PARAM_INT, 'TODO action to perform'),
             'data' => new external_value(PARAM_RAW, 'TODO data (JSON)'),
+            'timecreated' => new external_value(PARAM_INT, 'TODO creation time'),
+            'timemodified' => new external_value(PARAM_INT, 'TODO modification time'),
         ];
     }
 
