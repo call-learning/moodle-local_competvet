@@ -61,6 +61,9 @@ class get_situations extends external_api {
                             api_helpers::get_planning_info_structure()
                         )
                     ),
+                    'haseval' => new external_value(PARAM_BOOL, 'Is the evaluation active for this situation'),
+                    'hascertif' => new external_value(PARAM_BOOL, 'Is the certif active for this situation'),
+                    'hascase' => new external_value(PARAM_BOOL, 'Is the caselog active for this situation'),
                 ]
             )
         );
