@@ -1,0 +1,12 @@
+{
+  "@class": "org.apereo.cas.services.RegexRegisteredService",
+  "serviceId": "^(https|http)://.*",
+  "name": "Wildcard Service",
+  "id": 1,
+  "description": "Allows any service to authenticate via CAS",
+  "evaluationOrder": 1,
+  "attributeReleasePolicy": {
+    "@class": "org.apereo.cas.services.ReturnAllowedAttributeReleasePolicy",
+    "allowedAttributes": ["java.util.ArrayList", ["email", "displayName", "firtname", "lastname"]]
+  }
+}

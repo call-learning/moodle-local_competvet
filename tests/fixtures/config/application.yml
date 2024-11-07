@@ -1,0 +1,33 @@
+server:
+  port: 8443
+  address: 0.0.0.0  # Make CAS listen only on cas.local
+  ssl:
+    enabled: true
+    key-store: file:/etc/cas/certs/cas.pfx
+    key-store-password: changeit
+    key-password: changeit
+    key-store-type: PKCS12
+cas:
+  serviceRegistry:
+    initFromJson: true
+    json:
+      location: file:/etc/cas/services
+#  authn:
+#    attributeRepository:
+#      stub:
+#        attributes:
+#          casuser:
+#            email: casuser@example.com
+#            displayName: Cas User
+#            firstname: Cas
+#            lastname: Cas
+#          student1cas:
+#            email: student1cas@example.com
+#            displayName: Student One
+#            firstname: Student1
+#            lastname: Cas
+#          observer1cas:
+#            email: observer1cas@example.com
+#            displayName: Observer One
+#            firstname: Observer1
+#            lastname: Cas

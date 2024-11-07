@@ -823,6 +823,10 @@ curl $SITEURL/webservice/rest/server.php   -d "wstoken=$TOKEN"   -d 'wsfunction=
 
 Please replace `<Your URL>`, `$TOKEN`, and `additional_parameters_here` with the appropriate values for your Moodle instance and the specific API calls.
 
+## CAS and Tests ###
+
+To test with CAS login (for testing only) you can follow the README.cas.md file.
+
 ## License ##
 
 2023 CALL Learning <laurent@call-learning.fr>
