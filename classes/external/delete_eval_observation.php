@@ -46,16 +46,16 @@ class delete_eval_observation extends external_api {
      * Return the list of criteria for this situation.
      *
      * @param int $observationid
-     * @return array
+     * @return void
      */
-    public static function execute(int $observationid): array {
+    public static function execute(int $observationid): void {
         [
             'id' => $observationid,
         ] =
             self::validate_parameters(self::execute_parameters(), [
                 'id' => $observationid,
             ]);
-        return delete_observation::execute($observationid);
+        delete_observation::execute($observationid);
     }
 
     /**
