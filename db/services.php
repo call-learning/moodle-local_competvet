@@ -46,14 +46,6 @@ $functions = [
         'capabilities' => 'local/competvet:mobileaccess',
         'services' => [utils::COMPETVET_MOBILE_SERVICE],
     ],
-    'local_competvet_get_idplist' => [
-        'classname' => \local_competvet\external\idplist::class,
-        'methodname' => 'execute',
-        'description' => 'Get IDP list for connexion',
-        'ajax' => true,
-        'type' => 'read',
-        'loginrequired' => false,
-    ],
     'local_competvet_get_situations' => [
         'classname' => \local_competvet\external\get_situations::class,
         'methodname' => 'execute',

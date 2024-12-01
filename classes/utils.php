@@ -15,7 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace local_competvet;
 
-use coding_exception;
 use context_system;
 use core\event\webservice_token_created;
 use core\session\manager;
@@ -46,7 +45,7 @@ class utils {
      */
     public static function get_mobile_services_definition(array $functions): array {
         $cvemobilename = get_string('appservicename', 'local_competvet');
-        $servicesfunctions = array_filter($functions, function ($funct) {
+        $servicesfunctions = array_filter($functions, function($funct) {
             return in_array(self::COMPETVET_MOBILE_SERVICE, $funct['services'] ?? []);
         });
         return [
@@ -292,7 +291,8 @@ class utils {
                 // Generate the private token, it must be transmitted only via https.
                 $token->privatetoken = random_string(64);
                 $token->id = $DB->insert_record('external_tokens', $token);
-
+                // Since MDL-76656, we need to generate a name for the token.
+                $token->name = \core_external\util::generate_token_name();
                 $eventtoken = clone $token;
                 $eventtoken->privatetoken = null;
                 $params = [
@@ -311,6 +311,35 @@ class utils {
         }
 
         return $token;
+    }
+
+    /**
+     * Get IDP list
+     *
+     * @return array
+     */
+    public static function get_idp_list() {
+        $authsenabled = get_enabled_auth_plugins();
+        $idplist = [];
+        foreach ($authsenabled as $auth) {
+            $authplugin = get_auth_plugin($auth);
+            $currentidplist = $authplugin->loginpage_idp_list(utils::get_application_launch_url([]));
+            foreach ($currentidplist as $index => $idp) {
+                if ($auth == 'cas') {
+                    $idp['url'] = (new moodle_url('/local/competvet/webservices/cas-login.php', ['authCAS' => 'CAS']))->out();
+                } else {
+                    $idp['url'] = $idp['url'] ? $idp['url']->out() : '';
+                }
+                $idp['iconurl'] = $idp['iconurl'] ? $idp['iconurl']->out() : '';
+                $idp['name'] = $idp['name'] ?? '';
+                $idp['id'] = strtolower($auth) . '-' . $index;
+                $currentidplist[$index] = $idp;
+            }
+            if ($currentidplist) {
+                $idplist = array_merge($currentidplist, $idplist);
+            }
+        }
+        return $idplist;
     }
 
     /**
