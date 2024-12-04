@@ -19,48 +19,27 @@ docker pull apereo/cas:v5.3.10
 
 ## Step 2: Generate a Self-Signed Certificate for SSL
 
-To enable HTTPS and use a local domain (e.g., `cas.local`), generate a self-signed certificate:
+To enable HTTPS and use a local domain (e.g., `cas.dev.call-learning.io`), generate certificate if needed (Let's encrypt)
 
-1. **Create a directory for certificates**:
-   ```bash
-   mkdir -p ./tests/fixtures/certs
-   ```
-2. **Navigate to the certificates directory**:
-   ```bash
-   cd ./tests/fixtures/certs
-   ```
-3. **Generate a private key and certificate**:
-   ```bash
-   openssl req -x509 -newkey rsa:4096 -keyout cas.key -out cas.crt -days 365 -nodes
-   ```
-   - When prompted, enter `cas.local` as the **Common Name (CN)**.
+**Combine the key and certificate into a PKCS12 (PFX) file**:
 
-4. **Combine the key and certificate into a PKCS12 (PFX) file**:
-   ```bash
-   openssl pkcs12 -export -in cas.crt -inkey cas.key -out cas.pfx -name "cas" -passout pass:changeit
-   ```
-5. **Return to the project root directory**:
-   ```bash
-   cd ../../../
-   ```
-6. ** Add the self signed certificate to Ubuntu's trusted certificates**:
-   ```bash
-   sudo cp ./tests/fixtures/certs/cas.crt /usr/local/share/ca-certificates/cas.crt
-   sudo update-ca-certificates
-   ```
+```bash
+openssl pkcs12 -export -in cas.crt -inkey cas.key -out cas.pfx -name "cas" -passout pass:changeit
+ ```
+  
 ## Step 3: Configure CAS Properties
 
 Ensure `cas.properties` (password and users), `application.yml` (definition of service) and `wildcard.json` files 
 are located in the `./tests/fixtures/` directory.
 
-## Step 4: Configure Local Domain (cas.local)
+## Step 4: Configure Local Domain (cas.dev.call-learning.io)
 
-1. To access CAS at `https://cas.local:8443`, add the following line to your `/etc/hosts` file:
+1. To access CAS at `https://cas.dev.call-learning.io:8443`, add the following line to your `/etc/hosts` file:
    ```plaintext
-   127.0.0.1 cas.local
+   127.0.0.1 cas.dev.call-learning.io
    ```
 
-2. This will map `cas.local` to your localhost, allowing you to use it as a local domain.
+2. This will map `cas.dev.call-learning.io` to your localhost, allowing you to use it as a local domain.
 
 ## Step 5: Run the CAS Server Container with SSL
 
@@ -84,7 +63,7 @@ This command will:
 After starting the CAS server, access it in your browser at:
 
 ```
-https://cas.local:8443/cas
+https://cas.dev.call-learning.io:8443/cas
 ```
 
 You should see the CAS login page, indicating the server is running over HTTPS on the local domain.
@@ -95,7 +74,7 @@ You should see the CAS login page, indicating the server is running over HTTPS o
 2. Enable **CAS server (SSO)** by clicking the eye icon.
 3. Click on **Settings** next to CAS server (SSO).
 4. Configure the following settings:
-   - **Hostname**: `cas.local`
+   - **Hostname**: `cas.dev.call-learning.io`
    - **Base URI**: `/cas`
    - **Port**: `8443`
    - **Version**: `2.0`
@@ -139,7 +118,7 @@ This guide provides steps to configure `dnsmasq` to handle custom domain names o
 
 - A running Android emulator.
 - `dnsmasq` installed on your development machine.
-- An Apereo CAS server or other service running locally and accessible via custom domains, e.g., `http://competveteval.local` and `https://cas.local:8443`.
+- An Apereo CAS server or other service running locally and accessible via custom domains, e.g., `http://competveteval.local` and `https://cas.dev.call-learning.io:8443`.
 
 ## Steps
 
@@ -166,7 +145,8 @@ sudo apt install dnsmasq
 2. Add entries to map custom domains:
    ```plaintext
    address=/competveteval.local/127.0.0.1 # Or the URL of your Moodle installation
-   address=/cas.local/127.0.0.1
+   address=/cas.dev.call-learning.io/127.0.0.1
+   listen-address=127.0.0.2,127.0.0.1
    ```
 
 3. Save and close the file.
@@ -195,8 +175,8 @@ If your system is using `systemd-resolved`, configure it to forward specific dom
 2. Add or modify the settings:
    ```plaintext
    [Resolve]
-   DNS=127.0.0.1
-   Domains=~competveteval.local ~cas.local
+   DNS=127.0.0.2
+   Domains=~local
    ```
 
 3. Restart `systemd-resolved` and `dnsmasq`:
@@ -212,17 +192,36 @@ Link `/etc/resolv.conf` to the resolved configuration if necessary:
 sudo ln -sf /run/systemd/resolve/resolv.conf /etc/resolv.conf
 ```
 
-### 6. Verify DNS Configuration
+### 6. Add DNS entries for the servers
+
+Add the following entries to your `/etc/hosts` file:
+
+```plaintext
+   127.0.0.1 cas.dev.call-learning.io competveteval.local
+   10.0.2.2 cas.dev.call-learning.io competveteval.local
+```
+
+### 7. Verify DNS Configuration
 
 Use `nslookup` or `dig` to confirm the domains resolve to `127.0.0.53` or `127.0.0.1` (if no systemd-resolved):
 ```bash
 nslookup competveteval.local
-nslookup cas.local
+nslookup cas.dev.call-learning.io
 ```
 
 Both should return `127.0.0.53`.
 
-### 7. Set Android Emulator DNS to Use `dnsmasq`
+```plaintext
+   Server:         127.0.0.53
+   Address:        127.0.0.53#53
+
+   Non-authoritative answer:
+   Name:   cas.dev.call-learning.io
+   Address: 127.0.0.1
+   Name:   cas.dev.call-learning.io
+```
+
+### 8. Check the emulator Use `dnsmasq`
 
 When starting the Android emulator, specify `127.0.0.1` as the DNS server:
 ```bash
@@ -230,11 +229,28 @@ emulator -avd YourEmulatorName -dns-server 127.0.0.1
 ```
 
 Replace `YourEmulatorName` with the actual name of your emulator.
+Check that https://cas.dev.call-learning.io:8443/cas is accessible from the emulator.
+
+### 9. Create SSL certificate for the server
+
+Create a SSL certificate for the server (competveteval.local) and add it to the Android emulator.
+
+```bash
+openssl req -x509 -newkey rsa:4096 -keyout server.key -out server.crt -days 365 -nodes
+```
+
+Copy the certificate to local trusted certificates:
+
+```bash
+   sudo cp competveteval.crt /etc/ssl/certs/competveteval.crt
+   sudo cp competveteval.key /etc/ssl/private/competveteval.key
+   sudo update-ca-certificates
+```
 
 ### 8. Test the Setup
 
-1. Start the CAS server or any service mapped to the custom domains (`competveteval.local` and `cas.local`). Ensure they are accessible at `127.0.0.1` on your host.
-2. Launch your app in the Android emulator and initiate any flow that relies on `competveteval.local` or `cas.local`.
+1. Start the CAS server or any service mapped to the custom domains (`competveteval.local` and `cas.dev.call-learning.io`). Ensure they are accessible at `127.0.0.1` on your host.
+2. Launch your app in the Android emulator and initiate any flow that relies on `competveteval.local` or `cas.dev.call-learning.io`.
 3. Confirm the Android app resolves the custom domains correctly and completes the flow.
 
 ---
@@ -244,3 +260,10 @@ Replace `YourEmulatorName` with the actual name of your emulator.
 - **DNS Issues**: If the custom domains aren’t resolving, double-check `/etc/hosts` and ensure `dnsmasq` is running.
 - **Port Forwarding**: If using non-standard ports, consider setting up port forwarding between the emulator and host with `adb reverse`.
 - **SSL Certificates**: If using HTTPS with a self-signed certificate, install it on the emulator to avoid SSL errors.
+
+
+## Additional steps
+
+Create a SSL certificate for the server (if not already done) and add it to the Android emulator.
+
+

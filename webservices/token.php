@@ -29,7 +29,9 @@
 define('AJAX_SCRIPT', true);
 define('REQUIRE_CORRECT_ACCESS', true);
 define('NO_MOODLE_COOKIES', true);
-
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
 use core\session\manager;
 use local_competvet\utils;
 
@@ -38,7 +40,7 @@ global $CFG, $OUTPUT, $USER, $DB;
 require_once($CFG->libdir . '/externallib.php');
 
 // Allow CORS requests.
-header('Access-Control-Allow-Origin: *');
+
 
 if (!$CFG->enablewebservices) {
     throw new moodle_exception('enablewsdescription', 'webservice');

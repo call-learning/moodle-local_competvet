@@ -32,8 +32,8 @@ define('READ_ONLY_SESSION', true);
 if (!empty($_GET['nosessionupdate'])) {
     define('NO_SESSION_UPDATE', true);
 }
-header('Access-Control-Allow-Origin: *');
 require_once('../../../config.php');
+header('Access-Control-Allow-Origin: *');
 define('PREFERRED_RENDERER_TARGET', RENDERER_TARGET_GENERAL);
 use local_competvet\utils;
 global $PAGE;

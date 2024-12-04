@@ -350,7 +350,7 @@ class utils {
      * @throws moodle_exception
      */
     public static function get_application_launch_url($params) {
-        $url = new moodle_url('/', $params);
-        return "fr.calllearning.competvet://" . $url->get_query_string();
+        $url = new moodle_url('/auth', $params);
+        return "fr.calllearning.competvet:/" . $url->out_as_local_url(false);
     }
 }

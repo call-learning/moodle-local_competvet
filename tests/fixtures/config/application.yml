@@ -3,7 +3,7 @@ server:
   address: 0.0.0.0  # Make CAS listen only on cas.local
   ssl:
     enabled: true
-    key-store: file:/etc/cas/certs/cas.pfx
+    key-store: file:/etc/cas/certs/cas.p12
     key-store-password: changeit
     key-password: changeit
     key-store-type: PKCS12

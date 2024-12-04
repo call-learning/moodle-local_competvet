@@ -117,7 +117,7 @@ if ($frm && isset($frm->username)) {                             // Login WITH c
         // Passport is generated in the mobile app, so the app opening can be validated using that variable.
         // Passports are valid only one time, it's deleted in the app once used.
         // No trailing slash.
-        $siteid = md5(rtrim($CFG->wwwroot, '/'));
+        $siteid = sha1(rtrim($CFG->wwwroot, '/'));
         $apptoken = $siteid . ':::' . $token->token;
         if ($privatetoken && is_https() && !$siteadmin) {
             $apptoken .= ':::' . $privatetoken;
@@ -126,6 +126,7 @@ if ($frm && isset($frm->username)) {                             // Login WITH c
         $apptoken = base64_encode($apptoken);
 
         $mobilelaunchparams['token'] = $apptoken;
+        $mobilelaunchparams['userid'] = $user->id;
     }
 }
 
