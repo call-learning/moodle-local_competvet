@@ -60,6 +60,7 @@ class competvet_util extends testing_util {
         }
         self::reset_test();
         set_config('cron_enabled', 1);
+        set_config('sendcoursewelcomemessage', 0, 'enrol_manual');
     }
 
     /**
