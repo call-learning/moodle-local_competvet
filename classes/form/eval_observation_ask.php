@@ -22,10 +22,16 @@ use mod_competvet\local\api\plannings;
 /**
  * Observation create form
  *
- * @package    mod_competvet
+ * @package    local_competvet
+ * @copyright  2024 CALL Learning <laurent@call-learning.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class eval_observation_ask extends \mod_competvet\form\eval_observation_ask {
+    /**
+     * Process dynamic submission
+     *
+     * @return array
+     */
     public function process_dynamic_submission() {
         global $PAGE;
         $renderer = $PAGE->get_renderer('local_competvet');

@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 namespace local_competvet\external;
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
@@ -61,7 +62,7 @@ class get_certs_item_info extends external_api {
             self::validate_parameters(self::execute_parameters(), ['id' => $id]);
 
         self::validate_context(context_system::instance());
-        // TODO validate we can access this declaration.
+        // Validate we can access this declaration.
         $certification = certifications::get_certification($id, true);
         $certification['supervisors'] = [];
         if ($certification['declid']) {

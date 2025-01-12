@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 namespace local_competvet;
 
 use context_system;
@@ -323,7 +324,7 @@ class utils {
         $idplist = [];
         foreach ($authsenabled as $auth) {
             $authplugin = get_auth_plugin($auth);
-            $currentidplist = $authplugin->loginpage_idp_list(utils::get_application_launch_url([]));
+            $currentidplist = $authplugin->loginpage_idp_list(self::get_application_launch_url([]));
             foreach ($currentidplist as $index => $idp) {
                 if ($auth == 'cas') {
                     $idp['url'] = (new moodle_url('/local/competvet/webservices/cas-login.php', ['authCAS' => 'CAS']))->out();

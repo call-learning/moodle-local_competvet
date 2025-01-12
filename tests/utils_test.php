@@ -74,7 +74,7 @@ final class utils_test extends \advanced_testcase {
             'name' => 'CompetVet Mobile Service',
             'shortname' => 'competvet_app_service',
             'requiredcapability' => '',
-            'restrictedusers' => 0
+            'restrictedusers' => 0,
         ];
         $this->setUser($USER);
         $token = utils::external_generate_token_for_current_user($service);
@@ -113,7 +113,7 @@ final class utils_test extends \advanced_testcase {
                 'url' => 'https://www.example.com/moodle/local/competvet/webservices/cas-login.php?authCAS=CAS',
                 'iconurl' => '',
                 'name' => 'Test CAS',
-                'id' => 'cas-0'
+                'id' => 'cas-0',
             ],
             $idplist[0],
         );

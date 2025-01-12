@@ -17,7 +17,7 @@
 /**
  * CLI script to test API through CURL.
  *
- * @package   mod_competvet
+ * @package   local_competvet
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

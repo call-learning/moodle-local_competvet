@@ -13,9 +13,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 namespace local_competvet;
-
-
 use context_system;
 use moodle_exception;
 use moodle_url;
@@ -24,11 +23,18 @@ use moodle_url;
  * Mobile view helper class.
  *
  * @package   local_competvet
- * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @copyright  2024 CALL Learning <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mobileview_helper {
 
+    /**
+     * Call API
+     *
+     * @param string $apifunctionname
+     * @param array $parameters
+     * @return array
+     */
     public static function call_api(string $apifunctionname, array $parameters): array {
         $now = microtime(true);
         try {
@@ -45,6 +51,13 @@ class mobileview_helper {
         }
     }
 
+    /**
+     * Mobile view header
+     *
+     * @param moodle_url $currenturl
+     * @param moodle_url|null $backurl
+     * @return moodle_url
+     */
     public static function mobile_view_header(moodle_url $currenturl, ?moodle_url $backurl = null): moodle_url {
         global $PAGE, $OUTPUT;
         $context = context_system::instance();

@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 namespace local_competvet\form;
 
 use local_competvet\mobileview_helper;
@@ -24,7 +25,8 @@ use mod_competvet\local\persistent\observation;
  *
  * Observation edit form
  *
- * @package    mod_competvet
+ * @package    local_competvet
+ * @copyright  2024 CALL Learning <laurent@call-learning.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class eval_observation_edit extends \mod_competvet\form\eval_observation_edit {
@@ -33,6 +35,9 @@ class eval_observation_edit extends \mod_competvet\form\eval_observation_edit {
      */
     private $debugs = [];
 
+    /**
+     * Set form data from observation information
+     */
     public function set_data_for_dynamic_submission(): void {
         $observationid = $this->optional_param('id', null, PARAM_INT);
         ['results' => $data, 'debug' => $this->debugs[]] =
@@ -42,6 +47,12 @@ class eval_observation_edit extends \mod_competvet\form\eval_observation_edit {
             );
         $this->set_data_for_dynamic_submission_helper($data);
     }
+
+    /**
+     * Set form data from observation information
+     *
+     * @return void
+     */
     public function definition_after_data() {
         global $PAGE;
         $mform = $this->_form;

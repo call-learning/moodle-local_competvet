@@ -31,6 +31,7 @@ use mod_competvet\local\api\certifications;
  * Edit certif item.
  *
  * @package   local_competvet
+ * @copyright  2024 CALL Learning <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class edit_certs_decl extends external_api {

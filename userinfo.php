@@ -49,10 +49,10 @@ echo $OUTPUT->box_end();
 echo $OUTPUT->box_start();
 $situationsid = situation::get_all_situations_id_for($userid);
 $list = [];
-foreach($situationsid as $situationid) {
+foreach ($situationsid as $situationid) {
     $situation = situation::get_record(['id' => $situationid]);
     $competvet = \mod_competvet\competvet::get_from_situation_id($situationid);
-    $situationandroles = "Situation ". $competvet->get_instance()->name . "({$situation->get('shortname')}) ";
+    $situationandroles = "Situation " . $competvet->get_instance()->name . "({$situation->get('shortname')}) ";
     $roles = $situation->get_all_roles($userid);
     $situationandroles .= "Roles: " . implode(', ', $roles) . "<br>";
     $list[] = $situationandroles;

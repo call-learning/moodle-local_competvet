@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 namespace local_competvet\task;
 
 use local_competvet\utils;
@@ -23,11 +24,14 @@ use local_competvet\utils;
  * at this point \core_tag_area::reset_definitions_for_component is called, this is discarded after install or update
  * so cannot be directly called in the update process.
  *
- * @package   mod_competvet
+ * @package   local_competvet
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class post_install extends \core\task\adhoc_task {
+    /**
+     * Execute the task.
+     */
     public function execute() {
         utils::setup_mobile_service(true);
     }

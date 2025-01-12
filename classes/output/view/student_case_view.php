@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 namespace local_competvet\output\view;
 
 use mod_competvet\local\api\cases;
@@ -25,7 +26,7 @@ use stdClass;
 /**
  * Mobile view renderable for the the certification view.
  *
- * @package    mod_competvet
+ * @package    local_competvet
  * @copyright  2023 CALL Learning - Laurent David laurent@call-learning.fr
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

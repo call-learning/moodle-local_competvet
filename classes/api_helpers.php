@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 namespace local_competvet;
 
 use external_multiple_structure;
@@ -56,6 +57,11 @@ class api_helpers {
         ];
     }
 
+    /**
+     * Get Todo info structure
+     *
+     * @return array
+     */
     public static function get_todo_info_structure(): array {
         return [
             'id' => new external_value(PARAM_INT, 'TODO internal ID'),
@@ -107,6 +113,11 @@ class api_helpers {
         ];
     }
 
+    /**
+     * Get certification info structure
+     *
+     * @return array
+     */
     public static function get_certif_info_structure(): array {
         return
             [
@@ -155,6 +166,11 @@ class api_helpers {
             ];
     }
 
+    /**
+     * Get Caselog info structure
+     *
+     * @return array
+     */
     public static function get_case_info_structure(): array {
         return
             [
@@ -167,6 +183,11 @@ class api_helpers {
             ];
     }
 
+    /**
+     * Get Caselog item info structure
+     *
+     * @return array
+     */
     public static function get_case_item_info_structure() {
         return [
             'id' => new external_value(PARAM_INT, 'The case id'),
@@ -205,6 +226,11 @@ class api_helpers {
         ];
     }
 
+    /**
+     * Get Caselog category info structure
+     *
+     * @return array
+     */
     public static function get_caselog_category_info_structure(): array {
         return [
             'id' => new external_value(PARAM_INT, 'The category id'),
@@ -260,6 +286,11 @@ class api_helpers {
         ];
     }
 
+    /**
+     * Get observation info structure
+     *
+     * @return array
+     */
     public static function get_observation_info_structure(): array {
         return [
             'id' => new external_value(PARAM_INT, 'Observation ID'),

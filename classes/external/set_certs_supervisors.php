@@ -32,6 +32,7 @@ use mod_competvet\local\api\certifications;
  * Set certif supervisors.
  *
  * @package   local_competvet
+ * @copyright  2024 CALL Learning <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class set_certs_supervisors extends external_api {

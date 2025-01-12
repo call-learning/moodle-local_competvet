@@ -21,7 +21,8 @@ use local_competvet\mobileview_helper;
 /**
  * Observation create form
  *
- * @package    mod_competvet
+ * @package    local_competvet
+ * @copyright  2024 CALL Learning <laurent@call-learning.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class cert_decl_student extends \mod_competvet\form\cert_decl_student {

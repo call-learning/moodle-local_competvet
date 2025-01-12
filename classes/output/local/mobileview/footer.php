@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 namespace local_competvet\output\local\mobileview;
 
 use renderer_base;
@@ -30,7 +31,14 @@ class footer implements \renderable, \templatable {
      *
      * @param string $selectedtab
      */
-    public function __construct(protected string $selectedtab) {
+    public function __construct(
+        /**
+         * The selected tab.
+         *
+         * @var string
+         */
+        protected string $selectedtab
+    ) {
     }
 
     /**

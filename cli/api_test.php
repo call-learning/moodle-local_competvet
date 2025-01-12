@@ -17,11 +17,10 @@
 /**
  * CLI script to test API through CURL.
  *
- * @package   mod_competvet
+ * @package   local_competvet
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 use mod_competvet\local\persistent\observation_comment;
 
 define('CLI_SCRIPT', true);
@@ -55,6 +54,13 @@ if ($options['help']) {
     cli_writeln($usage);
     die();
 }
+/**
+ * Set curl session.
+ *
+ * @param $url
+ * @param $postdata
+ * @return CurlHandle|false
+ */
 function get_curl_session($url, $postdata) {
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -63,6 +69,14 @@ function get_curl_session($url, $postdata) {
     return $ch;
 }
 
+/**
+ * Authenticate the user.
+ *
+ * @param $baseurl
+ * @param $username
+ * @param $password
+ * @return mixed
+ */
 function authenticate($baseurl, $username, $password) {
     $url = $baseurl . '/local/competvet/webservices/token.php';
     $postdata = [

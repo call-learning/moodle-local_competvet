@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 namespace local_competvet\output\local\mobileview;
 
 use renderer_base;
@@ -25,10 +26,22 @@ use renderer_base;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class debug implements \renderable, \templatable {
+    /**
+     * Constructor
+     *
+     * @param string $apifunction
+     * @param array|null $params
+     * @param mixed $results
+     * @param float|null $duration
+     */
     public function __construct(
+        /** @var string The API function name  */
         protected string $apifunction,
+        /**@var array Params*/
         protected ?array $params,
+        /** @var mixed Results*/
         protected mixed $results,
+        /** @var fload|null  Duration */
         protected ?float $duration
     ) {
     }

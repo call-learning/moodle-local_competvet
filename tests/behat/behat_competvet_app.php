@@ -15,7 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
-
 require_once(__DIR__ . '/../../../../lib/behat/behat_base.php');
 
 // Special thanks to Moodle HQ & Noel De Martin for the following snippet.
@@ -23,6 +22,14 @@ use Behat\Behat\Hook\Scope\ScenarioScope;
 use Behat\Mink\Exception\DriverException;
 use Behat\Mink\Exception\ExpectationException;
 
+/**
+ * Behat context for CompetVet app.
+ * This context is used to interact with the CompetVet app in Behat tests.
+ *
+ * @package local_competvet
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright 2024 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ */
 class behat_competvet_app extends behat_base {
     protected $featurepath = '';
     /**
