@@ -113,6 +113,7 @@ final class utils_test extends \advanced_testcase {
                 'url' => 'https://www.example.com/moodle/local/competvet/webservices/cas-login.php?authCAS=CAS',
                 'iconurl' => '',
                 'name' => 'Test CAS',
+                'id' => 'cas-0'
             ],
             $idplist[0],
         );

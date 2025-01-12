@@ -52,6 +52,8 @@ class get_situations extends external_api {
                     'intro' => new external_value(PARAM_RAW, 'Situation full description'),
                     'evalnum' => new external_value(PARAM_INT, 'Required evaluation count'),
                     'autoevalnum' => new external_value(PARAM_INT, 'Required auto-evaluation count'),
+                    'certifpnum' => new external_value(PARAM_INT, 'Required certification count'),
+                    'casenum' => new external_value(PARAM_INT, 'Required case count'),
                     'roles' => new external_value(PARAM_RAW, 'User roles in this situation
                             (student, observer, evaluator) in a JSON array, with the highest role first'),
                     'category' => new external_value(PARAM_RAW, 'Situation category (Y1, Y2)'),
