@@ -292,7 +292,11 @@ class utils {
                 $token->privatetoken = random_string(64);
                 $token->id = $DB->insert_record('external_tokens', $token);
                 // Since MDL-76656, we need to generate a name for the token.
-                $token->name = \core_external\util::generate_token_name();
+                if (function_exists(\core_external\util::generate_token_name)) {
+                    $token->name = \core_external\util::generate_token_name();
+                } else {
+                    $token->name = '';
+                }
                 $eventtoken = clone $token;
                 $eventtoken->privatetoken = null;
                 $params = [
