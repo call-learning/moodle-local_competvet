@@ -50,7 +50,8 @@ class competvet_util extends testing_util {
         @mkdir($CFG->dataroot . '/' . $framework, 0777, true);
         set_config('cron_enabled', 0);
         // Run all adhoc task.
-        $now = time();
+        $clock = \core\di::get(\core\clock::class);
+        $now = $clock->time();
         while (($task = \core\task\manager::get_next_adhoc_task($now)) !== null) {
             try {
                 $task->execute();

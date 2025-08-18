@@ -210,6 +210,7 @@ class get_application_mode_test extends \advanced_testcase {
      */
     private function setup_course_and_user_from_data(array $definition): int {
         global $DB;
+        $clock = $this->mock_clock_with_frozen();
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         foreach ($definition as $coursename => $data) {
@@ -230,8 +231,8 @@ class get_application_mode_test extends \advanced_testcase {
                 $situation = competvet::get_from_instance_id($module->id)->get_situation();
                 // Create at least one planning for students if not test will fail as student will have no role.
                 $planning = new planning(0, (object) [
-                    'startdate' => time(),
-                    'enddate' => time() * 24 * 3600,
+                    'startdate' => $clock->time(),
+                    'enddate' => $clock->time() * 24 * 3600,
                     'groupid' => $group->id,
                     'session' => 'session',
                     'situationid' => $situation->get('id'),

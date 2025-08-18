@@ -43,7 +43,7 @@ $frm = false;
 $user = false;
 $authplugin->loginpage_hook();
 $mobilelaunchparams = [];
-
+$clock = \core\di::get(\core\clock::class);
 if ($frm && isset($frm->username)) {                             // Login WITH cookies.
 
     $frm->username = trim(core_text::strtolower($frm->username));
@@ -95,7 +95,7 @@ if ($frm && isset($frm->username)) {                             // Login WITH c
         complete_user_login($user);
 
         // Get an existing token or create a new one.
-        $timenow = time();
+        $timenow = $clock->time();
         // Check if the service exists and is enabled.
         $service = $DB->get_record('external_services', ['shortname' => utils::COMPETVET_MOBILE_SERVICE, 'enabled' => 1]);
         if (empty($service)) {

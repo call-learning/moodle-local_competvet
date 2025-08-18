@@ -199,6 +199,7 @@ class utils {
      */
     public static function external_generate_token_for_current_user($service) {
         global $DB, $USER, $CFG;
+        $clock = \core\di::get(\core\clock::class);
 
         core_user::require_active_user($USER, true, true);
 
@@ -218,7 +219,7 @@ class utils {
                 throw new moodle_exception('usernotallowed', 'webservice', '', $service->shortname);
             }
 
-            if (!empty($authoriseduser->validuntil) && $authoriseduser->validuntil < time()) {
+            if (!empty($authoriseduser->validuntil) && $authoriseduser->validuntil < $clock->time()) {
                 throw new moodle_exception('invalidtimedtoken', 'webservice');
             }
 
@@ -250,7 +251,7 @@ class utils {
             }
 
             // Remove token is not valid anymore.
-            if (!empty($token->validuntil) && $token->validuntil < time()) {
+            if (!empty($token->validuntil) && $token->validuntil < $clock->time()) {
                 $DB->delete_records('external_tokens', ['token' => $token->token, 'tokentype' => EXTERNAL_TOKEN_PERMANENT]);
                 $unsettoken = true;
             }
@@ -282,7 +283,7 @@ class utils {
                 $token->tokentype = EXTERNAL_TOKEN_PERMANENT;
                 $token->contextid = context_system::instance()->id;
                 $token->creatorid = $USER->id;
-                $token->timecreated = time();
+                $token->timecreated = $clock->time();
                 $token->externalserviceid = $service->id;
                 // By default tokens are valid for 12 weeks.
                 $token->validuntil = $token->timecreated + $CFG->tokenduration;
