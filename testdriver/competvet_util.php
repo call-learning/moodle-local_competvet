@@ -19,22 +19,29 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->libdir . '/testing/classes/util.php');
 require_once($CFG->libdir . '/testing/lib.php');
-
+require_once($CFG->libdir . '/behat/classes/behat_config_manager.php');
 // No NAMESPACE here because it confuses get_framework() in util.php.
-use Behat\Gherkin\Keywords\ArrayKeywords;
-use Behat\Gherkin\Lexer;
-use Behat\Gherkin\Parser;
-use tool_generator\local\testscenario\parsedfeature;
-use tool_generator\local\testscenario\steprunner;
 
+/**
+ * Utility class for competvet test driver.
+ *
+ * @package    local_competvet
+ * @copyright  2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class competvet_util extends testing_util {
+    /** @var array List of dataroot directories to skip when resetting the dataroot */
     public static $datarootskiponreset = ['.', '..', 'filedir', 'lang', 'muc', 'session'];
     /** @var array An array of original globals, restored after each test */
     protected static $globals = [];
     /** @var array of valid steps indexed by given expression tag. */
     private array $validsteps;
+    /** @var behat_base the behat step class instance. */
     private behat_data_generators $behatgenerator;
 
+    /**
+     * Constructor.
+     */
     public function __construct() {
         global $CFG, $SITE, $DB, $FULLME;
         self::$globals['_SERVER'] = $_SERVER;
@@ -44,6 +51,9 @@ class competvet_util extends testing_util {
         self::$globals['FULLME'] = $FULLME;
     }
 
+    /**
+     * Prepare the test environment.
+     */
     public function init_test() {
         global $CFG;
         $framework = self::get_framework();
@@ -63,27 +73,15 @@ class competvet_util extends testing_util {
         self::reset_test();
         set_config('cron_enabled', 1);
         set_config('sendcoursewelcomemessage', 0, 'enrol_manual');
-    }
-
-    /**
-     * Execute a parsed feature.
-     *
-     * @param parsedfeature $parsedfeature the parsed feature to execute.
-     * @return bool true if all steps were executed successfully.
-     */
-    public function execute(parsedfeature $parsedfeature): bool {
-        if (!$parsedfeature->is_valid()) {
-            return false;
-        }
-        $result = true;
-        $steps = $parsedfeature->get_all_steps();
-        foreach ($steps as $step) {
-            $result = $step->execute() && $result;
-            if ($step->get_error()) {
-                $parsedfeature->add_error($step->get_error());
+        if (!file_exists($CFG->dirroot . '/vendor/autoload.php')) {
+            // Force OPcache reset if used, we do not want any stale caches
+            // when preparing test environment.
+            if (function_exists('opcache_reset')) {
+                opcache_reset();
             }
+            // Install and update composer and dependencies as required.
+            testing_update_composer_dependencies(false, false);
         }
-        return $result;
     }
 
     /**
@@ -169,7 +167,6 @@ class competvet_util extends testing_util {
     /**
      * Returns original state of global variable.
      *
-     * @static
      * @param string $name
      * @return mixed
      */
@@ -237,10 +234,21 @@ class competvet_util extends testing_util {
         set_config('cron_enabled', 1);
     }
 
+    /**
+     * Break or fix the API.
+     *
+     * @param bool $break
+     * @return void
+     */
     public function break_api(bool $break = true) {
         set_config('api_broken', $break, 'local_competvet');
     }
 
+    /**
+     * Check if the API is broken.
+     *
+     * @return bool
+     */
     public static function is_api_broken(): bool {
         global $CFG;
         $preconditions = !empty($CFG->compet_test_driver_mode) && $CFG->debugdeveloper;
@@ -248,5 +256,31 @@ class competvet_util extends testing_util {
             return false;
         }
         return get_config('local_competvet', 'api_broken') ?? false;
+    }
+
+    /**
+     * Execute a given scenario.
+     *
+     * @param string $scenarioname
+     * @return bool
+     */
+    public function execute_scenario(string $scenarioname): bool {
+        global $CFG;
+        if (function_exists('opcache_reset')) {
+            opcache_reset();
+        }
+        \core\session\manager::set_user(get_admin());
+        $testsscenariorunner = new \tool_generator\local\testscenario\runner();
+        try {
+            $testsscenariorunner->init();
+        } catch (Exception $e) {
+            debugging('Behat setup is not correct. Please run "php admin/tool/behat/cli/init.php" from Moodle root directory.',
+                DEBUG_DEVELOPER);
+            debugging($e->getMessage(), DEBUG_DEVELOPER);
+            return false;
+        }
+        $content = file_get_contents($CFG->dirroot . '/local/competvet/tests/app_scenario/' . $scenarioname . '.feature');
+        $parsedfeature = $testsscenariorunner->parse_feature($content);
+        return $testsscenariorunner->execute($parsedfeature);
     }
 }

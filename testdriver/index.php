@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-use mod_competvet\tests\test_scenario;
 /**
  * Main interface to Moodle PHP code check.
  *
@@ -47,32 +46,18 @@ switch ($command) {
         $testdriver->init_test();
         echo 'Starting test.';
         $testdriver->break_api(false);
-
         break;
 
     case 'deinit':
         $testdriver->deinit();
         $testdriver->break_api(false);
         echo 'Stopping test.';
-
         break;
 
     case 'run':
-        global $CFG;
-        $testsscenariorunner = new test_scenario();
-        $content = optional_param('scenario', 'scenario_1', PARAM_ALPHANUMEXT);
-        $content = file_get_contents($CFG->dirroot.'/local/competvet/tests/app_scenario/'.$content.'.feature');
-        $parsedfeature = $testsscenariorunner->parse_feature($content);
-        $result = $testsscenariorunner->execute($parsedfeature);
-        if (!$result) {
-            foreach ($parsedfeature->get_scenarios() as $scenario) {
-                foreach ($scenario->steps as $step) {
-                    echo html_writer::div('Step: '.$step->get_text().$step->get_error());
-                }
-            }
-        }
+        $scenarioname = optional_param('scenario', 'scenario_1', PARAM_ALPHANUMEXT);
+        $result = $testdriver->execute_scenario($scenarioname);
         echo "Executing scenario. {$result}";
-
         break;
 
     case 'breakapi':
@@ -84,11 +69,9 @@ switch ($command) {
     case 'fixapi':
         $testdriver->break_api(false);
         echo 'Fixing API.';
-
         break;
 
     default:
         echo 'Invalid command';
-
         break;
 }

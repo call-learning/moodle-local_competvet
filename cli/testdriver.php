@@ -90,18 +90,7 @@ switch ($options['command']) {
         echo "Deinit test.";
         break;
     case 'run':
-        $testsscenariorunner = new \mod_competvet\tests\test_scenario();
-        $content = $options['scenario'] ?? 'scenario_1';
-        $content = file_get_contents($CFG->dirroot . '/local/competvet/tests/app_scenario/' . $content . '.feature');
-        $parsedfeature = $testsscenariorunner->parse_feature($content);
-        $result = $testsscenariorunner->execute($parsedfeature);
-        if (!$result) {
-            foreach ($parsedfeature->get_scenarios() as $scenario) {
-                foreach ($scenario->steps as $step) {
-                    cli_writeln("Step: " . $step->get_text() . $step->get_error());
-                }
-            }
-        }
+        $result = $testdriver->execute_scenario($options['scenario'] ?? 'scenario_1');
         echo "Executing scenario. $result";
         break;
     case 'breakapi':
@@ -114,6 +103,5 @@ switch ($options['command']) {
         break;
     default:
         cli_writeln('Invalid command');
-
 }
 cli_writeln('Done !');
