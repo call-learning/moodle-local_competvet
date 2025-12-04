@@ -33,6 +33,7 @@ $userid = optional_param('userid', $USER->id, PARAM_INT);
 if (!has_capability('moodle/site:config', context_system::instance())) {
     $userid = $USER->id;
 }
+$PAGE->set_url(new moodle_url('/local/competvet/userinfo.php', ['userid' => $userid]));
 $user = \core_user::get_user($userid);
 
 $debugs = [];
