@@ -326,6 +326,15 @@ $functions = [
         'loginrequired' => true,
         'services' => [utils::COMPETVET_MOBILE_SERVICE],
     ],
+    'local_competvet_logout' => [
+        'classname' => \local_competvet\external\logout::class,
+        'methodname' => 'execute',
+        'description' => 'Logout current user',
+        'ajax' => true,
+        'type' => 'read',
+        'loginrequired' => true,
+        'services' => [utils::COMPETVET_MOBILE_SERVICE],
+    ],
 ];
 
 $services = utils::get_mobile_services_definition($functions);
