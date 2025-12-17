@@ -255,10 +255,11 @@ class api_helpers {
      */
     public static function search_results(): array {
         return [
-            'description' => new external_value(PARAM_TEXT, 'The item name'),
-            'identifier' => new external_value(PARAM_TEXT, 'The item name'),
-            'type' => new external_value(PARAM_TEXT, 'The item type'),
-            'itemid' => new external_value(PARAM_INT, 'The item URL'),
+            'id' => new external_value(PARAM_INT, 'The item id'),
+            'type' => new external_value(PARAM_ALPHANUMEXT, 'The item type (planning, user...)'),
+            'description' => new external_value(PARAM_TEXT, 'The item description'),
+            'identifier' => new external_value(PARAM_TEXT, 'The item identifier'),
+            'additionalinfos' => new external_value(PARAM_RAW, 'The item additional info (json)', VALUE_OPTIONAL),
         ];
     }
 

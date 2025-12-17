@@ -192,6 +192,12 @@ $results['observer1results'] = [
                     'session' => '2023',
                     'groupname' => 'group 8.1',
                 ],
+                [
+                    'startdate' => (string) planning::round_start_date(($startdate + $oneweek)),
+                    'enddate' => (string) planning::round_end_date(($startdate + $oneweek * 2)),
+                    'session' => '2023',
+                    'groupname' => 'group 8.2',
+                ],
             ],
         'category' => 'Y1',
         'shortname' => 'SIT1',
@@ -261,7 +267,6 @@ $results['observer2results'] = [
                     'session' => '2023',
                     'groupname' => 'group 8.1',
                 ],
-
                 [
                     'startdate' => (string) planning::round_start_date(($startdate + $onemonth * 3 + $oneweek)),
                     'enddate' => (string) planning::round_end_date(($startdate + $onemonth * 3 + $oneweek * 2)),

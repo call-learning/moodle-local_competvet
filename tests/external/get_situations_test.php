@@ -15,14 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace local_competvet\external;
-defined('MOODLE_INTERNAL') || die();
-global $CFG;
-require_once($CFG->dirroot . '/mod/competvet/tests/test_data_definition.php');
 
 use DateTime;
 use external_api;
+use mod_competvet\tests\test_data_definition;
 use mod_competvet\tests\test_helpers;
-use test_data_definition;
 
 /**
  * Get My situations tests
@@ -31,7 +28,7 @@ use test_data_definition;
  * @copyright   2023 CALL Learning <contact@call-learning.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class get_situations_test extends \advanced_testcase {
+final class get_situations_test extends \advanced_testcase {
     use test_data_definition;
 
     /**
@@ -47,7 +44,7 @@ class get_situations_test extends \advanced_testcase {
     public static function all_for_user_provider_with_planning(): array {
         global $CFG;
         $results = [];
-        $startdate = (new DateTime('last Monday'))->getTimestamp();
+        $startdate = self::get_start_date()->getTimestamp();
         include_once($CFG->dirroot . '/local/competvet/tests/fixtures/get_situations_results.php');
         return [
             'student1 situations' => [
@@ -91,7 +88,7 @@ class get_situations_test extends \advanced_testcase {
         $this->resetAfterTest();
         $generator = $this->getDataGenerator();
         $competvetgenerator = $generator->get_plugin_generator('mod_competvet');
-        $startdate = new DateTime('last Monday');
+        $startdate = $this->get_start_date();
         $this->generates_definition($this->get_data_definition_set_1($startdate->getTimestamp()), $generator, $competvetgenerator);
     }
 
@@ -101,7 +98,7 @@ class get_situations_test extends \advanced_testcase {
      * @covers \local_competvet\external\user_profile
      * @runInSeparateProcess
      */
-    public function test_user_not_logged_in() {
+    public function test_user_not_logged_in(): void {
         $this->expectExceptionMessageMatches('/You are not logged in/');
         $this->get_situations();
     }
@@ -120,15 +117,15 @@ class get_situations_test extends \advanced_testcase {
     /**
      * Test with existing user
      *
-     * @params string $username
-     * @params bool $nofutureplanning
-     * @params array $expected
+     * @param string $username User name
+     * @param bool $nofutureplanning Ignore future planning
+     * @param array $expected Expected situations
      *
      * @covers       \local_competvet\external\user_profile
      * @dataProvider all_for_user_provider_with_planning
      * @runInSeparateProcess
      */
-    public function test_get_situations(string $username, bool $nofutureplanning, array $expected) {
+    public function test_get_situations(string $username, bool $nofutureplanning, array $expected): void {
         $this->setUser(\core_user::get_user_by_username($username));
         $situations = $this->get_situations(null, $nofutureplanning); // Ignore future situations.
         test_helpers::remove_elements_for_assertions($situations, ['id', 'intro', 'translatedcategory']);

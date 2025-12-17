@@ -56,12 +56,19 @@ class logout extends external_api {
      */
     public static function execute(int $userid = 0): array {
         global $USER;
-        self::validate_context(context_user::instance($USER->id));
-        // Log out the user.
-        $authsequence = get_enabled_auth_plugins(); // auths, in sequence
-        foreach($authsequence as $authname) {
-            $authplugin = get_auth_plugin($authname);
-            $authplugin->logoutpage_hook();
+        if (!isloggedin()) {
+            return [];
+        }
+        try {
+            self::validate_context(context_user::instance($USER->id));
+            // Log out the user.
+            $authsequence = get_enabled_auth_plugins(); // auths, in sequence
+            foreach ($authsequence as $authname) {
+                $authplugin = get_auth_plugin($authname);
+                $authplugin->logoutpage_hook();
+            }
+        } catch (\Exception $e) {
+            debugging('Error during logout: ' . $e->getMessage(), DEBUG_DEVELOPER);
         }
         require_logout();
         return [];
@@ -76,4 +83,3 @@ class logout extends external_api {
         return new external_function_parameters([]);
     }
 }
-

@@ -64,6 +64,12 @@ class search_items extends external_api {
             self::validate_parameters(self::execute_parameters(), ['query' => $query]);
         self::validate_context(context_system::instance());
         $results = search::search_query($query);
+        foreach ($results as &$item) {
+            if (isset($item['additionalinfos'])) {
+                $additionalinfojson = json_encode($item['additionalinfos'], true);
+                $item['additionalinfos'] = $additionalinfojson;
+            }
+        }
         return $results ?? [];
     }
 
@@ -79,5 +85,4 @@ class search_items extends external_api {
             ]
         );
     }
-
 }

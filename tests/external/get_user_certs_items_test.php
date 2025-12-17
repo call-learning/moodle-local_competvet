@@ -15,21 +15,18 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace local_competvet\external;
+use mod_competvet\tests\test_data_definition;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once($CFG->dirroot . '/webservice/tests/helpers.php');
-require_once($CFG->dirroot . '/mod/competvet/tests/test_data_definition.php');
 
 use core_user;
-use DateTime;
 use external_api;
 use externallib_advanced_testcase;
-use local_competvet\external\get_user_certs_items;
 use mod_competvet\local\api\plannings;
 use mod_competvet\local\persistent\planning;
 use mod_competvet\local\persistent\situation;
-use test_data_definition;
 
 /**
  * Get user certifications items
@@ -47,10 +44,9 @@ class get_user_certs_items_test extends externallib_advanced_testcase {
     public function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
-        $this->resetAfterTest();
         $generator = $this->getDataGenerator();
         $competvetgenerator = $generator->get_plugin_generator('mod_competvet');
-        $startdate = new DateTime('last Monday');
+        $startdate = $this->get_start_date();
         $this->generates_definition($this->get_data_definition_set_2($startdate->getTimestamp()), $generator, $competvetgenerator);
     }
 

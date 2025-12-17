@@ -15,11 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace local_competvet\external;
-defined('MOODLE_INTERNAL') || die();
-
-global $CFG;
-require_once($CFG->dirroot . '/mod/competvet/tests/test_data_definition.php');
-
 use core_user;
 use DateTime;
 use external_api;
@@ -27,7 +22,7 @@ use mod_competvet\local\api\plannings;
 use mod_competvet\local\persistent\observation;
 use mod_competvet\local\persistent\observation_comment;
 use mod_competvet\local\persistent\situation;
-use test_data_definition;
+use mod_competvet\tests\test_data_definition;
 
 /**
  * Edit eval observation tests
@@ -112,7 +107,9 @@ class edit_eval_observation_test extends \advanced_testcase {
         $this->resetAfterTest();
         $generator = $this->getDataGenerator();
         $competvetgenerator = $generator->get_plugin_generator('mod_competvet');
-        $startdate = new DateTime('last Monday');
+        $startdate = new DateTime('2023-01-01 10:00:00');
+
+
         $this->generates_definition($this->get_data_definition_set_2($startdate->getTimestamp()), $generator, $competvetgenerator);
     }
 
