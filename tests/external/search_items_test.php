@@ -77,6 +77,7 @@ class search_items_test extends \advanced_testcase {
      * @runInSeparateProcess
      */
     public function test_search_user() {
+        global $DB;
         $this->setAdminUser();
         // Admin is not in any situation so should return nothing.
         $returnval = $this->search_items(['query' => 'student']);
@@ -101,6 +102,11 @@ class search_items_test extends \advanced_testcase {
         $usernames = array_column($returnval, 'identifier');
         $this->assertTrue(in_array('observer1', $usernames));
         $this->assertTrue(in_array('observerandevaluator', $usernames));
+
+        $DB->set_field('user', 'firstname', 'observé', ['username' => 'observer1']);
+        $returnval = $this->search_items(['query' => 'observé']);
+        $this->assertIsArray($returnval);
+        $this->assertCount(1, $returnval);
     }
 
     /**
@@ -133,6 +139,7 @@ class search_items_test extends \advanced_testcase {
         $this->assertTrue(in_array('SIT2', $situationnames));
         $this->assertTrue(in_array('SIT3', $situationnames));
 
+        // Check with accent.
         $this->setUser(\core_user::get_user_by_username('student2')); // Student 1 can see its own situations.
         $returnval = $this->search_items(['query' => 'SIT']);
         $this->assertIsArray($returnval);

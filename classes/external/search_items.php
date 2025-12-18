@@ -81,7 +81,7 @@ class search_items extends external_api {
     public static function execute_parameters() {
         return new external_function_parameters(
             [
-                'query' => new external_value(PARAM_ALPHANUMEXT, 'The item to query for'),
+                'query' => new external_value(PARAM_TEXT, 'The item to query for'),
             ]
         );
     }
