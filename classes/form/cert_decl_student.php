@@ -49,7 +49,6 @@ class cert_decl_student extends \mod_competvet\form\cert_decl_student {
                         ['planningid' => $data->declid, 'level' => $data->level, 'comment' => $data->comment,
                             'status' => $data->status, ]
                     );
-
             } else {
                 ['results' => $results, 'debug' => $debugs[]] =
                     mobileview_helper::call_api(
@@ -82,5 +81,4 @@ class cert_decl_student extends \mod_competvet\form\cert_decl_student {
             ];
         }
     }
-
 }

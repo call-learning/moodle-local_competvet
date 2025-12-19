@@ -78,5 +78,4 @@ class delete_certs_item extends external_api {
             ]
         );
     }
-
 }

@@ -116,5 +116,4 @@ class get_user_certs_items extends external_api {
             ]
         );
     }
-
 }

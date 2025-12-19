@@ -25,7 +25,8 @@
  * @copyright  2011 Dongsheng Cai <dongsheng@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
+// @phpcs:disable moodle.Files.RequireLogin.Missing
+// @phpcs:disable moodle.Files.MoodleInternal.MoodleInternalGlobalState
 define('AJAX_SCRIPT', true);
 // Services can declare 'readonlysession' in their config located in db/services.php, if not present will default to false.
 define('READ_ONLY_SESSION', true);

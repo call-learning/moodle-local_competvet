@@ -48,7 +48,10 @@ class ask_eval_observation extends external_api {
     /**
      * Execute and return observation list
      *
-     * @param int $observationid - Observation instance id
+     * @param string $context
+     * @param int $planningid
+     * @param int $observerid
+     * @param int $studentid
      * @return array|array[]
      * @throws \invalid_parameter_exception
      */

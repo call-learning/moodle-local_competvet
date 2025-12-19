@@ -274,8 +274,10 @@ class competvet_util extends testing_util {
         try {
             $testsscenariorunner->init();
         } catch (Exception $e) {
-            debugging('Behat setup is not correct. Please run "php admin/tool/behat/cli/init.php" from Moodle root directory.',
-                DEBUG_DEVELOPER);
+            debugging(
+                'Behat setup is not correct. Please run "php admin/tool/behat/cli/init.php" from Moodle root directory.',
+                DEBUG_DEVELOPER
+            );
             debugging($e->getMessage(), DEBUG_DEVELOPER);
             return false;
         }

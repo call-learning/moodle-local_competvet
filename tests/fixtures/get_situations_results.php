@@ -14,8 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-use mod_competvet\local\persistent\planning;
+/**
+ * Fixtures for get_situations_results
+ *
+ * @package    local_competvet
+ * @copyright  2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
+use mod_competvet\local\persistent\planning;
+// @phpcs:disable moodle.Files.RequireLogin.Missing
+// @phpcs:disable moodle.Files.MoodleInternal.MoodleInternalGlobalState
 defined('MOODLE_INTERNAL') || die();
 $oneweek = 60 * 60 * 24 * 7; // 1 week in seconds.
 $onemonth = $oneweek * 4; // 1 month in seconds.

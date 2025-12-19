@@ -28,7 +28,7 @@ use mod_competvet\local\persistent\planning;
  * @copyright   2023 CALL Learning <contact@call-learning.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class get_application_mode_test extends \advanced_testcase {
+final class get_application_mode_test extends \advanced_testcase {
     /**
      * @var $users array
      */
@@ -163,7 +163,7 @@ class get_application_mode_test extends \advanced_testcase {
      * @covers \local_competvet\external\user_type::execute
      * @runInSeparateProcess
      */
-    public function test_user_type_not_exist_test() {
+    public function test_user_type_not_exist_test(): void {
         $this->setAdminUser();
         $result = $this->get_application_mode(['userid' => 9999]);
         $this->assertEquals('invaliduserid', $result['warnings'][0]['warningcode']);
@@ -196,7 +196,7 @@ class get_application_mode_test extends \advanced_testcase {
      * @dataProvider enrolment_data_provider
      * @runInSeparateProcess
      */
-    public function test_type_with_enrolments_as_admin(array $definition, string $expected) {
+    public function test_type_with_enrolments_as_admin(array $definition, string $expected): void {
         $this->setAdminUser();
         $userid = $this->setup_course_and_user_from_data($definition);
         $this->assertEquals($expected, $this->get_application_mode(['userid' => $userid])['type']);
@@ -252,7 +252,7 @@ class get_application_mode_test extends \advanced_testcase {
      * @dataProvider enrolment_data_provider
      * @runInSeparateProcess
      */
-    public function test_type_with_current_user(array $definition, string $expected) {
+    public function test_type_with_current_user(array $definition, string $expected): void {
         $userid = $this->setup_course_and_user_from_data($definition, $expected);
         $user = core_user::get_user($userid);
         $this->setUser($user);

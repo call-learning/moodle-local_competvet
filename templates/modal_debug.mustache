@@ -19,17 +19,17 @@
 
     Template for debug
 
-        Example context (json):
+    Example context (json):
     {
-        "apifunction": "SELECT foo FROM {bar} WHERE baz = :rbparam1",
-        "params": [
-        {
-            "param": "rbparam1",
-            "value": 42
-        }
-    ],
-        "results": "{jsonencodedstring}"
-        "duration": "0.124 secs"
+        "content": "<p>Debug information goes here</p>",
+        "debugs": [
+            {
+                "apifunction": "SELECT foo FROM {bar} WHERE baz = :rbparam1",
+                "params": "rbparam1=42",
+                "results": "{\"foo\": \"value1\"}",
+                "duration": "0.124 secs"
+            }
+        ]
     }
 }}
 <div class="modal-debug">

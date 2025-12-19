@@ -25,7 +25,8 @@
  * @copyright  2011 Dongsheng Cai <dongsheng@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
+// @phpcs:disable moodle.Files.RequireLogin.Missing
+// @phpcs:disable moodle.Files.MoodleInternal.MoodleInternalGlobalState
 define('AJAX_SCRIPT', true);
 define('REQUIRE_CORRECT_ACCESS', true);
 define('NO_MOODLE_COOKIES', true);
@@ -35,7 +36,7 @@ header("Access-Control-Allow-Headers: Content-Type, Authorization");
 use core\session\manager;
 use local_competvet\utils;
 
-require_once(__DIR__ . '../../../../config.php');
+require_once(__DIR__ . '/../../../config.php');
 global $CFG, $OUTPUT, $USER, $DB;
 require_once($CFG->libdir . '/externallib.php');
 
@@ -121,7 +122,7 @@ if (!empty($user)) {
         $returnedvalue->privatetoken = null;
     }
 } else {
-    switch($reason) {
+    switch ($reason) {
         case AUTH_LOGIN_FAILED:
             $returnedvalue->errorcode = 'invalidlogin';
             break;

@@ -29,9 +29,13 @@ use mod_competvet\local\api\todos;
 /**
  * Act on a todo.
  *
- * @package   local_competvet
- * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Inspired from the login/token.php file and modified
+ * according to our needs:
+ *  - the competveteval application can create tokens
+ *
+ * @package    local_competvet
+ * @copyright  2011 Dongsheng Cai <dongsheng@moodle.com>, 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class action_todo extends external_api {
     /**
@@ -41,14 +45,14 @@ class action_todo extends external_api {
      */
     public static function execute_returns() {
         return new external_single_structure(
-                [
+            [
                     'id' => new external_value(PARAM_INT, 'id of the todo'),
                     'status' => new external_value(PARAM_INT, 'status of the todo'),
                     'message' => new external_value(PARAM_TEXT, 'message of the todo', VALUE_OPTIONAL, ''),
                     'nextaction' => new external_value(PARAM_ALPHANUMEXT, 'next action of the todo'),
                     'data' => new external_value(PARAM_RAW, 'data of the todo', VALUE_OPTIONAL, ''),
                 ]
-            );
+        );
     }
 
     /**

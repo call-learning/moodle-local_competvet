@@ -45,7 +45,6 @@ $authplugin->loginpage_hook();
 $mobilelaunchparams = [];
 $clock = \core\di::get(\core\clock::class);
 if ($frm && isset($frm->username)) {                             // Login WITH cookies.
-
     $frm->username = trim(core_text::strtolower($frm->username));
 
     if (is_enabled_auth('none')) {
@@ -65,7 +64,6 @@ if ($frm && isset($frm->username)) {                             // Login WITH c
         if (isguestuser($user)) {
             // No predefined language for guests - use existing session or default site lang.
             unset($user->lang);
-
         } else if (!empty($user->lang)) {
             // Unset previous session language - use user preference instead.
             unset($SESSION->lang);
@@ -78,7 +76,8 @@ if ($frm && isset($frm->username)) {                             // Login WITH c
             echo $OUTPUT->header();
             echo $OUTPUT->heading(get_string("mustconfirm"));
             echo $OUTPUT->box(get_string("emailconfirmsent", "", s($user->email)), "generalbox boxaligncenter");
-            $resendconfirmurl = new moodle_url('/login/index.php',
+            $resendconfirmurl = new moodle_url(
+                '/login/index.php',
                 [
                     'username' => $frm->username,
                     'password' => $frm->password,

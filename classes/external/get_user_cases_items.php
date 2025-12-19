@@ -87,5 +87,4 @@ class get_user_cases_items extends external_api {
             ]
         );
     }
-
 }

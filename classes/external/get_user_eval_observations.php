@@ -80,5 +80,4 @@ class get_user_eval_observations extends external_api {
             ]
         );
     }
-
 }

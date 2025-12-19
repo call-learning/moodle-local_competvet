@@ -21,30 +21,24 @@
 
     Example context (json):
     {
-        'tabs' =>
+        "tabs": [
             {
-                'label' => get_string('mobileview:tab:situation', 'local_competvet'),
-                'baseurl' => new \moodle_url('/local/competvet/mobileview/index.php'),
-                'name' => 'situation',
+                "label": "Situation",
+                "baseurl": "/local/competvet/mobileview/index.php",
+                "name": "situation"
             },
             {
-                'label' => get_string('mobileview:tab:search', 'local_competvet'),
-                'name' => 'search',
-                'baseurl' => new \moodle_url('/local/competvet/mobileview/search/index.php'),
-            },
-            {
-                'label' => get_string('mobileview:tab:todo', 'local_competvet'),
-                'baseurl' => new \moodle_url('/local/competvet/mobileview/todo/index.php'),
-                'name' => 'todo',
-                'selected' => true,
+                "label": "Search",
+                "name": "search",
+                "baseurl": "/local/competvet/mobileview/search/index.php"
             }
+        ]
     }
 }}
 <div class="mobileview-footer nav-pills nav-justified bg-gray my-5">
     <nav class="nav">
-    {{#tabs}}
-        <a href="{{baseurl}}" class="mobileview-footer__tab nav-link {{#selected}}active{{/selected}}">{{label}}</a>
-    {{/tabs}}
+        {{#tabs}}
+            <a href="{{baseurl}}" class="mobileview-footer__tab nav-link {{#selected}}active{{/selected}}">{{label}}</a>
+        {{/tabs}}
     </nav>
-
 </div>

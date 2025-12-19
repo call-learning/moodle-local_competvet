@@ -31,7 +31,7 @@ use mod_competvet\tests\test_data_definition;
  * @copyright   2023 CALL Learning <contact@call-learning.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class edit_eval_observation_test extends \advanced_testcase {
+final class edit_eval_observation_test extends \advanced_testcase {
     use test_data_definition;
 
     /**
@@ -67,7 +67,7 @@ class edit_eval_observation_test extends \advanced_testcase {
                         ],
                     ],
                 ],
-            // TODO: check student cannot edit observer comments.
+            // TODO MDL-99999: check student cannot edit observer comments.
             'student edit autoeval' =>
                 [
                     'category' => observation::CATEGORY_EVAL_AUTOEVAL,
@@ -109,7 +109,6 @@ class edit_eval_observation_test extends \advanced_testcase {
         $competvetgenerator = $generator->get_plugin_generator('mod_competvet');
         $startdate = new DateTime('2023-01-01 10:00:00');
 
-
         $this->generates_definition($this->get_data_definition_set_2($startdate->getTimestamp()), $generator, $competvetgenerator);
     }
 
@@ -119,7 +118,7 @@ class edit_eval_observation_test extends \advanced_testcase {
      * @covers \local_competvet\external\user_type::execute
      * @runInSeparateProcess
      */
-    public function test_observation_not_exist_test() {
+    public function test_observation_not_exist_test(): void {
         $this->setAdminUser();
         $result = $this->edit_eval_observation(['observationid' => 9999]);
         $this->assertEquals('invalidobservationid', $result['warnings'][0]['warningcode']);
@@ -149,6 +148,15 @@ class edit_eval_observation_test extends \advanced_testcase {
      * @covers       \local_competvet\external\edit_eval_observation
      * @dataProvider data_edit_observation_comment_for_user
      * @runInSeparateProcess
+     *
+     * @param int $category
+     * @param string $student
+     * @param string $observer
+     * @param string $context
+     * @param array $comments
+     * @param array $criteria
+     * @param array $editpayload
+     * @return void
      */
     public function test_edit_comment_eval_observation(
         int $category,
@@ -158,7 +166,7 @@ class edit_eval_observation_test extends \advanced_testcase {
         array $comments,
         array $criteria,
         array $editpayload
-    ) {
+    ): void {
         $this->setAdminUser();
         $student = core_user::get_user_by_username($student);
         $observer = core_user::get_user_by_username($observer);

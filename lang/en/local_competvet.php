@@ -21,41 +21,39 @@
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-$string['pluginname'] = 'CompetVet Local Plugin';
 $string['appservicename'] = 'CompetVet Mobile Service';
 $string['competvet:mobileaccess'] = 'Access CompetVet Mobile Service';
 $string['competvet:mobileaccess_help'] = 'Access CompetVet Mobile Service';
+$string['error:compet_test_driver_mode'] = 'Competency test driver mode is not set';
 $string['generalerror'] = 'An error occurred';
 $string['invalidroleforuser'] = 'Invalid role for user {$a->userid}, check with you administrator to see if the roles
  assigned in different situation are consistent (for example it is not possible to be both observer and student)';
-$string['mobileview:situations']  = 'Situations';
+$string['mobileview:certif']  = 'Certif';
+$string['mobileview:eval']  = 'Eval';
+$string['mobileview:list']  = 'List';
+$string['mobileview:observer:groupinfo']  = '{$a->groupname} ({$a->nbstudents} students) ';
 $string['mobileview:planningdates']  = '{$a->startdate} to {$a->enddate}';
-$string['mobileview:observer:groupinfo']  = '{$a->groupname} ({$a->nbstudents} students) '; // We changed here and only
-// display students number in this group.
+$string['mobileview:situations']  = 'Situations';
+$string['mobileview:tab:search']  = 'Search';
+$string['mobileview:tab:situation']  = 'Situation';
+$string['mobileview:tab:todo']  = 'TODO';
 $string['mobileview:usertype:observers']  = 'Observers';
 $string['mobileview:usertype:students']  = 'Students ({$a})';
-$string['mobileview:eval']  = 'Eval';
-$string['mobileview:certif']  = 'Certif';
-$string['mobileview:list']  = 'List';
-$string['usertype:display'] = 'User type: {$a}';
-$string['mobileview:tab:situation']  = 'Situation';
-$string['mobileview:tab:search']  = 'Search';
-$string['mobileview:tab:todo']  = 'TODO';
-
 $string['observation:add'] = 'Add an observation';
-$string['observation:created'] = 'Observation created';
-$string['observation:edited'] = 'Observation edited';
+$string['observation:add:save'] = 'Save';
 $string['observation:ask'] = 'Ask for an observation';
 $string['observation:ask:save'] = 'Select observer';
 $string['observation:asked'] = 'Observation asked';
 $string['observation:asked:body'] = 'Observation asked to {$a}';
-$string['observation:edit'] = 'Edit observation';
+$string['observation:comment:add'] = 'Add comment';
+$string['observation:comment:commentno'] = 'Comment {no}';
+$string['observation:comment:deleteno'] = 'Delete comment {no}';
+$string['observation:created'] = 'Observation created';
 $string['observation:delete'] = 'Delete the observation';
 $string['observation:delete:confirm'] = 'Confirm you want to delete the observation';
-$string['observation:add:save'] = 'Save';
+$string['observation:edit'] = 'Edit observation';
 $string['observation:edit:save'] = 'Save';
-$string['observation:comment:commentno'] = 'Comment {no}';
-$string['observation:comment:add'] = 'Add comment';
-$string['observation:comment:deleteno'] = 'Delete comment {no}';
+$string['observation:edited'] = 'Observation edited';
+$string['pluginname'] = 'CompetVet Local Plugin';
 $string['todo:updated'] = 'Todo updated';
-$string['error:compet_test_driver_mode'] = 'Competency test driver mode is not set';
+$string['usertype:display'] = 'User type: {$a}';

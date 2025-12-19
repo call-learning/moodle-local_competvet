@@ -46,7 +46,7 @@ class utils {
      */
     public static function get_mobile_services_definition(array $functions): array {
         $cvemobilename = get_string('appservicename', 'local_competvet');
-        $servicesfunctions = array_filter($functions, function($funct) {
+        $servicesfunctions = array_filter($functions, function ($funct) {
             return in_array(self::COMPETVET_MOBILE_SERVICE, $funct['services'] ?? []);
         });
         return [
@@ -238,7 +238,6 @@ class utils {
 
         // A bit of sanity checks.
         foreach ($tokens as $key => $token) {
-
             // Checks related to a specific token. (script execution continue).
             $unsettoken = false;
             // If sid is set then there must be a valid associated session no matter the token type.
@@ -273,11 +272,12 @@ class utils {
             $context = context_system::instance();
             $isofficialservice = $service->shortname == self::COMPETVET_MOBILE_SERVICE;
 
-            if (($isofficialservice && has_capability('moodle/webservice:createmobiletoken', $context)) ||
-                (!is_siteadmin($USER) && has_capability('moodle/webservice:createtoken', $context))) {
-
+            if (
+                ($isofficialservice && has_capability('moodle/webservice:createmobiletoken', $context)) ||
+                (!is_siteadmin($USER) && has_capability('moodle/webservice:createtoken', $context))
+            ) {
                 // Create a new token.
-                $token = new stdClass;
+                $token = new stdClass();
                 $token->token = md5(uniqid(rand(), 1));
                 $token->userid = $USER->id;
                 $token->tokentype = EXTERNAL_TOKEN_PERMANENT;

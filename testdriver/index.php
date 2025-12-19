@@ -17,9 +17,12 @@
 /**
  * Main interface to Moodle PHP code check.
  *
- * @copyright   2023 CALL Learning <contact@call-learning.fr>
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    local_competvet
+ * @copyright  2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+// @phpcs:disable moodle.Files.RequireLogin.Missing
+// @phpcs:disable moodle.Files.MoodleInternal.MoodleInternalGlobalState
 require_once('../../../config.php');
 
 global $CFG, $PAGE;

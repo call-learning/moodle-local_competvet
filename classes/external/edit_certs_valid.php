@@ -50,13 +50,11 @@ class edit_certs_valid extends external_api {
     /**
      * Create certif item
      *
-     * @param int $criterionid
-     * @param int $studentid
-     * @param int $planningid
-     * @param int $level
+     * @param int $validationid
      * @param string $comment
      * @param int $status
      * @return array
+     * @throws \invalid_parameter_exception
      */
     public static function execute(int $validationid, string $comment, int $status): array {
         [

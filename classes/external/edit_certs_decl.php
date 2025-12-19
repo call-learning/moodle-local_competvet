@@ -70,8 +70,11 @@ class edit_certs_decl extends external_api {
         );
         // Logic to edit the cert item using the certifications API.
         $result = certifications::update_cert_declaration($id, $level, $comment, FORMAT_PLAIN, $status);
-        certifications::declaration_supervisors_update($id, array_map(fn($supervisor) => $supervisor['id'], $supervisors),
-            $USER->id);
+        certifications::declaration_supervisors_update(
+            $id,
+            array_map(fn($supervisor) => $supervisor['id'], $supervisors),
+            $USER->id
+        );
         $warnings = [];
         if (!$result) {
             $warnings[] = ['item' => $id, 'message' => 'Item not edited'];

@@ -108,7 +108,7 @@ class student_mobile_evaluations extends base {
             switch ($infotype) {
                 case 'eval':
                     $tab['observations'] = array_values(
-                        array_reduce($this->observations, function($carry, $item) use ($output) {
+                        array_reduce($this->observations, function ($carry, $item) use ($output) {
                             $observer = $item['observerinfo'];
                             $evaluationinfo = [
                                 'userpictureurl' => $observer['userpictureurl'],
@@ -137,7 +137,7 @@ class student_mobile_evaluations extends base {
                     $viewcertsurl = $this->views['certif'];
                     $certs = [];
                     foreach ($this->certifications as $cert) {
-                        $cert['items'] = array_map(function($item) use ($viewcertsurl) {
+                        $cert['items'] = array_map(function ($item) use ($viewcertsurl) {
                             if (!empty($item['declid'])) {
                                 $item['viewurl'] = (new moodle_url(
                                     $viewcertsurl,
@@ -153,7 +153,7 @@ class student_mobile_evaluations extends base {
                     break;
                 case 'list':
                     $viewcaseurl = $this->views['case'];
-                    $cases = array_map(function($item) use ($viewcaseurl) {
+                    $cases = array_map(function ($item) use ($viewcaseurl) {
                         $item['viewurl'] = (new moodle_url(
                             $viewcaseurl,
                             ['id' => $item['id']]

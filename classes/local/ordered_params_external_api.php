@@ -37,7 +37,7 @@ class ordered_params_external_api extends external_api {
      * Fix for when any root parameter is empty
      *
      * @param external_description $description
-     * @param $params
+     * @param array $params
      * @return array|bool|mixed
      */
     public static function validate_parameters(external_description $description, $params) {

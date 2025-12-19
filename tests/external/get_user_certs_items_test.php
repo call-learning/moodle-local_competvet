@@ -35,7 +35,7 @@ use mod_competvet\local\persistent\situation;
  * @copyright   2024 CALL Learning <contact@call-learning.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class get_user_certs_items_test extends externallib_advanced_testcase {
+final class get_user_certs_items_test extends externallib_advanced_testcase {
     use test_data_definition;
 
     /**
@@ -56,7 +56,7 @@ class get_user_certs_items_test extends externallib_advanced_testcase {
      * @covers \local_competvet\external\user_type::execute
      * @runInSeparateProcess
      */
-    public function test_user_not_exist_test() {
+    public function test_user_not_exist_test(): void {
         $this->setAdminUser();
         $plannings = planning::get_records();
         $planning = end($plannings);
@@ -70,7 +70,7 @@ class get_user_certs_items_test extends externallib_advanced_testcase {
      * @covers \local_competvet\external\user_type::execute
      * @runInSeparateProcess
      */
-    public function test_planning_not_exist_test() {
+    public function test_planning_not_exist_test(): void {
         $this->setAdminUser();
         $user = core_user::get_user_by_username('student1');
         $this->expectExceptionMessage('local_competvet/invalidplanningid');
@@ -101,7 +101,7 @@ class get_user_certs_items_test extends externallib_advanced_testcase {
      * @covers       \local_competvet\external\get_user_certs_items::execute
      * @runInSeparateProcess
      */
-    public function test_get_user_certif_items() {
+    public function test_get_user_certif_items(): void {
         $this->setAdminUser();
         $student = core_user::get_user_by_username('student1');
         $situation = situation::get_record(['shortname' => 'SIT1']);

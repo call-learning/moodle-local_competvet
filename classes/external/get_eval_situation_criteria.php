@@ -36,7 +36,6 @@ use mod_competvet\local\api\situations;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class get_eval_situation_criteria extends external_api {
-
     /**
      * Returns description of method parameters
      *

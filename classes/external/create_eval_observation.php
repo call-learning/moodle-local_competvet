@@ -20,6 +20,7 @@ global $CFG;
 require_once($CFG->libdir . '/externallib.php');
 
 use context_system;
+use core_external\restricted_context_exception;
 use external_api;
 use external_function_parameters;
 use external_multiple_structure;
@@ -56,7 +57,7 @@ class create_eval_observation extends external_api {
      * @param int $planningid
      * @param int $studentid
      * @param int|null $observerid
-     * @param array|null $context
+     * @param string|null $context
      * @param array|null $comments
      * @param array|null $criteria
      * @return array

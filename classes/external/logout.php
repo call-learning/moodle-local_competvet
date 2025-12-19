@@ -15,21 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace local_competvet\external;
-defined('MOODLE_INTERNAL') || die();
-global $CFG;
-require_once($CFG->libdir . '/externallib.php');
 
-use context_system;
 use context_user;
-use core_user;
-use external_api;
-use external_function_parameters;
-use external_single_structure;
-use external_value;
-use local_competvet\api_helpers;
-use mod_competvet\utils;
-use stdClass;
-use user_picture;
+use core_external\external_api;
+use core_external\external_function_parameters;
+use core_external\external_single_structure;
 
 /**
  * Logout user
@@ -62,7 +52,7 @@ class logout extends external_api {
         try {
             self::validate_context(context_user::instance($USER->id));
             // Log out the user.
-            $authsequence = get_enabled_auth_plugins(); // auths, in sequence
+            $authsequence = get_enabled_auth_plugins(); // Auths, in sequence.
             foreach ($authsequence as $authname) {
                 $authplugin = get_auth_plugin($authname);
                 $authplugin->logoutpage_hook();

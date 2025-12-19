@@ -57,8 +57,8 @@ if ($options['help']) {
 /**
  * Set curl session.
  *
- * @param $url
- * @param $postdata
+ * @param string $url
+ * @param array $postdata
  * @return CurlHandle|false
  */
 function get_curl_session($url, $postdata) {
@@ -72,9 +72,9 @@ function get_curl_session($url, $postdata) {
 /**
  * Authenticate the user.
  *
- * @param $baseurl
- * @param $username
- * @param $password
+ * @param string $baseurl
+ * @param string $username
+ * @param string $password
  * @return mixed
  */
 function authenticate($baseurl, $username, $password) {
@@ -102,6 +102,15 @@ function authenticate($baseurl, $username, $password) {
     return json_decode($response, true);
 }
 
+/**
+ * Query the Moodle API with a token.
+ *
+ * @param string $baseurl
+ * @param string $token
+ * @param string $functionname
+ * @param array $parameters
+ * @return array|null
+ */
 function query_api_with_token($baseurl, $token, $functionname, $parameters) {
     $url = $baseurl . '/webservice/rest/server.php';
     $postdata = [

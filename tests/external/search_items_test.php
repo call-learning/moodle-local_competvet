@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace external;
+namespace local_competvet\external;
 use external_api;
 use mod_competvet\tests\test_data_definition;
 
@@ -25,8 +25,9 @@ use mod_competvet\tests\test_data_definition;
  * @copyright   2023 CALL Learning <contact@call-learning.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class search_items_test extends \advanced_testcase {
+final class search_items_test extends \advanced_testcase {
     use test_data_definition;
+
     /**
      * As we have a test that does write into the DB, we need to setup and tear down each time
      */
@@ -45,7 +46,7 @@ class search_items_test extends \advanced_testcase {
      * @covers \local_competvet\external\search_items
      * @runInSeparateProcess
      */
-    public function test_search_item_empty() {
+    public function test_search_item_empty(): void {
         $this->setAdminUser();
         $returnval = $this->search_items(['query' => '']);
         $this->assertIsArray($returnval);
@@ -76,7 +77,7 @@ class search_items_test extends \advanced_testcase {
      * @covers \local_competvet\external\search_items
      * @runInSeparateProcess
      */
-    public function test_search_user() {
+    public function test_search_user(): void {
         global $DB;
         $this->setAdminUser();
         // Admin is not in any situation so should return nothing.
@@ -115,7 +116,7 @@ class search_items_test extends \advanced_testcase {
      * @covers \local_competvet\external\search_items
      * @runInSeparateProcess
      */
-    public function test_search_situation() {
+    public function test_search_situation(): void {
         $this->setAdminUser();
         // Admin is not in any situation so should return nothing.
         $returnval = $this->search_items(['query' => 'SIT']);

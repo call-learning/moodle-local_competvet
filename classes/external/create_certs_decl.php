@@ -59,8 +59,15 @@ class create_certs_decl extends external_api {
      * @param array|null $supervisors
      * @return array
      */
-    public static function execute(int $criterionid, int $studentid, int $planningid, int $level, string $comment,
-        int $status, ?array $supervisors = []): array {
+    public static function execute(
+        int $criterionid,
+        int $studentid,
+        int $planningid,
+        int $level,
+        string $comment,
+        int $status,
+        ?array $supervisors = []
+    ): array {
         [
             'criterionid' => $criterionid,
             'level' => $level,
@@ -77,12 +84,22 @@ class create_certs_decl extends external_api {
 
         // Logic to create the cert item using the certifications API.
         $declid =
-            certifications::add_cert_declaration($criterionid, $studentid, $planningid, $level, $comment, intval(FORMAT_PLAIN),
-                $status);
+            certifications::add_cert_declaration(
+                $criterionid,
+                $studentid,
+                $planningid,
+                $level,
+                $comment,
+                intval(FORMAT_PLAIN),
+                $status
+            );
         if ($declid) {
             if ($supervisors) {
-                certifications::declaration_supervisors_update($declid,
-                    array_map(fn($supervisor) => $supervisor['id'], $supervisors), $studentid);
+                certifications::declaration_supervisors_update(
+                    $declid,
+                    array_map(fn($supervisor) => $supervisor['id'], $supervisors),
+                    $studentid
+                );
             }
         }
         return ['id' => $declid];

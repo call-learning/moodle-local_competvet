@@ -20,6 +20,7 @@ global $CFG;
 require_once($CFG->libdir . '/externallib.php');
 
 use context_system;
+use core_external\restricted_context_exception;
 use external_api;
 use external_function_parameters;
 use external_single_structure;
@@ -50,7 +51,7 @@ class get_user_cases_item_info extends external_api {
     /**
      * Return the list of situations the user is registered in
      *
-     * @param int $caseid
+     * @param int $id
      * @return array
      */
     public static function execute(int $id): array {
@@ -74,5 +75,4 @@ class get_user_cases_item_info extends external_api {
             ]
         );
     }
-
 }

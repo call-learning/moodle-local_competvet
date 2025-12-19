@@ -14,8 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace external;
-use external_api;
+namespace local_competvet\external;
+
+use core_external\external_api;
 
 /**
  * User info tests
@@ -24,7 +25,7 @@ use external_api;
  * @copyright   2023 CALL Learning <contact@call-learning.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class logout_test extends \advanced_testcase {
+final class logout_test extends \advanced_testcase {
     /**
      * @var $users array
      */
@@ -50,7 +51,7 @@ class logout_test extends \advanced_testcase {
      * @covers \local_competvet\external\logout
      * @runInSeparateProcess
      */
-    public function test_logout_no_login() {
+    public function test_logout_no_login(): void {
         $this->assertFalse(isloggedin());
         $return = $this->logout([]);
         $this->assertEmpty($return);
@@ -63,7 +64,7 @@ class logout_test extends \advanced_testcase {
      * @covers \local_competvet\external\logout
      * @runInSeparateProcess
      */
-    public function test_logout_loggedin() {
+    public function test_logout_loggedin(): void {
         $this->setUser($this->users[array_key_first($this->users)]);
         $this->assertTrue(isloggedin());
         $return = $this->logout([]);

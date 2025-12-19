@@ -45,7 +45,7 @@ class user_info extends external_api {
      */
     public static function execute_returns() {
         return new external_single_structure(
-           api_helpers::get_user_info_structure()
+            api_helpers::get_user_info_structure()
         );
     }
 
@@ -82,4 +82,3 @@ class user_info extends external_api {
         );
     }
 }
-

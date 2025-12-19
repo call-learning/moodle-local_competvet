@@ -24,7 +24,7 @@ use external_api;
  * @copyright   2023 CALL Learning <contact@call-learning.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class user_info_test extends \advanced_testcase {
+final class user_info_test extends \advanced_testcase {
     /**
      * @var $users array
      */
@@ -50,7 +50,7 @@ class user_info_test extends \advanced_testcase {
      * @covers \local_competvet\external\user_info
      * @runInSeparateProcess
      */
-    public function test_user_profile_not_exist_test() {
+    public function test_user_profile_not_exist_test(): void {
         $this->setAdminUser();
         $this->expectExceptionMessageMatches('/core_user\/invaliduserid/');
         $this->get_user_profile(['userid' => 9999]);
@@ -80,7 +80,7 @@ class user_info_test extends \advanced_testcase {
      * @covers \local_competvet\external\user_info
      * @runInSeparateProcess
      */
-    public function test_user_profile_existing_test() {
+    public function test_user_profile_existing_test(): void {
         $this->setAdminUser();
         $firstuser = end($this->users);
         $user = $this->get_user_profile(['userid' => $firstuser->id]);
