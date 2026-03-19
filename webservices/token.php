@@ -30,6 +30,7 @@
 define('AJAX_SCRIPT', true);
 define('REQUIRE_CORRECT_ACCESS', true);
 define('NO_MOODLE_COOKIES', true);
+define('NO_UPGRADE_CHECK', true);
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
@@ -49,14 +50,61 @@ header('Content-Type: application/json; charset=utf-8');
  *
  * @param string $errorcode
  * @param string $message
+ * @param array $extra
  * @return stdClass
  */
-function local_competvet_token_error_response(string $errorcode, string $message): stdClass {
+function local_competvet_token_error_response(string $errorcode, string $message, array $extra = []): stdClass {
     $response = new stdClass();
     $response->errorcode = $errorcode;
     $response->message = $message;
+    foreach ($extra as $key => $value) {
+        $response->{$key} = $value;
+    }
 
     return $response;
+}
+
+/**
+ * Return the current code release in a human-readable format.
+ *
+ * @return string|null
+ */
+function local_competvet_token_get_target_release(): ?string {
+    global $CFG;
+
+    if (!empty($CFG->target_release)) {
+        return $CFG->target_release;
+    }
+
+    if (!empty($CFG->release)) {
+        return $CFG->release;
+    }
+
+    $version = null;
+    $release = null;
+    $branch = null;
+    $maturity = null;
+    require($CFG->dirroot . '/version.php');
+
+    return $release ?: null;
+}
+
+/**
+ * Return a JSON error payload for an ongoing Moodle upgrade.
+ *
+ * @return stdClass
+ */
+function local_competvet_token_upgrade_running_response(): stdClass {
+    $release = local_competvet_token_get_target_release();
+    $message = get_string('upgraderunning', 'error');
+
+    if (!empty($release)) {
+        $message = get_string('tokenupgraderunningwithrelease', 'local_competvet', $release);
+    }
+
+    return local_competvet_token_error_response('upgraderunning', $message, [
+        'release' => $release,
+    ]);
 }
 
 /**
@@ -86,6 +134,15 @@ function local_competvet_token_login_error_response(?int $reason): stdClass {
 
 
 try {
+    if (!empty($CFG->upgraderunning)) {
+        if ((int)$CFG->upgraderunning < time()) {
+            unset_config('upgraderunning');
+        } else {
+            echo json_encode(local_competvet_token_upgrade_running_response());
+            exit;
+        }
+    }
+
     if (!$CFG->enablewebservices) {
         throw new moodle_exception('enablewsdescription', 'webservice');
     }

@@ -56,4 +56,5 @@ $string['observation:edit:save'] = 'Enregistrer';
 $string['observation:edited'] = 'Observation modifiée';
 $string['pluginname'] = 'CompetVet';
 $string['todo:updated'] = 'À faire mis à jour';
+$string['tokenupgraderunningwithrelease'] = 'Le site est en cours de mise à jour vers Moodle {$a}, veuillez réessayer plus tard.';
 $string['usertype:display'] = 'Type d\'utilisateur : {$a}';
