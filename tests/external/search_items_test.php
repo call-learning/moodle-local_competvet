@@ -16,6 +16,7 @@
 
 namespace local_competvet\external;
 use external_api;
+use mod_competvet\local\persistent\situation;
 use mod_competvet\tests\test_data_definition;
 
 /**
@@ -147,5 +148,27 @@ final class search_items_test extends \advanced_testcase {
         $this->assertCount(1, $returnval);
         $this->assertTrue(in_array('SIT1', $situationnames));
         // Sit 3 group is in the future so student2 should not see it.
+    }
+
+    /**
+     * Test searching a situation by its display name, not only its shortname.
+     *
+     * @covers \local_competvet\external\search_items
+     * @runInSeparateProcess
+     */
+    public function test_search_situation_by_name(): void {
+        global $DB;
+
+        $situation = situation::get_record(['shortname' => 'SIT1']);
+        $DB->set_field('competvet_situation', 'name', 'Renamed situation alpha', ['id' => $situation->get('id')]);
+
+        $this->setUser(\core_user::get_user_by_username('observer1'));
+
+        $returnval = $this->search_items(['query' => 'alpha']);
+        $this->assertIsArray($returnval);
+        $this->assertCount(1, $returnval);
+
+        $situationnames = array_column($returnval, 'identifier');
+        $this->assertTrue(in_array('SIT1', $situationnames));
     }
 }
