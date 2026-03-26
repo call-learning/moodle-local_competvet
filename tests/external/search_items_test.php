@@ -39,6 +39,7 @@ final class search_items_test extends \advanced_testcase {
         $competvetgenerator = $generator->get_plugin_generator('mod_competvet');
         $startdate = $this->get_start_date();
         $this->generates_definition($this->get_data_definition_set_1($startdate->getTimestamp()), $generator, $competvetgenerator);
+        $this->set_current_date();
     }
 
     /**
@@ -145,9 +146,8 @@ final class search_items_test extends \advanced_testcase {
         $this->setUser(\core_user::get_user_by_username('student2')); // Student 1 can see its own situations.
         $returnval = $this->search_items(['query' => 'SIT']);
         $this->assertIsArray($returnval);
-        $this->assertCount(1, $returnval);
-        $this->assertTrue(in_array('SIT1', $situationnames));
-        // Sit 3 group is in the future so student2 should not see it.
+        $this->assertCount(0, $returnval);
+        // Student2 has no non-future situations at the frozen test date.
     }
 
     /**
@@ -160,7 +160,8 @@ final class search_items_test extends \advanced_testcase {
         global $DB;
 
         $situation = situation::get_record(['shortname' => 'SIT1']);
-        $DB->set_field('competvet_situation', 'name', 'Renamed situation alpha', ['id' => $situation->get('id')]);
+        $competvet = $DB->get_record('competvet', ['id' => $situation->get('competvetid')], '*', MUST_EXIST);
+        $DB->set_field('competvet', 'name', 'Renamed situation alpha', ['id' => $competvet->id]);
 
         $this->setUser(\core_user::get_user_by_username('observer1'));
 

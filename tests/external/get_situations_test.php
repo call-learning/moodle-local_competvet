@@ -90,6 +90,7 @@ final class get_situations_test extends \advanced_testcase {
         $competvetgenerator = $generator->get_plugin_generator('mod_competvet');
         $startdate = $this->get_start_date();
         $this->generates_definition($this->get_data_definition_set_1($startdate->getTimestamp()), $generator, $competvetgenerator);
+        $this->set_current_date();
     }
 
     /**

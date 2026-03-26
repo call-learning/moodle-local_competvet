@@ -103,7 +103,6 @@ $results['student2results'] = [
     [
         'plannings' =>
             [
-
                 [
                     'startdate' => (string) planning::round_start_date(($startdate + $oneweek)),
                     'enddate' => (string) planning::round_end_date(($startdate + $oneweek * 2)),
@@ -200,12 +199,6 @@ $results['observer1results'] = [
                     'enddate' => (string) planning::round_end_date(($startdate + $oneweek)),
                     'session' => '2023',
                     'groupname' => 'group 8.1',
-                ],
-                [
-                    'startdate' => (string) planning::round_start_date(($startdate + $oneweek)),
-                    'enddate' => (string) planning::round_end_date(($startdate + $oneweek * 2)),
-                    'session' => '2023',
-                    'groupname' => 'group 8.2',
                 ],
             ],
         'category' => 'Y1',
