@@ -17,7 +17,6 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/testing/classes/util.php');
 require_once($CFG->libdir . '/testing/lib.php');
 require_once($CFG->libdir . '/behat/classes/behat_config_manager.php');
 // No NAMESPACE here because it confuses get_framework() in util.php.
