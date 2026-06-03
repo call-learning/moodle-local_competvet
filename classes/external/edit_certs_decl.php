@@ -92,10 +92,10 @@ class edit_certs_decl extends external_api {
                 'level' => new external_value(PARAM_INT, 'Level'),
                 'comment' => new external_value(PARAM_TEXT, 'Comment'),
                 'status' => new external_value(PARAM_TEXT, 'Status'),
-                'supervisors' => new \external_multiple_structure(
-                    new \external_single_structure(
+                'supervisors' => new \core_external\external_multiple_structure(
+                    new \core_external\external_single_structure(
                         [
-                            'id' => new \external_value(PARAM_INT, 'supervisor id'),
+                            'id' => new \core_external\external_value(PARAM_INT, 'supervisor id'),
                         ]
                     ),
                     'The supervisors',

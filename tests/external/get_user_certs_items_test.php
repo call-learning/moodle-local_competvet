@@ -22,8 +22,8 @@ global $CFG;
 require_once($CFG->dirroot . '/webservice/tests/helpers.php');
 
 use core_user;
-use external_api;
-use externallib_advanced_testcase;
+use core_external\external_api;
+use advanced_testcase;
 use mod_competvet\local\api\plannings;
 use mod_competvet\local\persistent\planning;
 use mod_competvet\local\persistent\situation;
@@ -35,7 +35,7 @@ use mod_competvet\local\persistent\situation;
  * @copyright   2024 CALL Learning <contact@call-learning.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class get_user_certs_items_test extends externallib_advanced_testcase {
+final class get_user_certs_items_test extends advanced_testcase {
     use test_data_definition;
 
     /**

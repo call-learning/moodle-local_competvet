@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace local_competvet\external;
-use external_api;
+use core_external\external_api;
 
 /**
  * User info tests

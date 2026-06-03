@@ -17,7 +17,7 @@
 namespace local_competvet\external;
 
 use DateTime;
-use external_api;
+use core_external\external_api;
 use mod_competvet\tests\test_data_definition;
 use mod_competvet\tests\test_helpers;
 

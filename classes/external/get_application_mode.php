@@ -52,7 +52,7 @@ class get_application_mode extends external_api {
                     this case it is up to the Mobile application to decide what to do (display error message or run as
                     a student)'
                 ),
-                'warnings' => new \external_warnings(),
+                'warnings' => new \core_external\external_warnings(),
             ]
         );
     }

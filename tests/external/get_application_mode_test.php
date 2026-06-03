@@ -17,7 +17,7 @@
 namespace local_competvet\external;
 use context_module;
 use core_user;
-use external_api;
+use core_external\external_api;
 use mod_competvet\competvet;
 use mod_competvet\local\persistent\planning;
 

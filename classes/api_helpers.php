@@ -16,9 +16,9 @@
 
 namespace local_competvet;
 
-use external_multiple_structure;
-use external_single_structure;
-use external_value;
+use core_external\external_multiple_structure;
+use core_external\external_single_structure;
+use core_external\external_value;
 
 /**
  * API Helpers
@@ -86,12 +86,12 @@ class api_helpers {
      */
     public static function get_user_info_structure(): array {
         return [
-            'id' => new \external_value(PARAM_INT, 'ID type of user'),
-            'fullname' => new \external_value(PARAM_TEXT, 'User fullname', VALUE_OPTIONAL),
-            'userpictureurl' => new \external_value(PARAM_URL, 'User picture (avatar) URL', VALUE_OPTIONAL),
-            'role' => new \external_value(PARAM_TEXT, 'User role', VALUE_OPTIONAL),
-            'firstname' => new \external_value(PARAM_TEXT, 'User firstname', VALUE_OPTIONAL),
-            'lastname' => new \external_value(PARAM_TEXT, 'User lastname', VALUE_OPTIONAL),
+            'id' => new \core_external\external_value(PARAM_INT, 'ID type of user'),
+            'fullname' => new \core_external\external_value(PARAM_TEXT, 'User fullname', VALUE_OPTIONAL),
+            'userpictureurl' => new \core_external\external_value(PARAM_URL, 'User picture (avatar) URL', VALUE_OPTIONAL),
+            'role' => new \core_external\external_value(PARAM_TEXT, 'User role', VALUE_OPTIONAL),
+            'firstname' => new \core_external\external_value(PARAM_TEXT, 'User firstname', VALUE_OPTIONAL),
+            'lastname' => new \core_external\external_value(PARAM_TEXT, 'User lastname', VALUE_OPTIONAL),
         ];
     }
 

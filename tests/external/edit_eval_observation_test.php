@@ -17,7 +17,7 @@
 namespace local_competvet\external;
 use core_user;
 use DateTime;
-use external_api;
+use core_external\external_api;
 use mod_competvet\local\api\plannings;
 use mod_competvet\local\persistent\observation;
 use mod_competvet\local\persistent\observation_comment;
