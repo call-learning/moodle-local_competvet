@@ -26,13 +26,13 @@ import {genericFormCreate, getSelectedElement} from "mod_competvet/local/forms/g
 import {createModalDebug, createModalDebugFromEvent} from "./modal_debug";
 import {get_string as getString} from 'core/str';
 
-export const init = async (modulename) => {
+export const init = async(modulename) => {
     const selectedElements = getSelectedElement('add');
     if (!selectedElements) {
         return;
     }
     selectedElements.forEach((element) => {
-        element.addEventListener('click', async (event) => {
+        element.addEventListener('click', async(event) => {
             event.preventDefault();
             const data = event.target.closest('[data-action]').dataset;
             let datasetLowercase = Object.entries(data).reduce((acc, [key, value]) => {

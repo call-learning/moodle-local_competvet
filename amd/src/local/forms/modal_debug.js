@@ -33,7 +33,7 @@ import {get_string as getString} from 'core/str';
  * @param {Object} data
  * @return {Promise<void>}
  */
-export const createModalDebug = async (data) => {
+export const createModalDebug = async(data) => {
     try {
         const modal = await ModalFactory.create({
             title: data.title,
@@ -54,6 +54,7 @@ export const createModalDebug = async (data) => {
         return modal;
     } catch (error) {
         await Notification.exception(error);
+        return null;
     }
 };
 

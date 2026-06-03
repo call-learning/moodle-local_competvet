@@ -38,7 +38,7 @@ export const initUsersActionMobileView = (modulename, planningId, studentId, con
         return;
     }
     selectedElements.forEach((element) => {
-        element.addEventListener('click', async (event) => {
+        element.addEventListener('click', async(event) => {
             event.preventDefault();
             const askEvalPayload = {
                 context: context,

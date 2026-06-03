@@ -27,13 +27,13 @@ import {createModalDebug, createModalDebugFromEvent} from "./modal_debug";
 import {get_string as getString} from 'core/str';
 import Notification from 'core/notification';
 
-export const init = async (modulename) => {
+export const init = async(modulename) => {
     const selectedElements = getSelectedElement('addfromtodo');
     if (!selectedElements) {
         return;
     }
     selectedElements.forEach((element) => {
-        element.addEventListener('click', async (event) => {
+        element.addEventListener('click', async(event) => {
             event.preventDefault();
             const data = event.target.closest('[data-action]').dataset;
             const payLoad = {
@@ -73,7 +73,7 @@ export const init = async (modulename) => {
     });
 };
 
-const processTodo = async (todoId, editObservationParameters, modulename) => {
+const processTodo = async(todoId, editObservationParameters, modulename) => {
     const payLoad = {
         id: todoId,
     };
