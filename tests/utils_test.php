@@ -101,6 +101,9 @@ final class utils_test extends \advanced_testcase {
      */
     public function test_get_idp_list_with_idp(): void {
         global $CFG;
+        if (!file_exists($CFG->dirroot . '/auth/cas/auth.php')) {
+            $this->markTestSkipped('auth_cas plugin is not available');
+        }
         $this->resetAfterTest(true);
         $CFG->auth = 'manual,cas';
         set_config('hostname', $CFG->wwwroot, 'auth_cas');
