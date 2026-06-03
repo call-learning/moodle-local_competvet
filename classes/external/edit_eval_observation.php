@@ -15,7 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace local_competvet\external;
-defined('MOODLE_INTERNAL') || die();
 
 use context_system;
 use core_external\external_function_parameters;
