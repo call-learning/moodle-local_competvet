@@ -16,15 +16,13 @@
 
 namespace local_competvet\external;
 defined('MOODLE_INTERNAL') || die();
-global $CFG;
-require_once($CFG->libdir . '/externallib.php');
 
 use context_system;
-use external_function_parameters;
-use external_multiple_structure;
-use external_single_structure;
-use external_value;
-use external_warnings;
+use core_external\external_function_parameters;
+use core_external\external_multiple_structure;
+use core_external\external_single_structure;
+use core_external\external_value;
+use core_external\external_warnings;
 use local_competvet\api_helpers;
 use local_competvet\local\ordered_params_external_api;
 use mod_competvet\local\api\observations;
