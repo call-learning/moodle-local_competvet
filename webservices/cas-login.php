@@ -33,10 +33,11 @@ global $CFG, $SESSION, $USER;
 require_once($CFG->libdir . '/externallib.php');
 require_once($CFG->dirroot . '/local/competvet/lib.php');
 
-if (!is_enabled_auth('cas')) {
+if (!is_enabled_auth('cas') && !is_enabled_auth('casattras')) {
     throw new moodle_exception('casnotenabled');
 }
-$authplugin = get_auth_plugin('cas');
+$authname = is_enabled_auth('casattras') ? 'casattras' : 'cas';
+$authplugin = get_auth_plugin($authname);
 
 // The auth plugin's loginpage_hook() can eventually set $frm and/or $user.
 $frm = false;
