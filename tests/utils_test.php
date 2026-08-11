@@ -26,7 +26,7 @@ final class utils_test extends \advanced_testcase {
     /**
      * Test get_mobile_services_definition
      *
-     * @covers \local_competvet\external\utils
+     * @covers \local_competvet\utils
      **/
     public function test_get_mobile_services_definition(): void {
         $functions = [
@@ -39,7 +39,7 @@ final class utils_test extends \advanced_testcase {
     /**
      * Test setup_mobile_service
      *
-     * @covers \local_competvet\external\utils
+     * @covers \local_competvet\utils
      */
     public function test_setup_mobile_service(): void {
         global $CFG;
@@ -51,7 +51,7 @@ final class utils_test extends \advanced_testcase {
     /**
      * Test get_or_create_mobile_service
      *
-     * @covers \local_competvet\external\utils
+     * @covers \local_competvet\utils
      */
     public function test_get_or_create_mobile_service(): void {
         $this->resetAfterTest(true);
@@ -63,7 +63,7 @@ final class utils_test extends \advanced_testcase {
     /**
      * Test external_generate_token_for_current_user
      *
-     * @covers \local_competvet\external\utils
+     * @covers \local_competvet\utils
      */
     public function test_external_generate_token_for_current_user(): void {
         global $USER;
@@ -84,7 +84,7 @@ final class utils_test extends \advanced_testcase {
     /**
      * Test get_application_launch_url
      *
-     * @covers \local_competvet\external\utils
+     * @covers \local_competvet\utils
      */
     public function test_get_application_launch_url(): void {
         $this->resetAfterTest(true);
@@ -96,12 +96,17 @@ final class utils_test extends \advanced_testcase {
     /**
      * Test get idp list with idp
      *
-     * @covers \local_competvet\external\utils
+     * @covers \local_competvet\utils::get_idp_list
      * @runInSeparateProcess
      */
     public function test_get_idp_list_with_idp(): void {
         global $CFG;
         $this->resetAfterTest(true);
+
+        // Native Moodle CAS should be treated as CAS-compatible by default,
+        // but we set it explicitly to make the test independent from config defaults.
+        set_config('cascompatibleauthplugins', 'cas', 'local_competvet');
+
         $CFG->auth = 'manual,cas';
         set_config('hostname', $CFG->wwwroot, 'auth_cas');
         set_config('auth_logo', '', 'auth_cas');
@@ -126,6 +131,34 @@ final class utils_test extends \advanced_testcase {
      * @runInSeparateProcess
      */
     public function test_get_idp_list_without_idp(): void {
+        set_config('cascompatibleauthplugins', 'cas', 'local_competvet');
+        $idplist = utils::get_idp_list();
+        $this->assertEmpty($idplist);
+    }
+
+    /**
+     * Test that enabled CAS plugin entries are ignored when CAS-compatible configuration
+     * does not include the enabled plugin shortname.
+     *
+     * @covers \local_competvet\utils::get_idp_list
+     * @runInSeparateProcess
+     */
+    public function test_get_idp_list_when_plugin_not_in_configuration_returns_empty(): void {
+        global $CFG;
+        if (!file_exists($CFG->dirroot . '/auth/cas/auth.php')) {
+            $this->markTestSkipped('auth_cas plugin is not available');
+        }
+
+        $this->resetAfterTest(true);
+        set_config('cascompatibleauthplugins', 'casattras', 'local_competvet');
+
+        $CFG->auth = 'manual,cas';
+        set_config('hostname', $CFG->wwwroot, 'auth_cas');
+        set_config('auth_logo', '', 'auth_cas');
+        set_config('auth_name', 'Test CAS', 'auth_cas');
+
+        get_enabled_auth_plugins(true); // Enable cas.
+
         $idplist = utils::get_idp_list();
         $this->assertEmpty($idplist);
     }
@@ -143,6 +176,9 @@ final class utils_test extends \advanced_testcase {
         }
 
         $this->resetAfterTest(true);
+
+        set_config('cascompatibleauthplugins', 'cas', 'local_competvet');
+
         $CFG->auth = 'manual,cas';
         set_config('hostname', $CFG->wwwroot, 'auth_cas');
         set_config('auth_logo', '', 'auth_cas');
@@ -173,6 +209,7 @@ final class utils_test extends \advanced_testcase {
 
         // Ensure CAS is not enabled.
         $this->resetAfterTest(true);
+        set_config('cascompatibleauthplugins', 'cas', 'local_competvet');
         $CFG->auth = 'manual';
 
         $idplist = \local_competvet\external\auth::idp_list();

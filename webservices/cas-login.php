@@ -33,15 +33,22 @@ global $CFG, $SESSION, $USER;
 require_once($CFG->libdir . '/externallib.php');
 require_once($CFG->dirroot . '/local/competvet/lib.php');
 
-if (!is_enabled_auth('cas')) {
-    throw new moodle_exception('casnotenabled');
-}
-$authplugin = get_auth_plugin('cas');
+$authsenabled = get_enabled_auth_plugins();
+$cascompatible = utils::get_cas_compatible_auth_plugins();
 
+$idplist = [];
 // The auth plugin's loginpage_hook() can eventually set $frm and/or $user.
 $frm = false;
 $user = false;
-$authplugin->loginpage_hook();
+foreach ($authsenabled as $auth) {
+    // Only include IdPs for auth plugins explicitly configured as CAS-compatible.
+    if (!in_array($auth, $cascompatible, true)) {
+        continue;
+    }
+    $authplugin = get_auth_plugin($auth);
+    $authplugin->loginpage_hook();
+}
+
 $mobilelaunchparams = [];
 $clock = \core\di::get(\core\clock::class);
 if ($frm && isset($frm->username)) {                             // Login WITH cookies.

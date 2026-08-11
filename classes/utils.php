@@ -39,6 +39,28 @@ class utils {
     const COMPETVET_MOBILE_SERVICE = 'competvet_app_service';
 
     /**
+     * Build the token payload consumed by the mobile app.
+     *
+     * For https non-admin users we include the private token to validate the launch.
+     *
+     * This is intentionally deterministic and side-effect free so it can be unit tested.
+     */
+    public static function build_mobile_app_apptoken(
+        stdClass $token,
+        bool $isSiteAdmin,
+        bool $isHttps,
+        bool $includePrivateToken
+    ): string {
+        global $CFG;
+        $siteid = sha1(rtrim($CFG->wwwroot, '/'));
+        $apptoken = $siteid . ':::' . $token->token;
+        if ($includePrivateToken && $isHttps && !$isSiteAdmin) {
+            $apptoken .= ':::' . ($token->privatetoken ?? '');
+        }
+        return base64_encode($apptoken);
+    }
+
+    /**
      * Get mobile services definition
      *
      * @param array $functions
@@ -322,26 +344,52 @@ class utils {
      */
     public static function get_idp_list() {
         $authsenabled = get_enabled_auth_plugins();
+        $cascompatible = self::get_cas_compatible_auth_plugins();
+
         $idplist = [];
         foreach ($authsenabled as $auth) {
+            // Only include IdPs for auth plugins explicitly configured as CAS-compatible.
+            if (!in_array($auth, $cascompatible, true)) {
+                continue;
+            }
+
             $authplugin = get_auth_plugin($auth);
             $currentidplist = $authplugin->loginpage_idp_list(self::get_application_launch_url([]));
             foreach ($currentidplist as $index => $idp) {
-                if ($auth == 'cas') {
-                    $idp['url'] = (new moodle_url('/local/competvet/webservices/cas-login.php', ['authCAS' => 'CAS']))->out();
-                } else {
-                    $idp['url'] = $idp['url'] ? $idp['url']->out() : '';
-                }
-                $idp['iconurl'] = $idp['iconurl'] ? $idp['iconurl']->out() : '';
-                $idp['name'] = $idp['name'] ?? '';
-                $idp['id'] = strtolower($auth) . '-' . $index;
-                $currentidplist[$index] = $idp;
+                // Force a stable app-facing CAS login URL for every configured compatible plugin.
+                $originalurl = new moodle_url($idp['url']);
+                $originalparams = $originalurl->params();
+                $targetidp = [];
+                $targetidp['url'] = (new moodle_url('/local/competvet/webservices/cas-login.php', $originalparams))->out();
+                $targetidp['iconurl'] = $idp['iconurl'] ? $idp['iconurl']->out() : '';
+                $targetidp['name'] = $idp['name'] ?? '';
+                $targetidp['id'] = strtolower($auth) . '-' . $index;
+                $currentidplist[$index] = $targetidp;
             }
             if ($currentidplist) {
                 $idplist = array_merge($currentidplist, $idplist);
             }
         }
+
         return $idplist;
+    }
+
+    /**
+     * Parse configured CAS-compatible auth plugin shortnames.
+     *
+     * @return string[] normalized shortnames
+     */
+    public static function get_cas_compatible_auth_plugins(): array {
+        $raw = get_config('local_competvet', 'cascompatibleauthplugins') ?? '';
+        if (trim($raw) === '') {
+            return [];
+        }
+        $parts = preg_split('/[,\n\r\t]+/', $raw);
+        $parts = array_map('trim', $parts ?: []);
+        $parts = array_filter($parts, static fn($p) => $p !== '');
+        $parts = array_map('strtolower', $parts);
+        $parsed = array_values(array_unique($parts));
+        return $parsed ?: ['cas'];
     }
 
     /**
