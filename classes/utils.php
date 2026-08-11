@@ -44,17 +44,22 @@ class utils {
      * For https non-admin users we include the private token to validate the launch.
      *
      * This is intentionally deterministic and side-effect free so it can be unit tested.
+     * @param stdClass $token
+     * @param bool $issiteadmin
+     * @param bool $ishttps
+     * @param bool $includeprivatetoken
+     * @return string
      */
     public static function build_mobile_app_apptoken(
         stdClass $token,
-        bool $isSiteAdmin,
-        bool $isHttps,
-        bool $includePrivateToken
+        bool $issiteadmin,
+        bool $ishttps,
+        bool $includeprivatetoken
     ): string {
         global $CFG;
         $siteid = sha1(rtrim($CFG->wwwroot, '/'));
         $apptoken = $siteid . ':::' . $token->token;
-        if ($includePrivateToken && $isHttps && !$isSiteAdmin) {
+        if ($includeprivatetoken && $ishttps && !$issiteadmin) {
             $apptoken .= ':::' . ($token->privatetoken ?? '');
         }
         return base64_encode($apptoken);

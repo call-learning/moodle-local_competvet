@@ -218,4 +218,114 @@ final class utils_test extends \advanced_testcase {
         $idplist = \local_competvet\external\auth::idp_list();
         $this->assertEmpty($idplist);
     }
+
+    /**
+     * Test the mobile app apptoken includes the private token only when requested.
+     *
+     * @covers \local_competvet\utils::build_mobile_app_apptoken
+     */
+    public function test_build_mobile_app_apptoken_private_token_included_when_requested(): void {
+        global $CFG;
+        $this->resetAfterTest(true);
+
+        $CFG->wwwroot = 'https://www.example.com/';
+
+        $token = (object) [
+            'token' => 'mobiletoken',
+            'privatetoken' => 'privatetoken',
+            'timecreated' => time(),
+        ];
+
+        $apptoken = utils::build_mobile_app_apptoken($token, false, true, true);
+        $decoded = base64_decode($apptoken);
+
+        $this->assertStringContainsString('mobiletoken', $decoded);
+        $this->assertStringContainsString('privatetoken', $decoded);
+    }
+
+    /**
+     * Test the mobile app apptoken omits the private token when not requested.
+     *
+     * @covers \local_competvet\utils::build_mobile_app_apptoken
+     */
+    public function test_build_mobile_app_apptoken_private_token_omitted_when_not_requested(): void {
+        global $CFG;
+        $this->resetAfterTest(true);
+
+        $CFG->wwwroot = 'https://www.example.com/';
+
+        $token = (object) [
+            'token' => 'mobiletoken',
+            'privatetoken' => 'privatetoken',
+            'timecreated' => time(),
+        ];
+
+        $apptoken = utils::build_mobile_app_apptoken($token, false, true, false);
+        $decoded = base64_decode($apptoken);
+
+        $this->assertStringContainsString('mobiletoken', $decoded);
+        $this->assertStringNotContainsString('privatetoken', $decoded);
+    }
+
+    /**
+     * Cover the first-login handoff behavior that should include the private token.
+     *
+     * @covers \local_competvet\utils::external_generate_token_for_current_user
+     * @covers \local_competvet\utils::build_mobile_app_apptoken
+     */
+    public function test_cas_first_login_apptoken_includes_private_token_for_new_user(): void {
+        global $USER;
+        $this->resetAfterTest(true);
+
+        $USER = $this->getDataGenerator()->create_user();
+        $this->setUser($USER);
+
+        $service = (object) [
+            'id' => 1,
+            'name' => 'CompetVet Mobile Service',
+            'shortname' => 'competvet_app_service',
+            'requiredcapability' => '',
+            'restrictedusers' => 0,
+        ];
+
+        $token = utils::external_generate_token_for_current_user($service);
+        $apptoken = utils::build_mobile_app_apptoken($token, false, true, true);
+        $decoded = base64_decode($apptoken);
+
+        $this->assertStringContainsString($token->privatetoken, $decoded);
+    }
+
+    /**
+     * Cover the returning-user case: with the first-login fix, the private token should
+     * still be included when the mobile flow treats the login as fresh.
+     *
+     * @covers \local_competvet\utils::external_generate_token_for_current_user
+     * @covers \local_competvet\utils::build_mobile_app_apptoken
+     */
+    public function test_cas_first_login_apptoken_includes_private_token_for_returning_user(): void {
+        global $USER;
+        $this->resetAfterTest(true);
+
+        $USER = $this->getDataGenerator()->create_user();
+        $this->setUser($USER);
+
+        $service = (object) [
+            'id' => 1,
+            'name' => 'CompetVet Mobile Service',
+            'shortname' => 'competvet_app_service',
+            'requiredcapability' => '',
+            'restrictedusers' => 0,
+        ];
+
+        $token1 = utils::external_generate_token_for_current_user($service);
+        $token2 = utils::external_generate_token_for_current_user($service);
+
+        // Ensure token still has a private token.
+        $this->assertNotEmpty($token2->privatetoken);
+
+        $apptoken = utils::build_mobile_app_apptoken($token2, false, true, true);
+        $decoded = base64_decode($apptoken);
+
+        $this->assertStringContainsString($token2->privatetoken, $decoded);
+    }
 }
