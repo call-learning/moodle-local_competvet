@@ -23,6 +23,10 @@
  */
 
 $string['appservicename'] = 'Service mobile CompetVet';
+$string['cas-login-error'] = "Erreur de connexion CAS";
+$string['cas-login-error-message'] = 'L\'authentification CAS a reussi mais l\'application n\'a pas pu terminer la connexion (erreur: {$a}). Veuillez reessayer.';
+$string['cascompatibleauthplugins'] = 'Plugins d\'auth compatibles CAS';
+$string['cascompatibleauthplugins_help'] = 'Liste (separee par des virgules) des shortnames des plugins d\'auth a traiter comme compatibles CAS pour la liste d\'IdP renvoyee par ce plugin. Par defaut : "cas". Exemple : cas, casattras';
 $string['competvet:mobileaccess'] = 'Accès au service mobile CompetVet';
 $string['competvet:mobileaccess_help'] = 'Accès au service mobile CompetVet';
 $string['error:compet_test_driver_mode'] = 'Le mode test de compétence n\'est pas défini';
@@ -58,9 +62,3 @@ $string['pluginname'] = 'CompetVet';
 $string['todo:updated'] = 'À faire mis à jour';
 $string['tokenupgraderunningwithrelease'] = 'Le site est en cours de mise à jour vers Moodle {$a}, veuillez réessayer plus tard.';
 $string['usertype:display'] = 'Type d\'utilisateur : {$a}';
-
-$string['cascompatibleauthplugins'] = 'Plugins d\'auth compatibles CAS';
-$string['cascompatibleauthplugins_help'] = 'Liste (separee par des virgules) des shortnames des plugins d\'auth a traiter comme compatibles CAS pour la liste d\'IdP renvoyee par ce plugin. Par defaut : "cas". Exemple : cas, casattras';
-
-$string['cas-login-error'] = "Erreur de connexion CAS";
-$string['cas-login-error-message'] = 'L\'authentification CAS a reussi mais l\'application n\'a pas pu terminer la connexion (erreur: {$a}). Veuillez reessayer.';

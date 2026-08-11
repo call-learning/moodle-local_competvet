@@ -61,8 +61,6 @@ jobs:
       - name: Install moodle-plugin-ci
         run: |
           moodle-plugin-ci add-plugin --branch MOODLE_502_STABLE call-learning/moodle-mod_competvet
-          # For CAS Testing
-          moodle-plugin-ci add-plugin --branch main moodlehq/moodle-auth_cas
           moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
         env:
           DB: ${{ matrix.database }}
