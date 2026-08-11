@@ -24,6 +24,10 @@
 
 namespace local_competvet\external;
 
+defined('MOODLE_INTERNAL') || die();
+global $CFG;
+require_once($CFG->libdir . '/externallib.php');
+
 use external_api;
 use external_function_parameters;
 use external_multiple_structure;
@@ -65,25 +69,9 @@ class auth extends external_api {
      * Return the current information for the user
      */
     public static function idp_list() {
-        $authsenabled = get_enabled_auth_plugins();
-        $idplist = [];
-        foreach ($authsenabled as $auth) {
-            $authplugin = get_auth_plugin($auth);
-            $currentidplist = $authplugin->loginpage_idp_list(utils::get_application_launch_url([]));
-            foreach ($currentidplist as $index => $idp) {
-                if ($auth == 'cas') {
-                    $idp['url'] = (new moodle_url('/local/competveteval/webservices/cas-login.php', ['authCAS' => 'CAS']))->out();
-                } else {
-                    $idp['url'] = $idp['url'] ? $idp['url']->out() : '';
-                }
-                $idp['iconurl'] = $idp['iconurl'] ? $idp['iconurl']->out() : '';
-                $currentidplist[$index] = $idp;
-            }
-            if ($currentidplist) {
-                $idplist = array_merge($currentidplist, $idplist);
-            }
-        }
-        return $idplist;
+        // Delegate to the canonical implementation to ensure consistent ordering
+        // and CAS URL rewriting across all IdP list consumers.
+        return utils::get_idp_list();
     }
 
     /**
