@@ -819,6 +819,16 @@ Please replace `<Your URL>`, `$TOKEN`, and `additional_parameters_here` with the
 
 ## CAS and Tests ###
 
+### CAS-compatible auth plugins (production setting)
+
+This plugin exposes an unauthenticated IdP list endpoint for the mobile login flow. Configure which Moodle authentication plugins are treated as CAS-compatible.
+
+Site administration > Plugins > Local plugins > **CompetVet Local Plugin** > **CAS-compatible auth plugins**
+
+Enter a comma-separated list of auth plugin shortnames (default: `cas`). Example: `cas, casattras`.
+
+If an enabled auth plugin shortname is not listed, its IdP entries are ignored (and the IdP list can be empty).
+
 To test with CAS login (for testing only) you can follow the README.cas.md file.
 
 ## License ##

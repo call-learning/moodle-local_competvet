@@ -84,7 +84,42 @@ You should see the CAS login page, indicating the server is running over HTTPS o
 
 1. Log out of Moodle.
 2. Attempt to log in again.
-3. You should be redirected to the CAS server login page. Once authenticated, you’ll be redirected back to Moodle as a logged-in user.
+3. You should be redirected to the CAS server login page. Once authenticated, you'll be redirected back to Moodle as a logged-in user.
+
+## Configure CAS-Compatible Plugins in Moodle
+
+The `local_competvet` plugin uses a configuration-driven approach to determine which authentication plugins are treated as CAS-compatible for IdP list generation.
+
+### Admin Setting
+
+Navigate to **Site administration > Plugins > Local plugins > Competvet** to find the **CAS-compatible auth plugins** setting.
+
+- **Default value**: `cas` (native Moodle CAS plugin)
+- **Input format**: Comma-separated list of authentication plugin shortnames
+- **Example**: `cas, casattras`
+
+### Supported CAS Plugin Variants
+
+| Plugin | Shortname | Description |
+|--------|-----------|-------------|
+| Native Moodle CAS | `cas` | Apereo CAS plugin bundled with Moodle |
+| CAS with Attributes | `casattras` | Alternative CAS plugin that supports attribute mapping |
+
+### Configuration Tips
+
+- Only plugins that are **enabled** in Moodle's authentication management will appear in the IdP list, even if listed in the configuration.
+- Adding a plugin shortname that is **not enabled** will silently skip it — no error is thrown.
+- If the configuration is left empty, the IdP list will be empty (no CAS login options).
+- The plugin shortnames must match the exact shortname used in Moodle's auth plugin configuration (case-insensitive).
+
+### Troubleshooting CAS Login Failures
+
+If a CAS login fails on the first attempt:
+
+1. Check that the plugin shortname in the **CAS-compatible auth plugins** setting exactly matches the enabled auth plugin's shortname.
+2. Verify the CAS server is reachable from the Moodle server.
+3. Enable developer debugging in Moodle to see the error code in the CAS login error page.
+4. Do **not** rely on the logout/retry workaround — a properly configured system should complete on the first attempt.
 
 ## Additional Configurations
 

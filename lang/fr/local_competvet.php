@@ -58,3 +58,6 @@ $string['pluginname'] = 'CompetVet';
 $string['todo:updated'] = 'À faire mis à jour';
 $string['tokenupgraderunningwithrelease'] = 'Le site est en cours de mise à jour vers Moodle {$a}, veuillez réessayer plus tard.';
 $string['usertype:display'] = 'Type d\'utilisateur : {$a}';
+
+$string['cascompatibleauthplugins'] = 'Plugins d\'auth compatibles CAS';
+$string['cascompatibleauthplugins_help'] = 'Liste (separee par des virgules) des shortnames des plugins d\'auth a traiter comme compatibles CAS pour la liste d\'IdP renvoyee par ce plugin. Par defaut : "cas". Exemple : cas, casattras';
