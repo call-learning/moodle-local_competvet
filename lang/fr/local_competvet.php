@@ -61,3 +61,6 @@ $string['usertype:display'] = 'Type d\'utilisateur : {$a}';
 
 $string['cascompatibleauthplugins'] = 'Plugins d\'auth compatibles CAS';
 $string['cascompatibleauthplugins_help'] = 'Liste (separee par des virgules) des shortnames des plugins d\'auth a traiter comme compatibles CAS pour la liste d\'IdP renvoyee par ce plugin. Par defaut : "cas". Exemple : cas, casattras';
+
+$string['cas-login-error'] = "Erreur de connexion CAS";
+$string['cas-login-error-message'] = 'L\'authentification CAS a reussi mais l\'application n\'a pas pu terminer la connexion (erreur: {$a}). Veuillez reessayer.';

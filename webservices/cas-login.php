@@ -100,39 +100,47 @@ if ($frm && isset($frm->username)) {                             // Login WITH c
         // Let's get them all set up.
         complete_user_login($user);
 
-        // Get an existing token or create a new one.
-        $timenow = $clock->time();
-        // Check if the service exists and is enabled.
-        $service = $DB->get_record('external_services', ['shortname' => utils::COMPETVET_MOBILE_SERVICE, 'enabled' => 1]);
-        if (empty($service)) {
-            // Will throw exception if no token found.
-            throw new moodle_exception('servicenotavailable', 'webservice');
+        // The mobile flow expects this login to be treated as a fresh login for the
+        // purpose of private token inclusion.
+        if (empty($SESSION->justloggedin)) {
+            $SESSION->justloggedin = true;
         }
 
-        $token = utils::external_generate_token_for_current_user($service);
-        $privatetoken = $token->privatetoken;
-        external_log_token_request($token);
+        try {
+            $timenow = $clock->time();
+            // Check if the service exists and is enabled.
+            $service = $DB->get_record('external_services', ['shortname' => utils::COMPETVET_MOBILE_SERVICE, 'enabled' => 1]);
+            if (empty($service)) {
+                // Will throw exception if no token found.
+                throw new moodle_exception('servicenotavailable', 'webservice');
+            }
 
-        // Don't return the private token if the user didn't just log in and a new token wasn't created.
-        if (empty($SESSION->justloggedin) && $token->timecreated < $timenow) {
-            $privatetoken = null;
+            $token = utils::external_generate_token_for_current_user($service);
+            external_log_token_request($token);
+
+            $siteadmin = has_capability('moodle/site:config', context_system::instance(), $USER->id);
+            $includeprivatetoken = !empty($SESSION->justloggedin) || ($token->timecreated >= $timenow);
+            $apptoken = utils::build_mobile_app_apptoken($token, $siteadmin, is_https(), $includeprivatetoken);
+
+            $mobilelaunchparams['token'] = $apptoken;
+            $mobilelaunchparams['userid'] = $user->id;
+        } catch (moodle_exception $e) {
+            // Prevent partially bootstrapped sessions from forcing a logout/retry workaround.
+            manager::init_empty_session();
+            debugging('CAS to mobile token bootstrap failed: ' . $e->getMessage(), DEBUG_DEVELOPER);
+
+            global $PAGE, $OUTPUT;
+            $PAGE->set_title(get_string('cas-login-error', 'local_competvet'));
+            $PAGE->set_heading(get_site()->fullname);
+            echo $OUTPUT->header();
+            echo $OUTPUT->heading(get_string('cas-login-error', 'local_competvet'));
+            $boxcontent = get_string('cas-login-error-message', 'local_competvet', $e->errorcode ?? '');
+            echo $OUTPUT->box($boxcontent, 'generalbox boxaligncenter');
+            $retryurl = new moodle_url('/local/competvet/webservices/cas-login.php');
+            echo $OUTPUT->single_button($retryurl, get_string('retry'));
+            echo $OUTPUT->footer();
+            die;
         }
-
-        $siteadmin = has_capability('moodle/site:config', context_system::instance(), $USER->id);
-
-        // Passport is generated in the mobile app, so the app opening can be validated using that variable.
-        // Passports are valid only one time, it's deleted in the app once used.
-        // No trailing slash.
-        $siteid = sha1(rtrim($CFG->wwwroot, '/'));
-        $apptoken = $siteid . ':::' . $token->token;
-        if ($privatetoken && is_https() && !$siteadmin) {
-            $apptoken .= ':::' . $privatetoken;
-        }
-
-        $apptoken = base64_encode($apptoken);
-
-        $mobilelaunchparams['token'] = $apptoken;
-        $mobilelaunchparams['userid'] = $user->id;
     }
 }
 

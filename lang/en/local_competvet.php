@@ -61,3 +61,6 @@ $string['usertype:display'] = 'User type: {$a}';
 
 $string['cascompatibleauthplugins'] = 'CAS-compatible auth plugins';
 $string['cascompatibleauthplugins_help'] = 'Comma-separated list of authentication plugin shortnames to treat as CAS-compatible for the IdP list returned by this plugin. Default is "cas". Example: cas, casattras';
+
+$string['cas-login-error'] = 'CAS login error';
+$string['cas-login-error-message'] = 'CAS authentication succeeded but the application could not complete the login handshake (error: {$a}). Please try again.';

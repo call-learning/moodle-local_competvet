@@ -831,6 +831,19 @@ If an enabled auth plugin shortname is not listed, its IdP entries are ignored (
 
 To test with CAS login (for testing only) you can follow the README.cas.md file.
 
+### CAS first-login stabilization (operator notes)
+
+With this version, the unauthenticated CAS IdP list and the CAS-to-mobile login handoff should work on the first successful CAS authentication, without requiring the user to log out and retry.
+
+Manual verification:
+- Configure Moodle authentication so `cas` (and any configured CAS-compatible plugins) are enabled.
+- Use a brand-new user (never logged into Moodle before) and complete CAS login.
+- The mobile app launch should occur on the first attempt.
+
+If the handoff fails:
+- The CAS login page will display a controlled error and an `error` code.
+- The page clears the partially-bootstrapped session and provides a `Retry` button (no manual logout required).
+
 ## License ##
 
 2023 CALL Learning <laurent@call-learning.fr>
