@@ -11,27 +11,20 @@ This project contains all services and mobile application for CompetVetEval.
 
 First steps with curl.
 
-### The local_competvet_get_idplist
+### CAS IdP list endpoint (`webservices/cas-idp-list.php`)
 
-This API callback is a bit different from the others. It is used to get the list of currently
-setup idp (like auth_cas). It is used by the mobile application to get the list of CAS servers.
-It is the only one that will be used without login so that's why we use the /lib/ajax/service-nologin.php URL.
-Bear in mind that even with this, we cannot have any empty arguments (like the args parameter cannot
-be empty). So we will need to explicitely set it to an empty array.
+This endpoint is used by the mobile application to fetch the currently configured IdP list (including CAS).
+It is the only one that is called without login.
 
-The payload is the following (json):
-[{"methodname":"local_competvet_get_idplist","args":[]}]
+It returns the JSON payload produced by `local_competvet\utils::get_idp_list()`.
 
 ```bash
- curl https://<Your URL>/lib/ajax/service-nologin.php \
-  -d 'args=%5B%7B%22methodname%22%3A%22local_competvet_get_idplist%22%2C%22args%22%3A%5B%5D%7D%5D'
+  curl https://<Your URL>/local/competvet/webservices/cas-idp-list.php
 ```
-This should return an empty array, or an array of idp if any set.
+
+This should return an empty array, or an array of IdPs if any are configured.
 
 If set, this is what the result looks like:
- * An url toward the ICON if any defined
- * Name of the IDP
- * URL for the IDP
 
 ```json
 [
@@ -39,9 +32,10 @@ If set, this is what the result looks like:
       "error":false,
       "data":[
          {
-            "url":"http:\/\/SITEURL\/local\/competvet\/login\/cas-login.php?authCAS=CAS",
+            "url":"http:\/\/SITEURL\/local\/competvet\/webservices\/cas-login.php?authCAS=CAS",
             "name":"CAS",
-            "iconurl":""
+            "iconurl":"",
+            "id":"cas-0"
          }
       ]
    }
@@ -871,4 +865,3 @@ get_user_info : will return id instead of userid.
 
 ### 2023-12-29
 Renamed local_competvet_get_user_evaluations => get_user_eval_observations so each component will have its own endpoint. 
-

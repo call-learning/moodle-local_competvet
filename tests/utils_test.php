@@ -132,4 +132,53 @@ final class utils_test extends \advanced_testcase {
         $idplist = utils::get_idp_list();
         $this->assertEmpty($idplist);
     }
+
+    /**
+     * Test external auth idp_list with idp
+     *
+     * @covers \local_competvet\external\auth::idp_list
+     * @runInSeparateProcess
+     */
+    public function test_external_auth_idp_list_with_idp(): void {
+        global $CFG;
+        if (!file_exists($CFG->dirroot . '/auth/cas/auth.php')) {
+            $this->markTestSkipped('auth_cas plugin is not available');
+        }
+
+        $this->resetAfterTest(true);
+        $CFG->auth = 'manual,cas';
+        set_config('hostname', $CFG->wwwroot, 'auth_cas');
+        set_config('auth_logo', '', 'auth_cas');
+        set_config('auth_name', 'Test CAS', 'auth_cas');
+
+        get_enabled_auth_plugins(true); // Enable cas.
+
+        $idplist = \local_competvet\external\auth::idp_list();
+        $this->assertEquals(
+            [
+                'url' => 'https://www.example.com/moodle/local/competvet/webservices/cas-login.php?authCAS=CAS',
+                'iconurl' => '',
+                'name' => 'Test CAS',
+                'id' => 'cas-0',
+            ],
+            $idplist[0],
+        );
+    }
+
+    /**
+     * Test external auth idp_list without idp
+     *
+     * @covers \local_competvet\external\auth::idp_list
+     * @runInSeparateProcess
+     */
+    public function test_external_auth_idp_list_without_idp(): void {
+        global $CFG;
+
+        // Ensure CAS is not enabled.
+        $this->resetAfterTest(true);
+        $CFG->auth = 'manual';
+
+        $idplist = \local_competvet\external\auth::idp_list();
+        $this->assertEmpty($idplist);
+    }
 }
