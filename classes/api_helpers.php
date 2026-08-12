@@ -133,6 +133,7 @@ class api_helpers {
                 'notseen' => new external_value(PARAM_BOOL, 'Not seen (student)'),
                 'observernotseen' => new external_value(PARAM_BOOL, 'Not seen (observer)'),
                 'confirmed' => new external_value(PARAM_BOOL, 'Confirmed by an observer'),
+                'rejected' => new external_value(PARAM_BOOL, 'Rejected by an observer', VALUE_OPTIONAL),
                 'levelnotreached' => new external_value(PARAM_BOOL, 'Level Not reached (observer)'),
                 'hasvalidations' => new external_value(PARAM_BOOL, 'Has validations'),
                 'level' => new external_value(PARAM_INT, 'Declaration level', VALUE_OPTIONAL),

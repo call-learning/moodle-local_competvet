@@ -24,7 +24,6 @@ require_once($CFG->dirroot . '/webservice/tests/helpers.php');
 use core_user;
 use core_external\external_api;
 use advanced_testcase;
-use mod_competvet\local\api\plannings;
 use mod_competvet\local\persistent\planning;
 use mod_competvet\local\persistent\situation;
 
@@ -105,9 +104,29 @@ final class get_user_certs_items_test extends advanced_testcase {
         $this->setAdminUser();
         $student = core_user::get_user_by_username('student1');
         $situation = situation::get_record(['shortname' => 'SIT1']);
-        $plannings = plannings::get_plannings_for_situation_id($situation->get('id'), $student->id);
-        $planning = array_shift($plannings);
-        $certifs = $this->get_user_certif_items(['userid' => $student->id, 'planningid' => $planning['id']]);
+        // Select the planning containing the fixture certification explicitly. The student is
+        // also enrolled in a later planning, so relying on the returned list order makes this
+        // test depend on which planning is returned first.
+        $planning = planning::get_record(['situationid' => $situation->get('id'), 'session' => '2023']);
+        $certifs = $this->get_user_certif_items(['userid' => $student->id, 'planningid' => $planning->get('id')]);
         $this->assertEquals([0, 1, 2, 3], array_map(fn($cert) => $cert['category'], $certifs));
+
+        $declaredcategories = array_values(array_filter(
+            $certifs,
+            fn($cert) => count(array_filter($cert['items'], fn($item) => $item['isdeclared'])) > 0
+        ));
+        $this->assertCount(1, $declaredcategories);
+        $this->assertSame(2, $declaredcategories[0]['category']);
+
+        $declared = array_values(array_filter($declaredcategories[0]['items'], fn($item) => $item['isdeclared']))[0];
+        $this->assertTrue($declared['rejected']);
+        $this->assertFalse($declared['confirmed']);
+
+        $nonrejected = array_values(array_filter(
+            array_merge(...array_column($certifs, 'items')),
+            fn($item) => !$item['rejected']
+        ));
+        $this->assertNotEmpty($nonrejected);
+        $this->assertFalse($nonrejected[0]['rejected']);
     }
 }
