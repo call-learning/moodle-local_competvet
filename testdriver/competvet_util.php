@@ -29,8 +29,16 @@ require_once($CFG->libdir . '/behat/classes/behat_config_manager.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class competvet_util extends testing_util {
-    /** @var array List of dataroot directories to skip when resetting the dataroot */
-    public static $datarootskiponreset = ['.', '..', 'filedir', 'lang', 'muc', 'session'];
+    /**
+     * List of dataroot directories to skip when resetting the dataroot.
+     *
+     * The 'competvet' framework dir holds the baseline snapshots
+     * (tabledata.ser, tablestructure.ser, versionshash.txt) and must survive
+     * reset_dataroot(); deinit() still removes it through its own loop.
+     *
+     * @var array
+     */
+    public static $datarootskiponreset = ['.', '..', 'competvet', 'filedir', 'lang', 'muc', 'session'];
     /** @var array An array of original globals, restored after each test */
     protected static $globals = [];
     /** @var array of valid steps indexed by given expression tag. */
@@ -52,11 +60,20 @@ class competvet_util extends testing_util {
 
     /**
      * Prepare the test environment.
+     *
+     * Creates the baseline database state and dataroot snapshot once,
+     * then resets to that baseline. This matches PHPUnit behaviour where
+     * the baseline is captured at setup time and never overwritten.
      */
     public function init_test() {
         global $CFG;
         $framework = self::get_framework();
-        @mkdir($CFG->dataroot . '/' . $framework, 0777, true);
+        $frameworkdir = $CFG->dataroot . '/' . $framework;
+        if (!is_dir($frameworkdir)) {
+            if (!mkdir($frameworkdir, 0777, true)) {
+                debugging("Failed to create test framework dataroot directory: $frameworkdir", DEBUG_DEVELOPER);
+            }
+        }
         set_config('cron_enabled', 0);
         // Run all adhoc task.
         $clock = \core\di::get(\core\clock::class);
@@ -69,9 +86,6 @@ class competvet_util extends testing_util {
                 \core\task\manager::adhoc_task_failed($task);
             }
         }
-        self::reset_test();
-        set_config('cron_enabled', 1);
-        set_config('sendcoursewelcomemessage', 0, 'enrol_manual');
         if (!file_exists($CFG->dirroot . '/vendor/autoload.php')) {
             // Force OPcache reset if used, we do not want any stale caches
             // when preparing test environment.
@@ -81,6 +95,22 @@ class competvet_util extends testing_util {
             // Install and update composer and dependencies as required.
             testing_update_composer_dependencies(false, false);
         }
+        // Capture the baseline database state only if it doesn't exist yet.
+        // Subsequent calls to init() just reset to the existing baseline.
+        // After deinit() removes the baseline files, the next init() captures
+        // the current (restored) DB state as the new baseline.
+        $datafile = self::get_dataroot() . '/' . $framework . '/tabledata.ser';
+        self::clear_database_state_cache();
+        if (file_exists($datafile)) {
+            // Now reset to that baseline.
+            self::reset_test();
+        } else {
+            self::store_database_state();
+            self::store_versions_hash();
+        }
+        set_config('cron_enabled', 1);
+        set_config('sendcoursewelcomemessage', 0, 'enrol_manual');
+        self::reset_updated_table_list();
     }
 
     /**
@@ -99,6 +129,12 @@ class competvet_util extends testing_util {
         }
 
         self::reset_database();
+        // Reset dataroot to original state saved during init (PHPUnit-like file isolation).
+        // Guarded by compet_test_driver_mode so it never runs on production.
+        if (!empty($CFG->compet_test_driver_mode)) {
+            self::save_original_data_files();
+            self::reset_dataroot();
+        }
         $localename = self::get_locale_name();
         // Restore original globals.
         $_SERVER = self::get_global_backup('_SERVER');
@@ -159,8 +195,8 @@ class competvet_util extends testing_util {
         // Reset user agent.
         core_useragent::instance(true, null);
 
-        self::store_versions_hash();
-        self::store_database_state();
+        // Reset the list of modified tables for the next cycle.
+        self::reset_updated_table_list();
     }
 
     /**
@@ -202,11 +238,17 @@ class competvet_util extends testing_util {
     }
 
     /**
-     * Reset the database for good.
+     * Reset the database and clean up framework directory.
+     *
+     * Does NOT call reset_dataroot() — that would wipe the entire dataroot
+     * which is unsafe on production/dev sites. Only cleans the framework
+     * specific directory and resets the database.
      */
     public function deinit() {
         set_config('cron_enabled', 0);
         self::reset_database();
+        // The next init() may capture a different baseline in this process.
+        self::clear_database_state_cache();
         $framework = self::get_framework();
         if (empty($framework) || empty(trim(self::get_dataroot(), '/'))) {
             return;
@@ -231,6 +273,27 @@ class competvet_util extends testing_util {
         cache_factory::reset();
         // Re-enable cron.
         set_config('cron_enabled', 1);
+    }
+
+    /**
+     * Clear the database snapshot caches maintained by testing_util.
+     *
+     * testing_util has no public method for invalidating these caches. This is
+     * required when deinit() removes the snapshot files and a subsequent
+     * init_test() captures a new baseline in the same PHP process.
+     *
+     * @return void
+     */
+    private static function clear_database_state_cache(): void {
+        self::$tabledata = null;
+        self::$tablestructure = null;
+        self::$sequencenames = null;
+
+        // The $tablesequences is private in testing_util, so it cannot be reset
+        // directly from this subclass.
+        $property = new ReflectionProperty(testing_util::class, 'tablesequences');
+        $property->setAccessible(true);
+        $property->setValue(null, []);
     }
 
     /**
@@ -260,6 +323,11 @@ class competvet_util extends testing_util {
     /**
      * Execute a given scenario.
      *
+     * The scenario runs and leaves the database in its post-execution state.
+     * The caller must call init() to reset to the baseline and capture the
+     * current state as the new baseline, or deinit() to restore the baseline
+     * and discard the current state.
+     *
      * @param string $scenarioname
      * @return bool
      */
@@ -283,5 +351,16 @@ class competvet_util extends testing_util {
         $content = file_get_contents($CFG->dirroot . '/local/competvet/tests/app_scenario/' . $scenarioname . '.feature');
         $parsedfeature = $testsscenariorunner->parse_feature($content);
         return $testsscenariorunner->execute($parsedfeature);
+    }
+
+    /**
+     * Returns the testing framework name.
+     *
+     * Override required by Moodle 5.1+ testing_util base class.
+     *
+     * @return string
+     */
+    protected static function get_framework(): string {
+        return 'competvet';
     }
 }

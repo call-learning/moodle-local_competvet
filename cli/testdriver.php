@@ -58,48 +58,33 @@ if ($options['help']) {
     cli_writeln($usage);
     die();
 }
-if (!in_array($options['command'], ['run'])) {
-    if (empty($CFG->compet_test_driver_mode) || !$CFG->debugdeveloper) {
-        throw new moodle_exception('error:compet_test_driver_mode', 'local_competvet');
-    }
+if (empty($CFG->compet_test_driver_mode) || !$CFG->debugdeveloper) {
+    cli_error(get_string('error:compet_test_driver_mode', 'local_competvet'));
 }
-// The command will install composer if not present. Usually composer libraries are
-// installed when behat or phpunit are installed, but we do not want to force users
-// to create all phpunit or behat databases tables just to run a test scenario locally.
-if (!file_exists($CFG->dirroot . '/vendor/autoload.php')) {
-    // Force OPcache reset if used, we do not want any stale caches
-    // when preparing test environment.
-    if (function_exists('opcache_reset')) {
-        opcache_reset();
-    }
-    // Install and update composer and dependencies as required.
-    testing_update_composer_dependencies(true, true);
-}
-
 require_once($CFG->dirroot . '/local/competvet/testdriver/competvet_util.php');
 $testdriver = new competvet_util();
 switch ($options['command']) {
     case 'init':
         $testdriver->init_test();
         $testdriver->break_api(false);
-        echo "Init test.";
+        cli_writeln("Init test.");
         break;
     case 'deinit':
         $testdriver->deinit();
         $testdriver->break_api(false);
-        echo "Deinit test.";
+        cli_writeln("Deinit test.");
         break;
     case 'run':
         $result = $testdriver->execute_scenario($options['scenario'] ?? 'scenario_1');
-        echo "Executing scenario. $result";
+        cli_writeln("Executing scenario. $result");
         break;
     case 'breakapi':
         $testdriver->break_api();
-        echo "Breaking API.";
+        cli_writeln("Breaking API.");
         break;
     case 'fixapi':
         $testdriver->break_api(false);
-        echo "Fixing API.";
+        cli_writeln("Fixing API.");
         break;
     default:
         cli_writeln('Invalid command');
