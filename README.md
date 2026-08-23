@@ -860,6 +860,86 @@ PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with
 this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# Test driver
+
+The test driver provides a CLI-based way to run Behat scenarios with database isolation. It is enabled by setting `compet_test_driver_mode` to `1` in the site configuration and requiring `debugdeveloper` mode.
+
+## Usage
+
+```bash
+# Initialise the test environment (captures baseline DB state, then resets to it)
+php admin/tool/behat/cli/init.php   # ensure Behat is initialised first
+
+php local/competvet/cli/testdriver.php -c init
+
+# Run a scenario (leaves DB in post-execution state)
+php local/competvet/cli/testdriver.php -c run -s scenario_name
+
+# Restore baseline and discard current changes (removes baseline files)
+php local/competvet/cli/testdriver.php -c deinit
+
+# Break or fix the API for testing
+php local/competvet/cli/testdriver.php -c breakapi
+php local/competvet/cli/testdriver.php -c fixapi
+```
+
+## Workflow
+
+The test driver follows a three-step cycle:
+
+| Step | Command | Effect |
+|------|---------|--------|
+| `init` | Captures baseline → resets to it | DB is at baseline |
+| `run` | Executes scenario | DB is dirty (post-scenario state) |
+| `deinit` | Resets to baseline → removes baseline files | DB is at baseline, baseline files removed |
+
+After `deinit`, the next `init` captures the current (restored) DB state as the new baseline.
+
+### Example cycle
+
+```bash
+# 1. Capture initial baseline and reset to it
+php local/competvet/cli/testdriver.php -c init
+
+# 2. Run a scenario (DB is now dirty)
+php local/competvet/cli/testdriver.php -c run -s scenario_1
+
+# 3. Restore baseline and discard changes
+php local/competvet/cli/testdriver.php -c deinit
+
+# 4. Make changes to the DB manually or via another tool
+
+# 5. Capture the new state as baseline and reset to it
+php local/competvet/cli/testdriver.php -c init
+
+# 6. Run another scenario
+php local/competvet/cli/testdriver.php -c run -s scenario_2
+```
+
+## How it works
+
+- `init_test()` captures the current database state to `{$CFG->dataroot}/competvet/tabledata.ser` (only if the file does not already exist), then resets to that baseline.
+- `execute_scenario()` runs the Behat scenario and **does not** reset the database afterwards. The caller is responsible for calling `init()` or `deinit()`.
+- `deinit()` resets the database to the baseline and removes all baseline files from `{$CFG->dataroot}/competvet/`, so the next `init` captures a fresh baseline.
+
+## State transitions
+
+```
+init      → baseline missing → capture A → clear caches → reset to A
+run       → scenario runs → DB dirty (no reset) ✓
+deinit    → reset to A → remove baseline files
+(modify DB) → DB is now state B
+init      → baseline missing → capture B → clear caches → reset to B ✓
+run       → scenario runs → DB dirty (no reset) ✓
+deinit    → reset to B → remove baseline files
+```
+
+## Notes
+
+- The baseline is captured only once per cycle (when `tabledata.ser` does not exist). Subsequent `init` calls just reset to the existing baseline without re-capturing.
+- The parent class static caches (`$tabledata`, `$tablestructure`, `$sequencenames`) are cleared after baseline capture to ensure `reset_database()` re-reads from disk.
+- Dataroot files are reset only when `compet_test_driver_mode` is enabled.
+
 # Upgrade notes (API)
 
 ### 2024-01-26
