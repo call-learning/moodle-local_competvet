@@ -79,7 +79,12 @@ class create_caselog extends external_api {
 
         $fieldassociative = [];
         foreach ($fields as $field) {
-            $casefield = case_field::get_record(['idnumber' => $field['idnumber']]);
+            if (!empty($field['id'])) {
+                // This is the new way with the new version 2.5.8 of the app to target the correct field version.
+                $casefield = \mod_competvet\local\persistent\case_field::get_record(['id' => $field['id']]);
+            } else {
+                $casefield = \mod_competvet\local\persistent\case_field::get_by_idnumber($field['idnumber']);
+            }
             if (!$casefield) {
                 continue;
             }
@@ -107,6 +112,8 @@ class create_caselog extends external_api {
                 'fields' => new external_multiple_structure(
                     new external_single_structure([
                         'idnumber' => new external_value(PARAM_TEXT, 'The field shortname'),
+                        // We will use id from now on so we can target the correct field version (from 2.5.8).
+                        'id' => new external_value(PARAM_INT, 'The field id', VALUE_OPTIONAL),
                         'value' => new external_value(PARAM_TEXT, 'The field value', VALUE_OPTIONAL),
                     ])
                 ),

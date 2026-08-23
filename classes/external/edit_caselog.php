@@ -23,6 +23,7 @@ use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use core_external\external_value;
 use mod_competvet\local\api\cases;
+use mod_competvet\local\importer\caselog_schema_importer;
 use mod_competvet\local\persistent\case_entry;
 use mod_competvet\local\persistent\case_field;
 
@@ -63,9 +64,16 @@ class edit_caselog extends external_api {
                 'fields' => $fields,
             ]);
         self::validate_context(context_system::instance());
+        $caselog = case_entry::get_record(['id' => $id]);
+        $version = $caselog->get('versionid');
         $fieldassociative = [];
         foreach ($fields as $field) {
-            $casefield = case_field::get_record(['idnumber' => $field['idnumber']]);
+            if (!empty($field['id'])) {
+                // This is the new way with the new version 2.5.8 of the app to target the correct field version.
+                $casefield = \mod_competvet\local\persistent\case_field::get_record(['id' => $field['id']]);
+            } else {
+                $casefield = \mod_competvet\local\persistent\case_field::get_by_idnumber($field['idnumber'], $version ?: null);
+            }
             if (!$casefield) {
                 continue;
             }
@@ -89,6 +97,8 @@ class edit_caselog extends external_api {
                 'fields' => new external_multiple_structure(
                     new external_single_structure([
                         'idnumber' => new external_value(PARAM_TEXT, 'The field shortname'),
+                        // We will use id from now on so we can target the correct field version (from 2.5.8).
+                        'id' => new external_value(PARAM_INT, 'The field id', VALUE_OPTIONAL),
                         'value' => new external_value(PARAM_TEXT, 'The field value', VALUE_OPTIONAL),
                     ])
                 ),
