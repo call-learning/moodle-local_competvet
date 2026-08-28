@@ -60,7 +60,7 @@ jobs:
 
       - name: Install moodle-plugin-ci
         run: |
-          moodle-plugin-ci add-plugin --branch MOODLE_502_STABLE call-learning/moodle-mod_competvet
+          moodle-plugin-ci add-plugin --branch dev/2.5.8 call-learning/moodle-mod_competvet
           moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
         env:
           DB: ${{ matrix.database }}
