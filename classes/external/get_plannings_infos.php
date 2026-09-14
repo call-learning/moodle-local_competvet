@@ -24,6 +24,7 @@ use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use core_external\external_value;
 use local_competvet\api_helpers;
+use mod_competvet\competvet;
 use mod_competvet\local\api\plannings;
 use mod_competvet\local\persistent\situation;
 
@@ -77,6 +78,11 @@ class get_plannings_infos extends external_api {
             $situationsid = situation::get_all_situations_id_for($userid);
             $plannings = [];
             foreach ($situationsid as $situationid) {
+                // The app must not expose hidden activities, whatever the viewer's capabilities.
+                $competvet = competvet::get_from_situation_id($situationid);
+                if (!$competvet->has_strict_view_access($userid)) {
+                    continue;
+                }
                 $allplannings = plannings::get_plannings_for_situation_id($situationid, $userid, true);
                 $plannings = array_merge($plannings, array_column($allplannings, 'id'));
             }
